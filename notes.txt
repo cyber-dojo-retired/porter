@@ -1,0 +1,203 @@
+
+Note that grouper itself cannot create a group with an ID
+unless that ID is unique in its first 6 chars.
+However....
+o) the IDs in the storer are 10 chars long and the IDs
+   in URLs are 10 chars.
+o) there are katas in the storer that are NOT unique
+   in their first 6 chars.
+Options...
+1) bypass grouper's check and save direct to the /grouper/ids/...
+2) some katas from storer would have to be dropped
+3) create some mapping...
+
+There is a lot to be said for 2)3)
+This would allow me to use a plain 6-char identifier and I would
+not require id-completion at all.
+Using Base56 gives an alphabet of
+56^6 == 30,840,979,456 == 30 billion
+Is that enough?
+
+What other characters could I use?
+!@#$%^&*:?<>+
+another 13
+(56+13)^6 == 107,918,163,081 == 107 billion
+
+So first task is to find out how many katas storer has
+that are not unique in their 1st 6 chars.
+How to check that...?
+cd 00
+ls -1 | cut -c-4 | sort | uniq -d
+Results
+00 - 0/535
+01 - 0/496
+02 - 5/519
+03 - 1/492
+04 - 0/507
+05 - 1/496
+06 - 2/540
+07 - 1/492
+08 - 1/490
+09 - 1/521
+0A - 1/523
+0B - 2/499
+0C - 1/514
+0D - 3/493
+0E - 2/504
+0F - 1/496  (0F/D0CD)
+
+which is 22/8117 which is about 2.5 dups out of every 1000
+too many to ignore.
+So looks like a mapping scheme... :-{
+
+How many entries will I need in the map?
+say 200,000 katas
+so about 2*200 = 400.
+ok
+
+//----------------------------------------------------------
+
+If I switch to 6 char IDs for grouper (and singler)
+I also need to find out what is the fastest way to
+arrange the dirs? 2/4 or 2/2/2 (or something else, eg 3/3)
+I think there is a bash shortcut for creating a load
+of dirs using a regex. Yes
+cd /tmp
+mkdir -p {0..9}/{0..9}
+mkdir -p {00..99}/{00..99}
+mkdir -p {000..999}/{000..999}
+etc
+
+with hex...
+mkdir -p {{0..9},{A..F}}{{0..9},{A..F}}/{{0..9},{A..F}}{{0..9},{A..F}}
+
+mkdir -p {0..9}/{0..9}/{0..9}/{0..9}/{0..9}
+generates 100,000 dirs
+takes about 10 seconds
+
+mkdir -p {0..5}/{0..5}/{0..5}/{0..5}/{0..5}/{0..5}
+generates 6^6 == 46656 dirs
+takes about 4 seconds
+
+mkdir -p {0..6}/{0..6}/{0..6}/{0..6}/{0..6}/{0..6}
+generates 7^6 == 117649 dirs
+--> argument list too list
+
+//----------------------------------------------------------
+
+So web checks with grouper.id?(ID)
+will match for new IDs             (6 chars)
+for old IDs calls porter.port(ID)  (10 chars)
+
+porter.port(ID) will check ID
+  if there is a mapping match (for 10 chars)
+     use that
+  else if there is no kata-match (6-chars)
+     then nothing to do, no match
+  else if there is a single kata-match (6-chars)
+     try and save it in grouper with this 6 char ID
+     if it works use that
+     if it fails use mapping
+  if there are 2+ kata-matches (6-chars)
+     use mapping
+
+using-mapping
+  save each kata in grouper
+  and record original 10-char-ID ==> new 6-char ID
+  in a persistent map
+
+when porter is in place
+new server's commander can still create empty Data-Container
+it will simply never get filled!
+
+//----------------------------------------------------------
+
+The plan is for porter to be a service that
+1) has a read-write volume-mount of storer's data-container
+2) has a read-write volume-mount of singer's ids/ dir
+3) has a read-write volume-mount of grouper's ids/ dir
+
+It will then port katas from 1) into katas in 2/3)
+It will have a single method in its API, port(id) which accepts
+a kata-id in 1)
+
+It does not access singler/grouper via their services for speed.
+Hmmm. But maybe its better to use the grouper service?
+Maybe it could have both!
+You could do a grouper.create() and then have access to the
+manifest/etc by knowing the ID and with the ID gain access
+to the raw data in the dir. You could then rewrite the manifest
+to the original ID and mv the dir to its new-ID dir.
+This sounds quite fiddly.
+Why not just allow grouper.create() to be passed a manifest
+that already has an ID inside it.
+If it can't honour the ID (eg taken or not uniquely completable)
+then it raises.
+If grouper.create() is passed a manifest without an ID in it
+then it will generate a new ID as it currently does.
+
+What if the kata on storer only has a single avatar?
+Should porter then do a singler.create() directly?
+No. That would complicate the ID mapping.
+At the moment the only kata IDs are IDs in storer and these
+always have avatars.
+
+- new ID?avatar=lion
+  web will find a grouper.id?(ID)
+  so porter will not be called
+  then web will get singler's ID from grouper.joined(ID)
+  this implies grouper.joined(ID) could usefully return nil
+  if there is no ID match.
+
+- new ID
+  no avatar. new format. Must be a singler ID.
+
+- old ID?avatar=lion
+  web will not find a grouper.id?(ID)
+  porter wll do grouper.create(ID), grouper.join(ID, [lions'INDEX])
+  then translate to the created singler ID
+
+What to do when an individual tries to rejoin a kata is a different
+question. If grouper.joined(ID) shows only a single avatar then
+go straight to that.
+
+I will also write a script which will call porter in a loop
+and this port all of 1) to 2/3).
+
+If port(id) matches the id against 1) then it will do what
+grouper.create() would do, but it will do it with the given
+id, assuming that id is available and uniquely completeable.
+It will then do what grouper.join() would do for each avatar
+in 1).
+If port(id) succeeds it will delete the kata from 1).
+I thought about doing a mv, but its simpler to delete
+- it takes less disk space
+- I can still record the IDs of successfully ported IDs
+- I can rely on a whole disk backup.
+
+If port(id) fails, what should it do?
+Move the kata to a special holding area?
+
+How will I test this?
+It needs to work for storer's katas many of which are very old.
+
+
+//-----------------------
+
+From web's app/model/Tag
+
+  def colour
+    # Very early dojos used outcome
+    (@hash['colour'] || @hash['outcome'] || '').to_sym
+  end
+
+
+Singler is now storing the stdout,stderr,status
+in the tag file in a new format
+{
+  'files' => { filename=>content,... },
+  'stdout' => 'dsfsdf',
+  'stderr' => 'sdsdsd',
+  'status' => 23
+}
+
