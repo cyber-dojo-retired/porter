@@ -1,7 +1,44 @@
 
+# Given a 6-digit ID what is the best way to map that ID
+# into a dir structure to achieve fastest read/writes?
+# eg given id == 'ejdqsc'
+# 3/3   -> 'ejd/qsc'
+# 2/2/2 -> 'ej/dq/sc'
+# etc
+#
+# On the one hand, 3/3 means fewer look-ups (2), but
+# more entries to look through at each level (10^3==1000)
+#
+# On the other hand, 2/2/2 means more look-ups (3), but
+# less entries to look though at each level (10^2==100)
+#
+# This program gathers data to help make a decision.
+
+# n is the number of digits in the ID
 $n = ARGV[1].to_i
-$max = ARGV[2].to_i    # increase to get large dir-spread for high digit values
-$sample = ARGV[3].to_i # increase to get a bigger sample (will take longer)
+
+# max is the maximum number of dirs to create at a given 'level'.
+# For example, suppose a split of 6 is 5/1
+# then given an alphabet of 0..9 there are
+# 10^5 == 100000 possible dirs for the initial 5-digit dir
+# but creating this many dirs takes ages and might fill the disk.
+# So max=1000 would reduce 10^5 down to 1000
+$max = ARGV[2].to_i
+
+# sample is the number of dirs, at each level, to keep 'alive'.
+# For example, suppose a split of 6 is 3/3
+# then assuming an alphabet of 0..9
+# at the first level there are 1000 dirs (assuming max >= 1000).
+# A sample of 5 means only 5 of these dirs are selected to
+# become the base-dir for the dirs at the 2nd level.
+# This would result in dirs that are created and actually
+# contain a file of
+# 000/000, 000/001, 000/002, 000/003, 000/004
+# 001/000, 001/001, 001/002, 001/003, 001/004
+# 002/000, 002/001, 002/002, 002/003, 002/004
+# 003/000, 003/001, 003/002, 003/003, 003/004
+# 004/000, 004/001, 004/002, 004/003, 004/004
+$sample = ARGV[3].to_i
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -101,17 +138,14 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def read(dir)
-  #puts "read(#{dir})"
   IO.read(dir+'/info.txt')
 end
 
 def write(dir)
-  #puts "write(#{dir})"
   IO.write(dir+'/info.txt', 'blah blah')
 end
 
 def exists?(dir)
-  #puts "exists?(#{dir})"
   File.directory?(dir)
 end
 
@@ -128,7 +162,7 @@ def show_times(name, splits)
   puts "\n#{name}\n"
   splits.sort_by { |_split,time| time }
         .each { |split,time|
-          t = '%.07f' % time.to_f
+           t = '%.07f' % time.to_f
            puts "#{t} <-- #{split}"
            # eg 0.020310 <-- [1, 1, 2]
         }
