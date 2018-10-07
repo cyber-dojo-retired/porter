@@ -7,11 +7,11 @@
 # 2/2/2 -> 'ej/dq/sc'
 # etc
 #
-# On the one hand, 3/3 means fewer look-ups (2), but
-# more entries to look through at each level (10^3==1000)
+# On the one hand, 3/3 means fewer dirs (2), but
+# more entries to look through at each dir (10^3==1000)
 #
-# On the other hand, 2/2/2 means more look-ups (3), but
-# less entries to look though at each level (10^2==100)
+# On the other hand, 2/2/2 means more dirs (3), but
+# less entries to look though at each dir (10^2==100)
 #
 # This program gathers data to help make a decision.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
