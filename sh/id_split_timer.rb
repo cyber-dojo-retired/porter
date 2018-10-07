@@ -1,4 +1,5 @@
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Given a 6-digit ID what is the best way to map that ID
 # into a dir structure to achieve fastest read/writes?
 # eg given id == 'ejdqsc'
@@ -13,12 +14,13 @@
 # less entries to look though at each level (10^2==100)
 #
 # This program gathers data to help make a decision.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # n is the number of digits in the ID
 $n = ARGV[1].to_i
 
 # max is the maximum number of dirs to create at a given 'level'.
-# For example, suppose a split of 6 is 5/1
+# For example, suppose a split of 6 being timed is 5/1
 # then given an alphabet of 0..9 there are
 # 10^5 == 100000 possible dirs for the initial 5-digit dir
 # but creating this many dirs takes ages and might fill the disk.
@@ -32,17 +34,21 @@ $max = ARGV[2].to_i
 # A sample of 5 means only 5 of these dirs are selected to
 # become the base-dir for the dirs at the 2nd level.
 # This would result in dirs that are created and actually
-# contain a file of
+# contain a file, of
 # 000/000, 000/001, 000/002, 000/003, 000/004
 # 001/000, 001/001, 001/002, 001/003, 001/004
 # 002/000, 002/001, 002/002, 002/003, 002/004
 # 003/000, 003/001, 003/002, 003/003, 003/004
 # 004/000, 004/001, 004/002, 004/003, 004/004
+# This value must be kept quite low.
+# A value of 10 for example, would result in
+# 6 -> 1/1/1/1/1/1 creating 10^6 dirs
 $sample = ARGV[3].to_i
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def partitions(n, max = n)
+  # See https://stackoverflow.com/questions/10889379
   if n == 0
     [[]]
   else
@@ -70,7 +76,6 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def make_new_dir_names(digits)
-  # increase 5000 to get more dirs when digits is large
   max = [10**digits, $max].min
   (0...max).map{ |n| zerod(n, digits) }
 end
@@ -209,6 +214,3 @@ $read_times  .each{|split,time| $all_times[split] += time.to_f }
 $write_times .each{|split,time| $all_times[split] += time.to_f }
 
 show_times('all', $all_times)
-
-
-
