@@ -1,4 +1,10 @@
 
+$n = ARGV[1].to_i
+$max = ARGV[2].to_i    # increase to get large dir-spread for high digit values
+$sample = ARGV[3].to_i # increase to get a bigger sample (will take longer)
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
 def partitions(n, max = n)
   if n == 0
     [[]]
@@ -28,7 +34,7 @@ end
 
 def make_new_dir_names(digits)
   # increase 5000 to get more dirs when digits is large
-  max = [10**digits, 1000].min
+  max = [10**digits, $max].min
   (0...max).map{ |n| zerod(n, digits) }
 end
 
@@ -56,8 +62,7 @@ def setup_dirs(split)
     all_dirs = splice(sample_dirs, new_dir_names(digits))
     all_dirs.each { |dir| `mkdir #{dir}` }
 
-    # increase the 3 to get a bigger sample (will take longer)
-    samples = (0...3).to_a
+    samples = (0...$sample).to_a
                      .shuffle
                      .map{ |n| zerod(n, digits) }
 
@@ -123,17 +128,19 @@ def show_times(name, splits)
   puts "\n#{name}\n"
   splits.sort_by { |_split,time| time }
         .each { |split,time|
-           puts "#{time} <-- #{split}"
+          t = '%.07f' % time.to_f
+           puts "#{t} <-- #{split}"
            # eg 0.020310 <-- [1, 1, 2]
         }
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-n = ARGV[1].to_i
-puts("split times for #{n}")
+puts("n=#{$n}")
+puts("max=#{$max}")
+puts("sample=#{$sample}")
 
-splits = partitions(n).collect{ |p| p.permutation
+splits = partitions($n).collect{ |p| p.permutation
                                      .sort
                                      .uniq }
                       .flatten(1)
@@ -161,3 +168,13 @@ end
 show_times('exists?', $exists_times)
 show_times('read',    $read_times)
 show_times('write',   $write_times)
+
+$all_times = {}
+$exists_times.each{|split,time| $all_times[split]  = time.to_f }
+$read_times  .each{|split,time| $all_times[split] += time.to_f }
+$write_times .each{|split,time| $all_times[split] += time.to_f }
+
+show_times('all', $all_times)
+
+
+
