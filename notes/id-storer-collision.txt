@@ -1,0 +1,31 @@
+
+how many katas does storer have that are not unique in their 1st 6 chars?
+
+How to check that...?
+On storer's VM
+$ docker exec -it cyber-dojo-storer bash
+cd 00
+ls -1 | cut -c-4 | sort | uniq -d
+
+Results
+00 - 0/535
+01 - 0/496
+02 - 5/519
+03 - 1/492
+04 - 0/507
+05 - 1/496
+06 - 2/540
+07 - 1/492
+08 - 1/490
+09 - 1/521
+0A - 1/523
+0B - 2/499
+0C - 1/514
+0D - 3/493
+0E - 2/504
+0F - 1/496  (0F/D0CD)
+
+which is 22/8117 which is about 2.5 dups out of every 1000
+say 200,000 katas
+so about 2.5*200 = 500.
+(that's group IDs)

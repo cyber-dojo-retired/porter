@@ -1,0 +1,74 @@
+
+I have decided to switch to 6-char identifiers on grouper/singler.
+
+This allows me to use a plain 6-char identifier and grouper/singler
+will not require id-completion at all.
+
+However, it does make it more likely that moving grouper/singler
+katas from one server to another will result in an ID collision.
+The larger the alphabet, the less the chance of an ID collision.
+
+Note also, that the ID currently becomes part of the name of the
+docker container the runner runs.
+Are there restrictions on the name of a docker container?
+Would it be better to decouple these and hash the ID inside
+the runner?
+
+Suppose there are 200,000 katas in storer.
+At an average of 5 avatars per kata.
+Thats 1 million singler IDs. Ok.
+
+I currently use Base58 but drop L (uppercase and lowercase).
+So alphabet.size == 56
+
+Remember the id is spelled out phonetically.
+
+not using...
+- minus. too similar to hyphen
+" doubleQuote. can make naming the dir in shell tricky
+' singleQuote. can make naming the dir in shell tricky
+/ forwardSlash. can't be used as dir name
+\ backSlash. can't be used as dir name on windows?
+
+What other characters could I reasonably use?
+
+! exclamationMark
+@ at
+# hash
+$ dollar
+% percent
+^ caret
+& ampersand
+* asterisk
+: colon
+? questionMark
+< lessThan
+> greaterThan
++ plus
+{ leftCurlyBracket
+} rightCurlyBracket
+[ leftSquareBracket
+] rightSquareBracket
+( leftRoundBracket
+) rightRoundBracket
+= equals
+; semiColon
+| pipe
+. dot
+~ tilde
+, comma
+
+
+another 25
+(56+25)^6 == 81^6 == 282,429,536,481 == 282 billion
+
+vs           56^6 ==  30,840,979,456 ==  30 billion
+
+
+It is tempting to use 7 chars...
+
+81^7 == 2.28x10^13 == 22.8 trillion
+56^7 == 1.72x10^12 == 1.72 trillion
+
+Downside is people are used to using 6 char IDs
+
