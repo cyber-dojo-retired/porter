@@ -27,7 +27,9 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def make_new_dir_names(digits)
-  (0...10**digits).map{ |n| zerod(n,digits) }
+  # increase 5000 to get more dirs when digits is large
+  max = [10**digits, 1000].min
+  (0...max).map{ |n| zerod(n, digits) }
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,7 +114,7 @@ end
 
 def average_of(times)
   mean = times.reduce(:+) / times.size.to_f
-  '%.06f' % mean
+  '%.07f' % mean
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
