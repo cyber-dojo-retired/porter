@@ -46,21 +46,25 @@ end
 def setup_dirs(split)
   # eg split = [3,2,1]
   tmp = ARGV[0] + "/id_splits"
-  `rm -rf #{tmp}`
+  `rm -rf #{tmp} && mkdir -p #{tmp}`
 
   sample_dirs = [ tmp ]
 
   split.each do |digits|
     all_dirs = splice(sample_dirs, new_dir_names(digits))
-    # TODO: make these dirs
+    all_dirs.each { |dir| `mkdir #{dir}` }
 
-    samples = (0...3).to_a.shuffle.map{ |n| zerod(n,digits) } # eg [00..05]
-    sample_dirs = all_dirs.select{|dir|
-      samples.any?{|sample| dir.end_with?(sample) }
+    # increase the 3 to get a bigger sample (will take longer)
+    samples = (0...3).to_a
+                     .shuffle
+                     .map{ |n| zerod(n, digits) }
+
+    sample_dirs = all_dirs.select{ |dir|
+      samples.any?{ |sample| dir.end_with?(sample) }
     }
   end
 
-  # TODO: write known file into each r10 dirs
+  sample_dirs.each{ |dir| IO.write(dir + '/info.txt', 'hello') }
   sample_dirs
 end
 
@@ -90,15 +94,18 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def read(dir)
-  sleep 0.00001
+  #puts "read(#{dir})"
+  IO.read(dir+'/info.txt')
 end
 
 def write(dir)
-  sleep 0.00002
+  #puts "write(#{dir})"
+  IO.write(dir+'/info.txt', 'blah blah')
 end
 
 def exists?(dir)
-  sleep 0.00001
+  #puts "exists?(#{dir})"
+  File.directory?(dir)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
