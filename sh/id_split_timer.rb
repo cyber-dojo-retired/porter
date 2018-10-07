@@ -22,26 +22,23 @@ end
 
 def setup_dirs(split)
   # eg split = [3,2,1]
-
   tmp = ARGV[0] + '/id_splits'
   `rm -rf #{tmp}`
 
-  # setup all dirs... using r10 for each level
-  # write known file into each final r10 dirs
-
   all_dirs = [ tmp ]
   r10_dirs = [ tmp ]
+  split.each do |digits|
+    sss = (0...10**digits)     .map{ |n| zerod(n,digits) } # eg [00..99]
+    r10 = (0...10).to_a.shuffle.map{ |n| zerod(n,digits) } # eg [00..09]
+    all_dirs = splice(all_dirs, sss)
+    r10_dirs = splice(r10_dirs, r10)
+  end
 
+  # TODO: create all_dirs
 
-  # TODO: all parts in split
-  digits = split[0]                                      # eg 2
-  sss = (0...10**digits)     .map{ |n| zerod(n,digits) } # eg [00..99]
-  r10 = (0...10).to_a.shuffle.map{ |n| zerod(n,digits) } # eg [00..09]
+  # TODO: write known file into each r10 dirs
 
-  all_dirs = splice(all_dirs, sss)
-  r10_dirs = splice(r10_dirs, r10)
-
-  #puts all_dirs.inspect
+  #puts "#{split}==> #{all_dirs.size}"
 
   # return only those dirs that exist and have file in them
   r10_dirs
@@ -54,21 +51,36 @@ def zerod(n, digits)
 end
 
 def splice(lhs,rhs)
-  lhs.map{|a| rhs.map{|b| a+'/'+b }}.flatten(1)
+  lhs.map do |a|
+    rhs.map do |b|
+      print_dot
+      a + '/' + b
+    end
+  end.flatten(1)
+end
+
+$tally = 0
+
+def print_dot
+  $tally += 1
+  if $tally % 1000 == 0
+    STDOUT.print('.')
+    STDOUT.flush
+  end
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def read(dir)
-  sleep 0.01
+  sleep 0.00001
 end
 
 def write(dir)
-  sleep 0.02
+  sleep 0.00002
 end
 
 def exists?(dir)
-  sleep 0.001
+  sleep 0.00001
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -82,11 +94,9 @@ end
 def split_times(splits)
   Hash[splits.map { |split|
     times = setup_dirs(split).map { |dir|
-      STDOUT.print('.')
-      STDOUT.flush
       timed { yield dir }
     }
-    [split,'%.06f' % average_of(times)]
+    [split, '%.06f' % average_of(times)]
   }]
 end
 
