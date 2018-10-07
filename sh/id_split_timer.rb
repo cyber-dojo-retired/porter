@@ -24,19 +24,40 @@ def setup_dirs(split)
   # eg split = [3,2,1]
 
   tmp = ARGV[0] + '/id_splits'
-  # First clean out tmp
   `rm -rf #{tmp}`
 
-  r10 = (0..10).to_a.shuffle
   # setup all dirs... using r10 for each level
-  # write known file into each dir
+  # write known file into each final r10 dirs
 
-  # digits = 2
-  # (0..10).to_a.shuffle.map{ |n| "%0#{digits}d" % n }
+  all_dirs = [ tmp ]
+  r10_dirs = [ tmp ]
+
+
+  # TODO: all parts in split
+  digits = split[0]                                      # eg 2
+  sss = (0...10**digits)     .map{ |n| zerod(n,digits) } # eg [00..99]
+  r10 = (0...10).to_a.shuffle.map{ |n| zerod(n,digits) } # eg [00..09]
+
+  all_dirs = splice(all_dirs, sss)
+  r10_dirs = splice(r10_dirs, r10)
+
+  #puts all_dirs.inspect
 
   # return only those dirs that exist and have file in them
-  [ "#{tmp}/000/07/9", "#{tmp}/009/01/4" ]
+  r10_dirs
 end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+def zerod(n, digits)
+  "%0#{digits}d" % n
+end
+
+def splice(lhs,rhs)
+  lhs.map{|a| rhs.map{|b| a+'/'+b }}.flatten(1)
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
 
 def read(dir)
   sleep 0.01
