@@ -11,4 +11,4 @@ docker run \
   --volume ${MY_DIR}/${FILENAME}:${TMP_DIR}/${FILENAME} \
   --tmpfs ${TMP_DIR} \
   cyberdojo/grouper \
-    ruby ${TMP_DIR}/${FILENAME} ${N}
+    ruby ${TMP_DIR}/${FILENAME} ${TMP_DIR} ${N}

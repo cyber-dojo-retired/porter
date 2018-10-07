@@ -20,54 +20,75 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-def setup_dirs(one)
-  # eg one = [3,2,1]
+def setup_dirs(split)
+  # eg split = [3,2,1]
+
+  tmp = ARGV[0] + '/id_splits'
+  # First clean out tmp
+  `rm -rf #{tmp}`
+
   r10 = (0..10).to_a.shuffle
-  # do dirs setup... using r10 for each level
+  # setup all dirs... using r10 for each level
   # write known file into each dir
 
   # digits = 2
   # (0..10).to_a.shuffle.map{ |n| "%0#{digits}d" % n }
 
-  [ '/tmp/000/07/9', '/tmp/009/01/4' ]
+  # return only those dirs that exist and have file in them
+  [ "#{tmp}/000/07/9", "#{tmp}/009/01/4" ]
 end
 
-# - - - - - - - - - - - - - - - - - - - - - - -
-
-def average_of(all)
-  all.reduce(:+) / all.size.to_f
-end
-
-# = = = = = = = = = = = = = = = = = = = = = = =
-
-def timed_reads(all)
-  Hash[all.map {|one| [one,timed_read(one)] }]
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - -
-
-def timed_read(one)
-  # eg one = [3,2,1]
-  times = setup_dirs(one).map { |dir_name| timed { do_read(dir_name) }}
-  average_of(times)
-end
-
-def do_read(dir_name)
+def read(dir)
   sleep 0.01
 end
 
+def write(dir)
+  sleep 0.02
+end
+
+def exists?(dir)
+  sleep 0.001
+end
+
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-n = ARGV[0].to_i
-puts "Hello, world #{n}"
+def average_of(times)
+  times.reduce(:+) / times.size.to_f
+end
 
-all = partitions(n)
-puts all.inspect
+# - - - - - - - - - - - - - - - - - - - - - - -
 
-results = timed_reads(all)
-puts results.inspect
+def split_times(splits)
+  Hash[splits.map { |split|
+    times = setup_dirs(split).map { |dir|
+      STDOUT.print('.')
+      STDOUT.flush
+      timed { yield dir }
+    }
+    [split,'%.06f' % average_of(times)]
+  }]
+end
 
+# - - - - - - - - - - - - - - - - - - - - - - -
 
-# read
-# write
-# existence
+def show_times(name, splits)
+  puts "\n#{name}\n"
+  splits.sort_by { |_split,time| time }
+        .each { |split,time|
+           puts "#{time} <-- #{split}"
+           # eg 0.020310 <-- [1, 1, 2]
+        }
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+n = ARGV[1].to_i
+splits = partitions(n).collect{ |p| p.permutation
+                                     .sort
+                                     .uniq }
+                      .flatten(1)
+
+STDOUT.puts("split times for #{n}")
+show_times('exists?', split_times(splits) {|dir| exists?(dir) })
+show_times('read',    split_times(splits) {|dir| read(dir) })
+show_times('write',   split_times(splits) {|dir| write(dir) })
