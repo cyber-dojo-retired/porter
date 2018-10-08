@@ -60,7 +60,7 @@ end
 
 def make_all_dir_names(digits)
   max = [10**digits, $max].min
-  (0...max).map{ |n| zerod(n, digits) }
+  make_dir_names(max, digits)
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
@@ -72,11 +72,11 @@ def sample_dir_names(n)
 end
 
 def make_sample_dir_names(digits)
-  (0...digits).map{ |n| zerod(n, digits) }
+  make_dir_names($sample, digits)
 end
 
-def zerod(n, digits)
-  "%0#{digits}d" % n
+def make_dir_names(max, digits)
+  (0...max).map{ |n| "%0#{digits}d" % n }
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
