@@ -87,7 +87,7 @@ def make_sample_dir_names(digits)
 end
 
 def make_dir_names(max, digits)
-  (0...max).map{ |n| "%0#{digits}d" % n }
+  (0...max).map { |n| "%0#{digits}d" % n }
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
@@ -98,7 +98,7 @@ def partitions(n, max = n)
     [[]]
   else
     [max, n].min.downto(1).flat_map do |i|
-      partitions(n-i, i).map{ |rest| [i, *rest] }
+      partitions(n-i, i).map { |rest| [i, *rest] }
     end
   end
 end
@@ -114,21 +114,18 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-def setup_dirs(split)
+def sample_dirs(split)
   # eg split = [3,2,1]
   tmp = ARGV[0] + "/id_splits"
   `rm -rf #{tmp} && mkdir -p #{tmp}`
-
-  sample_dirs = [ tmp ]
-
+  sample = [ tmp ]
   split.each do |digits|
-    all_dirs = splice(sample_dirs, all_dir_names(digits))
+    all_dirs = splice(sample, all_dir_names(digits))
     all_dirs.each { |dir| `mkdir #{dir}` }
-    sample_dirs = all_dirs.select{ |dir| in_sample?(dir, digits) }
+    sample = all_dirs.select { |dir| in_sample?(dir, digits) }
   end
-
-  sample_dirs.each{ |dir| IO.write(dir + '/info.txt', 'hello') }
-  sample_dirs
+  sample.each { |dir| IO.write(dir + '/info.txt', 'hello') }
+  sample
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -145,7 +142,7 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def in_sample?(dir, digits)
-  sample_dir_names(digits).any?{ |sample|
+  sample_dir_names(digits).any? { |sample|
     dir.end_with?(sample)
   }
 end
@@ -164,6 +161,27 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
+def average_of(times)
+  '%.07f' %  (times.reduce(:+) / times.size.to_f)
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+def gather_times(splits)
+  times = { e:{}, r:{}, w:{} }
+  splits.each do |split|
+    times[:e][split] = []
+    times[:r][split] = []
+    times[:w][split] = []
+    sample_dirs(split).each do |dir|
+      times[:e][split] << timed { exists?(dir) }
+      times[:r][split] << timed {    read(dir) }
+      times[:w][split] << timed {   write(dir) }
+    end
+  end
+  times
+end
+
 def read(dir)
   IO.read(dir+'/info.txt')
 end
@@ -178,38 +196,12 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-def average_of(times)
-  '%.07f' %  (times.reduce(:+) / times.size.to_f)
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - -
-
-def gather_times(splits)
-  times = { e:{}, r:{}, w:{} }
-  splits.each do |split|
-    times[:e][split] = []
-    times[:r][split] = []
-    times[:w][split] = []
-
-    sample_dirs = setup_dirs(split)
-    sample_dirs.each{ |dir|
-      times[:e][split] << timed { exists?(dir) }
-      times[:r][split] << timed {    read(dir) }
-      times[:w][split] << timed {   write(dir) }
-    }
-  end
-  times
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - -
-
 def gather_averages(splits, times)
   averages = { e:{}, r:{}, w:{}, a:{} }
   splits.each do |split|
     et = times[:e][split]
     rt = times[:r][split]
     wt = times[:w][split]
-
     averages[:e][split] = average_of(et)
     averages[:r][split] = average_of(rt)
     averages[:w][split] = average_of(wt)
@@ -241,15 +233,15 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-def id_split_timer
+def show_id_splits_times
   puts("id_size=#{id_size}")
   puts("all_max=#{all_max}")
   puts("sample_max=#{sample_max}")
 
-  splits = partitions(id_size).collect{ |p| p.permutation
-                                       .sort
-                                       .uniq }
-                        .flatten(1)
+  splits = partitions(id_size)
+             .collect { |p| p.permutation.sort.uniq }
+             .flatten(1)
+             .shuffle
 
   times = gather_times(splits)
   averages = gather_averages(splits, times)
@@ -258,4 +250,4 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-id_split_timer
+show_id_splits_times
