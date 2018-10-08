@@ -113,14 +113,8 @@ def setup_dirs(split)
   split.each do |digits|
     all_dirs = splice(sample_dirs, all_dir_names(digits))
     all_dirs.each { |dir| `mkdir #{dir}` }
-
-    samples = sample_dir_names(digits)
-
-    sample_dirs = all_dirs.select{ |dir|
-      samples.any?{ |sample| dir.end_with?(sample) }
-    }
+    sample_dirs = all_dirs.select{ |dir| in_sample?(dir, digits) }
   end
-
   sample_dirs.each{ |dir| IO.write(dir + '/info.txt', 'hello') }
   sample_dirs
 end
@@ -134,6 +128,14 @@ def splice(lhs,rhs)
       a + '/' + b
     end
   end.flatten(1)
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+def in_sample?(dir, digits)
+  sample_dir_names(digits).any?{ |sample|
+    dir.end_with?(sample)
+  }
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
