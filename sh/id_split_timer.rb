@@ -117,11 +117,12 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-def timed
+def timed2
   started = Time.now
-  yield
+  result = yield
   finished = Time.now
-  finished - started
+  duration = (finished - started)
+  [duration,result]
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -187,9 +188,24 @@ def gather_times(splits)
     times[:r][split] = []
     times[:w][split] = []
     sample_dirs(split).each do |dir|
-      times[:e][split] << timed { exists?(dir) }
-      times[:r][split] << timed {    read(dir) }
-      times[:w][split] << timed {   write(dir) }
+
+      time,result = timed2 { exists?(dir) }
+      unless result === true
+        fail RuntimeError, "exists?(#{dir}) returned #{result}"
+      end
+      times[:e][split] << time
+
+      time,result = timed2 { write(dir) }
+      unless result == ('hello' * 500).size
+        fail RuntimeError, "write(#{dir}) returned #{result}"
+      end
+      times[:w][split] << time
+
+      time,result = timed2 { read(dir) }
+      unless result == 'hello' * 500
+        fail RuntimeError, "read(#{dir}) returned #{result}"
+      end
+      times[:r][split] << time
     end
   end
   times
@@ -200,7 +216,7 @@ def read(dir)
 end
 
 def write(dir)
-  IO.write(dir+'/info.txt', 'blah '*500)
+  IO.write(dir+'/info.txt', 'hello'* 500)
 end
 
 def exists?(dir)
