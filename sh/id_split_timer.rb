@@ -59,11 +59,12 @@ end
 
 $cache_all_dir_names = []
 
-def all_dir_names(n)
-  # eg n==1 --> [0..9]
-  # eg n==2 --> [00..99]
-  # eg n==3 --> [000..999]
-  $cache_all_dir_names[n] ||= make_all_dir_names(n).shuffle
+def all_dir_names(digits)
+  # eg digits==1 --> [0..9]
+  # eg digits==2 --> [00..99]
+  # eg digits==3 --> [000..999]
+  $cache_all_dir_names[digits] ||=
+    make_all_dir_names(digits)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,16 +78,14 @@ end
 
 $cache_sample_dir_names = []
 
-def sample_dir_names(n)
-  $cache_sample_dir_names[n] ||= make_sample_dir_names(n).shuffle
-end
-
-def make_sample_dir_names(digits)
-  make_dir_names(sample_max, digits)
+def sample_dir_names(digits)
+  $cache_sample_dir_names[digits] ||=
+    make_dir_names(sample_max, digits)
 end
 
 def make_dir_names(max, digits)
   (0...max).map { |n| "%0#{digits}d" % n }
+           .shuffle
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
@@ -195,6 +194,14 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
+def gather_splits
+  partitions(id_size).collect { |p| p.permutation.sort.uniq }
+                     .flatten(1)
+                     .shuffle
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
 def gather_averages(splits, times)
   averages = { e:{}, r:{}, w:{}, a:{} }
   splits.each do |split|
@@ -223,11 +230,11 @@ end
 def show_sorted_averages(name, split_times)
   puts "\n#{name}\n"
   split_times.sort_by { |_split,time| time }
-        .each { |split,time|
-           t = '%.07f' % time.to_f
-           puts "#{t} <-- #{split}"
-           # eg 0.020310 <-- [1, 1, 2]
-        }
+             .each { |split,time|
+                t = '%.07f' % time.to_f
+                puts "#{t} <-- #{split}"
+                # eg 0.020310 <-- [1, 1, 2]
+             }
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -237,13 +244,10 @@ def show_id_splits_times
   puts("all_max=#{all_max}")
   puts("sample_max=#{sample_max}")
 
-  splits = partitions(id_size)
-             .collect { |p| p.permutation.sort.uniq }
-             .flatten(1)
-             .shuffle
-
+  splits = gather_splits
   times = gather_times(splits)
   averages = gather_averages(splits, times)
+
   show_averages(averages)
 end
 
