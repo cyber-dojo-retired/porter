@@ -157,7 +157,7 @@ def read(dir)
 end
 
 def write(dir)
-  IO.write(dir+'/info.txt', 'blah blah')
+  IO.write(dir+'/info.txt', 'blah '*100)
 end
 
 def exists?(dir)
