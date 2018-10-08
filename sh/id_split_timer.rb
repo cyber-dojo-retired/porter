@@ -134,15 +134,17 @@ def sample_dirs(split)
   verbose(split.inspect)
   sample = [ tmp ]
   split.each do |digits|
+    #TODO: print digits (and 'level')
     all_dirs = splice(sample, all_dir_names(digits)).flatten(1)
     all_dirs.each { |dir|
-      verbose('m')
+      #verbose('m')
       `mkdir #{dir}`
     }
     sample = all_dirs.select { |dir| in_sample?(dir, digits) }
   end
+  #puts "sample:#{sample.inspect}:"
   sample.each { |dir|
-    verbose('>')
+    #verbose('>')
     IO.write(dir + '/info.txt', 'hello')
   }
   verbose(sample[0].inspect)
@@ -153,12 +155,21 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def splice(lhs,rhs)
+  max = lhs.size * rhs.size
+  count = 0
+  #print(percent(count,max))
   lhs.map do |a|
     rhs.map do |b|
-      print_ch('.')
+      count += 1
+      #print(percent(count,max))
       a + '/' + b
     end
   end
+end
+
+def percent(n, max)
+  # TODO: print backspaces
+  '% 2d' % (n / max.to_f * 100).to_i
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -175,6 +186,7 @@ $tally = 0
 
 def print_ch(ch)
   $tally += 1
+  # TODO: print running %
   if $tally % 987 == 0
     STDOUT.print(ch)
     STDOUT.flush
@@ -241,6 +253,7 @@ def gather_splits
   partitions(id_size).collect { |p| p.permutation.sort.uniq }
                      .flatten(1)
                      .shuffle
+    # .reject{|split| split.max > 2 }
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
