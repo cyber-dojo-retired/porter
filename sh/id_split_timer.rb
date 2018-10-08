@@ -63,16 +63,21 @@ def make_all_dir_names(digits)
   (0...max).map{ |n| zerod(n, digits) }
 end
 
-# - - - - - - - - - - - - - - - - - - - - - - -
+# = = = = = = = = = = = = = = = = = = = = = =
+
+$sample_dir_names = []
+
+def sample_dir_names(n)
+  $sample_dir_names[n] ||= make_sample_dir_names(n).shuffle
+end
+
+def make_sample_dir_names(digits)
+  (0...digits).map{ |n| zerod(n, digits) }
+end
 
 def zerod(n, digits)
   "%0#{digits}d" % n
 end
-
-# = = = = = = = = = = = = = = = = = = = = = =
-
-
-
 
 # = = = = = = = = = = = = = = = = = = = = = =
 
@@ -109,9 +114,7 @@ def setup_dirs(split)
     all_dirs = splice(sample_dirs, all_dir_names(digits))
     all_dirs.each { |dir| `mkdir #{dir}` }
 
-    samples = (0...$sample).to_a
-                     .shuffle
-                     .map{ |n| zerod(n, digits) }
+    samples = sample_dir_names(digits)
 
     sample_dirs = all_dirs.select{ |dir|
       samples.any?{ |sample| dir.end_with?(sample) }
