@@ -196,6 +196,42 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
+def gather_times(splits)
+  times = { e:{}, r:{}, w:{} }
+  splits.each do |split|
+    times[:e][split] = []
+    times[:r][split] = []
+    times[:w][split] = []
+
+    sample_dirs = setup_dirs(split)
+    sample_dirs.each{ |dir|
+      times[:e][split] << timed { exists?(dir) }
+      times[:r][split] << timed {    read(dir) }
+      times[:w][split] << timed {   write(dir) }
+    }
+  end
+  times
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+def gather_averages(splits, times)
+  averages = { e:{}, r:{}, w:{}, a:{} }
+  splits.each do |split|
+    et = times[:e][split]
+    rt = times[:r][split]
+    wt = times[:w][split]
+
+    averages[:e][split] = average_of(et)
+    averages[:r][split] = average_of(rt)
+    averages[:w][split] = average_of(wt)
+    averages[:a][split] = average_of(et + rt + wt)
+  end
+  averages
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
 puts("id_size=#{id_size}")
 puts("all_max=#{all_max}")
 puts("sample_max=#{sample_max}")
@@ -205,37 +241,8 @@ splits = partitions(id_size).collect{ |p| p.permutation
                                      .uniq }
                       .flatten(1)
 
-# - - - - - - - - - - - - - - - - - - - - - - -
-
-$times = { e:{}, r:{}, w:{} }
-
-splits.each do |split|
-  $times[:e][split] = []
-  $times[:r][split] = []
-  $times[:w][split] = []
-
-  sample_dirs = setup_dirs(split)
-  sample_dirs.each{ |dir|
-    $times[:e][split] << timed { exists?(dir) }
-    $times[:r][split] << timed {    read(dir) }
-    $times[:w][split] << timed {   write(dir) }
-  }
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - -
-
-$averages = { e:{}, r:{}, w:{}, a:{} }
-
-splits.each do |split|
-  et = $times[:e][split]
-  rt = $times[:r][split]
-  wt = $times[:w][split]
-
-  $averages[:e][split] = average_of(et)
-  $averages[:r][split] = average_of(rt)
-  $averages[:w][split] = average_of(wt)
-  $averages[:a][split] = average_of(et + rt + wt)
-end
+$times = gather_times(splits)
+$averages = gather_averages(splits, $times)
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
