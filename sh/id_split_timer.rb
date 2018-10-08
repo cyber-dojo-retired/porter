@@ -16,34 +16,45 @@
 # This program gathers data to help make a decision.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# n is the number of digits in the ID
-$n = ARGV[1].to_i
+def id_size
+  # The number of digits in the ID
+  ARGV[1].to_i
+end
 
-# max is the maximum number of dirs to create at a given 'level'.
-# For example, suppose a split of 6 being timed is 5/1
-# then given an alphabet of 0..9 there are
-# 10^5 == 100000 possible dirs for the initial 5-digit dir
-# but creating this many dirs takes ages and might fill the disk.
-# So max=1000 would reduce 10^5 down to 1000
-$all_max = ARGV[2].to_i
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# sample is the number of dirs, at each level, to keep 'alive'.
-# For example, suppose a split of 6 is 3/3
-# then assuming an alphabet of 0..9
-# at the first level there are 1000 dirs (assuming max >= 1000).
-# A sample of 5 means only 5 of these dirs are selected to
-# become the base-dir for the dirs at the 2nd level.
-# This would result in dirs that are created and actually
-# contain a file, of
-# 000/000, 000/001, 000/002, 000/003, 000/004
-# 001/000, 001/001, 001/002, 001/003, 001/004
-# 002/000, 002/001, 002/002, 002/003, 002/004
-# 003/000, 003/001, 003/002, 003/003, 003/004
-# 004/000, 004/001, 004/002, 004/003, 004/004
-# This value must be kept quite low.
-# A value of 10 for example, would result in
-# 6 -> 1/1/1/1/1/1 creating 10^6 dirs
-$sample_max = ARGV[3].to_i
+def all_max
+  # The maximum number of dirs to create at a given 'level'.
+  # For example, suppose a split of 6 being timed is 5/1
+  # then given an alphabet of 0..9 there are
+  # 10^5 == 100000 possible dirs for the initial 5-digit dir
+  # but creating this many dirs takes ages and might fill the disk.
+  # So max=1000 would reduce 10^5 down to 1000
+  ARGV[2].to_i
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+def sample_max
+  # The number of dirs, at each level, to keep 'alive'
+  # for the next level.
+  # For example, suppose a split of 6 is 3/3
+  # then assuming an alphabet of 0..9
+  # at the first level there are 1000 dirs (assuming max >= 1000).
+  # A sample of 5 means only 5 of these dirs are selected to
+  # become the base-dir for the dirs at the 2nd level.
+  # This would result in dirs that are created and actually
+  # contain a file, of
+  # 000/000, 000/001, 000/002, 000/003, 000/004
+  # 001/000, 001/001, 001/002, 001/003, 001/004
+  # 002/000, 002/001, 002/002, 002/003, 002/004
+  # 003/000, 003/001, 003/002, 003/003, 003/004
+  # 004/000, 004/001, 004/002, 004/003, 004/004
+  # This value must be kept quite low.
+  # A value of 10 for example, would result in
+  # 6 -> 1/1/1/1/1/1 creating 10^6 dirs
+  ARGV[3].to_i
+end
 
 # = = = = = = = = = = = = = = = = = = = = = =
 
@@ -59,7 +70,7 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def make_all_dir_names(digits)
-  max = [10**digits, $all_max].min
+  max = [10**digits, all_max].min
   make_dir_names(max, digits)
 end
 
@@ -72,7 +83,7 @@ def sample_dir_names(n)
 end
 
 def make_sample_dir_names(digits)
-  make_dir_names($sample_max, digits)
+  make_dir_names(sample_max, digits)
 end
 
 def make_dir_names(max, digits)
@@ -115,6 +126,7 @@ def setup_dirs(split)
     all_dirs.each { |dir| `mkdir #{dir}` }
     sample_dirs = all_dirs.select{ |dir| in_sample?(dir, digits) }
   end
+
   sample_dirs.each{ |dir| IO.write(dir + '/info.txt', 'hello') }
   sample_dirs
 end
@@ -167,8 +179,7 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def average_of(times)
-  mean = times.reduce(:+) / times.size.to_f
-  '%.07f' % mean
+  '%.07f' %  (times.reduce(:+) / times.size.to_f)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -185,11 +196,11 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-puts("n=#{$n}")
-puts("max=#{$max}")
-puts("sample=#{$sample}")
+puts("id_size=#{id_size}")
+puts("all_max=#{all_max}")
+puts("sample_max=#{sample_max}")
 
-splits = partitions($n).collect{ |p| p.permutation
+splits = partitions(id_size).collect{ |p| p.permutation
                                      .sort
                                      .uniq }
                       .flatten(1)
