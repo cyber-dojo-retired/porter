@@ -25,3 +25,8 @@ only needs
 o) its own id
 o) group-id
 o) avatar-index
+
+grouper.manifest() does not return files.
+Would be better if it did I think.
+Then it becomes the inverse of create(manifest,files)
+Simpler to just put the files into the manifest
