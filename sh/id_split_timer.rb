@@ -27,9 +27,9 @@ def all_max
   # The maximum number of dirs to create at a given 'level'.
   # For example, suppose a split of 6 being timed is 5/1
   # then given an alphabet of 0..9 there are
-  # 10^5 == 100000 possible dirs for the initial 5-digit dir
+  # 10^5 == 100,000 possible dirs for the 'level-0' 5-digit dir
   # but creating this many dirs takes ages and might fill the disk.
-  # So max=1000 would reduce 10^5 down to 1000
+  # So all_max=1000 would reduce 10^5 down to 1000
   ARGV[2].to_i
 end
 
@@ -40,9 +40,10 @@ def sample_max
   # for the next level.
   # For example, suppose a split of 6 is 3/3
   # then assuming an alphabet of 0..9
-  # at the first level there are 1000 dirs (assuming max >= 1000).
-  # A sample of 5 means only 5 of these dirs are selected to
-  # become the base-dir for the dirs at the 2nd level.
+  # at the first level there are 1000 dirs
+  # (assuming all_max >= 1000).
+  # A sample_max of 5 means only 5 of these dirs are selected to
+  # become the base-dir for the dirs at the next level.
   # This would result in dirs that are created and actually
   # contain a file, of
   # 000/000, 000/001, 000/002, 000/003, 000/004
@@ -50,9 +51,7 @@ def sample_max
   # 002/000, 002/001, 002/002, 002/003, 002/004
   # 003/000, 003/001, 003/002, 003/003, 003/004
   # 004/000, 004/001, 004/002, 004/003, 004/004
-  # This value must be kept quite low.
-  # A value of 10 for example, would result in
-  # 6 -> 1/1/1/1/1/1 creating 10^6 dirs
+  # A large sample_max can easily fill up a disk.
   ARGV[3].to_i
 end
 
@@ -120,7 +119,7 @@ def sample_dirs(split)
   `rm -rf #{tmp} && mkdir -p #{tmp}`
   sample = [ tmp ]
   split.each do |digits|
-    all_dirs = splice(sample, all_dir_names(digits))
+    all_dirs = splice(sample, all_dir_names(digits)).flatten(1)
     all_dirs.each { |dir| `mkdir #{dir}` }
     sample = all_dirs.select { |dir| in_sample?(dir, digits) }
   end
@@ -136,7 +135,7 @@ def splice(lhs,rhs)
       print_dot
       a + '/' + b
     end
-  end.flatten(1)
+  end
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -187,7 +186,7 @@ def read(dir)
 end
 
 def write(dir)
-  IO.write(dir+'/info.txt', 'blah '*100)
+  IO.write(dir+'/info.txt', 'blah '*500)
 end
 
 def exists?(dir)
