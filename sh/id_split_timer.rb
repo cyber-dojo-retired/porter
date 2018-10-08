@@ -71,16 +71,12 @@ end
 
 def make_all_dir_names(digits)
   max = [alphabet.size**digits, all_max].min
-  make_dir_names(max, digits)
-end
-
-def make_dir_names(max, digits)
-  (0...max).map { |n| zerod(n, digits) } #"%0#{digits}d" % n }
+  (0...max).map { |n| zerod(n, digits) }
            .shuffle
 end
 
 def zerod(n,digits)
-  base = 10
+  base = alphabet.size
   res = ''
   loop do
     index = n % base
