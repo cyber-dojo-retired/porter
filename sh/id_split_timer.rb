@@ -131,14 +131,23 @@ def sample_dirs(split)
   # eg split = [3,2,1]
   tmp = ARGV[0] + "/id_splits"
   `rm -rf #{tmp} && mkdir -p #{tmp}`
+  verbose(split.inspect)
   sample = [ tmp ]
   split.each do |digits|
     all_dirs = splice(sample, all_dir_names(digits)).flatten(1)
-    all_dirs.each { |dir| `mkdir #{dir}` }
+    all_dirs.each { |dir|
+      verbose('m')
+      `mkdir #{dir}`
+    }
     sample = all_dirs.select { |dir| in_sample?(dir, digits) }
   end
   #puts "sample:#{sample.inspect}:"
-  sample.each { |dir| IO.write(dir + '/info.txt', 'hello') }
+  sample.each { |dir|
+    verbose('>')
+    IO.write(dir + '/info.txt', 'hello')
+  }
+  verbose(sample[0].inspect)
+  verbose("\n")
   sample
 end
 
@@ -147,7 +156,7 @@ end
 def splice(lhs,rhs)
   lhs.map do |a|
     rhs.map do |b|
-      print_dot
+      print_ch('.')
       a + '/' + b
     end
   end
@@ -165,12 +174,16 @@ end
 
 $tally = 0
 
-def print_dot
+def print_ch(ch)
   $tally += 1
-  if $tally % 1000 == 0
-    STDOUT.print('.')
+  if $tally % 987 == 0
+    STDOUT.print(ch)
     STDOUT.flush
   end
+end
+
+def verbose(s)
+  print(s)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
