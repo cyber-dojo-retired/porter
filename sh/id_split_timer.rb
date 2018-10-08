@@ -134,7 +134,6 @@ def sample_dirs(split)
   verbose(split.inspect)
   sample = [ tmp ]
   split.each do |digits|
-    #TODO: print digits (and 'level')
     all_dirs = splice(sample, all_dir_names(digits)).flatten(1)
     all_dirs.each { |dir|
       #verbose('m')
@@ -142,7 +141,6 @@ def sample_dirs(split)
     }
     sample = all_dirs.select { |dir| in_sample?(dir, digits) }
   end
-  #puts "sample:#{sample.inspect}:"
   sample.each { |dir|
     #verbose('>')
     IO.write(dir + '/info.txt', 'hello')
@@ -168,7 +166,6 @@ def splice(lhs,rhs)
 end
 
 def percent(n, max)
-  # TODO: print backspaces
   '% 2d' % (n / max.to_f * 100).to_i
 end
 

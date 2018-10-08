@@ -1,0 +1,6 @@
+
+print digits and 'level' when dirs are being spliced
+
+print % as it changes
+
+create separate tool which is passed specific split, eg [2,2,2]
