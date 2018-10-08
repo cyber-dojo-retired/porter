@@ -196,65 +196,39 @@ splits = partitions($n).collect{ |p| p.permutation
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-$exists_times = {}
-$read_times = {}
-$write_times = {}
+$times = { e:{}, r:{}, w:{} }
 
 splits.each do |split|
-  $exists_times[split] = []
-  $read_times[split] = []
-  $write_times[split] = []
+  $times[:e][split] = []
+  $times[:r][split] = []
+  $times[:w][split] = []
 
   sample_dirs = setup_dirs(split)
   sample_dirs.each{ |dir|
-    $exists_times[split] << timed { exists?(dir) }
-      $read_times[split] << timed {    read(dir) }
-     $write_times[split] << timed {   write(dir) }
+    $times[:e][split] << timed { exists?(dir) }
+    $times[:r][split] << timed {    read(dir) }
+    $times[:w][split] << timed {   write(dir) }
   }
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-$exists_averages = {}
-  $read_averages = {}
- $write_averages = {}
-   $all_averages = {}
+$averages = { e:{}, r:{}, w:{}, a:{} }
 
 splits.each do |split|
-  et = $exists_times[split]
-  rt = $read_times[split]
-  wt = $write_times[split]
+  et = $times[:e][split]
+  rt = $times[:r][split]
+  wt = $times[:w][split]
 
-  $exists_averages[split] = average_of(et)
-    $read_averages[split] = average_of(rt)
-   $write_averages[split] = average_of(wt)
-     $all_averages[split] = average_of(et + rt + wt)
+  $averages[:e][split] = average_of(et)
+  $averages[:r][split] = average_of(rt)
+  $averages[:w][split] = average_of(wt)
+  $averages[:a][split] = average_of(et + rt + wt)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-show_sorted_times('exists?', $exists_averages)
-show_sorted_times('read',    $read_averages)
-show_sorted_times('write',   $write_averages)
-show_sorted_times('all',     $all_averages)
-
-=begin
-  time = average_of(times)
-  $exists_times[split] = time
-
-  times = sample_dirs.map{ |dir| timed { read(dir) }}
-  time = average_of(times)
-  $read_times[split] = time
-
-  times = sample_dirs.map{ |dir| timed { write(dir) }}
-  time = average_of(times)
-  $write_times[split] = time
-end
-
-$all_times = {}
-$exists_times.each{|split,time| $all_times[split]  = time.to_f }
-$read_times  .each{|split,time| $all_times[split] += time.to_f }
-$write_times .each{|split,time| $all_times[split] += time.to_f }
-
-show_times('all', $all_times)
-=end
+show_sorted_times('exists?', $averages[:e])
+show_sorted_times('read',    $averages[:r])
+show_sorted_times('write',   $averages[:w])
+show_sorted_times('all',     $averages[:a])
