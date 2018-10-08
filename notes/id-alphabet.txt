@@ -7,6 +7,11 @@ will not require id-completion at all.
 However, it does make it more likely that moving grouper/singler
 katas from one server to another will result in an ID collision.
 The larger the alphabet, the less the chance of an ID collision.
+Merging grouper and singler into a single service would make
+data merges a bit easier?
+Suppose there are collisions in a merge?
+It would be possible to create an id-collision map
+in the same way porter will have to do when its ports storer data.
 
 Note also, that the ID currently becomes part of the name of the
 docker container the runner runs.

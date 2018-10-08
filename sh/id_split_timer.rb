@@ -45,7 +45,36 @@ $max = ARGV[2].to_i
 # 6 -> 1/1/1/1/1/1 creating 10^6 dirs
 $sample = ARGV[3].to_i
 
+# = = = = = = = = = = = = = = = = = = = = = =
+
+$all_dir_names = []
+
+def all_dir_names(n)
+  # eg n==1 --> [0..9]
+  # eg n==2 --> [00..99]
+  # eg n==3 --> [000..999]
+  $all_dir_names[n] ||= make_all_dir_names(n).shuffle
+end
+
 # - - - - - - - - - - - - - - - - - - - - - - -
+
+def make_all_dir_names(digits)
+  max = [10**digits, $max].min
+  (0...max).map{ |n| zerod(n, digits) }
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+def zerod(n, digits)
+  "%0#{digits}d" % n
+end
+
+# = = = = = = = = = = = = = = = = = = = = = =
+
+
+
+
+# = = = = = = = = = = = = = = = = = = = = = =
 
 def partitions(n, max = n)
   # See https://stackoverflow.com/questions/10889379
@@ -69,30 +98,6 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-def zerod(n, digits)
-  "%0#{digits}d" % n
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - -
-
-def make_new_dir_names(digits)
-  max = [10**digits, $max].min
-  (0...max).map{ |n| zerod(n, digits) }
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - -
-
-$new_dir_names = []
-
-def new_dir_names(n)
-  # eg n==1 --> [0..9]
-  # eg n==2 --> [00..99]
-  # eg n==3 --> [000..999]
-  $new_dir_names[n] ||= make_new_dir_names(n)
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - -
-
 def setup_dirs(split)
   # eg split = [3,2,1]
   tmp = ARGV[0] + "/id_splits"
@@ -101,7 +106,7 @@ def setup_dirs(split)
   sample_dirs = [ tmp ]
 
   split.each do |digits|
-    all_dirs = splice(sample_dirs, new_dir_names(digits))
+    all_dirs = splice(sample_dirs, all_dir_names(digits))
     all_dirs.each { |dir| `mkdir #{dir}` }
 
     samples = (0...$sample).to_a
