@@ -173,9 +173,9 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-def show_times(name, splits)
+def show_sorted_times(name, split_times)
   puts "\n#{name}\n"
-  splits.sort_by { |_split,time| time }
+  split_times.sort_by { |_split,time| time }
         .each { |split,time|
            t = '%.07f' % time.to_f
            puts "#{t} <-- #{split}"
@@ -194,14 +194,51 @@ splits = partitions($n).collect{ |p| p.permutation
                                      .uniq }
                       .flatten(1)
 
+# - - - - - - - - - - - - - - - - - - - - - - -
+
 $exists_times = {}
 $read_times = {}
 $write_times = {}
 
 splits.each do |split|
-  sample_dirs = setup_dirs(split)
+  $exists_times[split] = []
+  $read_times[split] = []
+  $write_times[split] = []
 
-  times = sample_dirs.map{ |dir| timed { exists?(dir) }}
+  sample_dirs = setup_dirs(split)
+  sample_dirs.each{ |dir|
+    $exists_times[split] << timed { exists?(dir) }
+      $read_times[split] << timed {    read(dir) }
+     $write_times[split] << timed {   write(dir) }
+  }
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+$exists_averages = {}
+  $read_averages = {}
+ $write_averages = {}
+   $all_averages = {}
+
+splits.each do |split|
+  et = $exists_times[split]
+  rt = $read_times[split]
+  wt = $write_times[split]
+
+  $exists_averages[split] = average_of(et)
+    $read_averages[split] = average_of(rt)
+   $write_averages[split] = average_of(wt)
+     $all_averages[split] = average_of(et + rt + wt)
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+show_sorted_times('exists?', $exists_averages)
+show_sorted_times('read',    $read_averages)
+show_sorted_times('write',   $write_averages)
+show_sorted_times('all',     $all_averages)
+
+=begin
   time = average_of(times)
   $exists_times[split] = time
 
@@ -214,13 +251,10 @@ splits.each do |split|
   $write_times[split] = time
 end
 
-show_times('exists?', $exists_times)
-show_times('read',    $read_times)
-show_times('write',   $write_times)
-
 $all_times = {}
 $exists_times.each{|split,time| $all_times[split]  = time.to_f }
 $read_times  .each{|split,time| $all_times[split] += time.to_f }
 $write_times .each{|split,time| $all_times[split] += time.to_f }
 
 show_times('all', $all_times)
+=end
