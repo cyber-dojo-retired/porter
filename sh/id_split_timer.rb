@@ -90,7 +90,7 @@ def zerod(n,digits)
 end
 
 def alphabet
-  '0123456789'
+  '0123456789abcdef'
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
@@ -136,7 +136,7 @@ def sample_dirs(split)
     all_dirs.each { |dir| `mkdir #{dir}` }
     sample = all_dirs.select { |dir| in_sample?(dir, digits) }
   end
-  puts "sample:#{sample.inspect}:"
+  #puts "sample:#{sample.inspect}:"
   sample.each { |dir| IO.write(dir + '/info.txt', 'hello') }
   sample
 end
