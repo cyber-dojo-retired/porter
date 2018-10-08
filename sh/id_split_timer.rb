@@ -25,7 +25,7 @@ $n = ARGV[1].to_i
 # 10^5 == 100000 possible dirs for the initial 5-digit dir
 # but creating this many dirs takes ages and might fill the disk.
 # So max=1000 would reduce 10^5 down to 1000
-$max = ARGV[2].to_i
+$all_max = ARGV[2].to_i
 
 # sample is the number of dirs, at each level, to keep 'alive'.
 # For example, suppose a split of 6 is 3/3
@@ -43,36 +43,36 @@ $max = ARGV[2].to_i
 # This value must be kept quite low.
 # A value of 10 for example, would result in
 # 6 -> 1/1/1/1/1/1 creating 10^6 dirs
-$sample = ARGV[3].to_i
+$sample_max = ARGV[3].to_i
 
 # = = = = = = = = = = = = = = = = = = = = = =
 
-$all_dir_names = []
+$cache_all_dir_names = []
 
 def all_dir_names(n)
   # eg n==1 --> [0..9]
   # eg n==2 --> [00..99]
   # eg n==3 --> [000..999]
-  $all_dir_names[n] ||= make_all_dir_names(n).shuffle
+  $cache_all_dir_names[n] ||= make_all_dir_names(n).shuffle
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def make_all_dir_names(digits)
-  max = [10**digits, $max].min
+  max = [10**digits, $all_max].min
   make_dir_names(max, digits)
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
 
-$sample_dir_names = []
+$cache_sample_dir_names = []
 
 def sample_dir_names(n)
-  $sample_dir_names[n] ||= make_sample_dir_names(n).shuffle
+  $cache_sample_dir_names[n] ||= make_sample_dir_names(n).shuffle
 end
 
 def make_sample_dir_names(digits)
-  make_dir_names($sample, digits)
+  make_dir_names($sample_max, digits)
 end
 
 def make_dir_names(max, digits)
