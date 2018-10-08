@@ -13,5 +13,5 @@ docker run \
   --read-only \
   --volume ${MY_DIR}/${FILENAME}:${TMP_DIR}/${FILENAME} \
   --tmpfs ${TMP_DIR} \
-  cyberdojo/grouper \
+  ruby:alpine \
     ruby ${TMP_DIR}/${FILENAME} ${TMP_DIR} ${N} ${MAX} ${SAMPLE}
