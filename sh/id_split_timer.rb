@@ -184,18 +184,6 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-def show_sorted_times(name, split_times)
-  puts "\n#{name}\n"
-  split_times.sort_by { |_split,time| time }
-        .each { |split,time|
-           t = '%.07f' % time.to_f
-           puts "#{t} <-- #{split}"
-           # eg 0.020310 <-- [1, 1, 2]
-        }
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - -
-
 def gather_times(splits)
   times = { e:{}, r:{}, w:{} }
   splits.each do |split|
@@ -232,21 +220,42 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-puts("id_size=#{id_size}")
-puts("all_max=#{all_max}")
-puts("sample_max=#{sample_max}")
-
-splits = partitions(id_size).collect{ |p| p.permutation
-                                     .sort
-                                     .uniq }
-                      .flatten(1)
-
-$times = gather_times(splits)
-$averages = gather_averages(splits, $times)
+def show_averages(averages)
+  show_sorted_averages('exists?', averages[:e])
+  show_sorted_averages('read',    averages[:r])
+  show_sorted_averages('write',   averages[:w])
+  show_sorted_averages('all',     averages[:a])
+end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-show_sorted_times('exists?', $averages[:e])
-show_sorted_times('read',    $averages[:r])
-show_sorted_times('write',   $averages[:w])
-show_sorted_times('all',     $averages[:a])
+def show_sorted_averages(name, split_times)
+  puts "\n#{name}\n"
+  split_times.sort_by { |_split,time| time }
+        .each { |split,time|
+           t = '%.07f' % time.to_f
+           puts "#{t} <-- #{split}"
+           # eg 0.020310 <-- [1, 1, 2]
+        }
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+def id_split_timer
+  puts("id_size=#{id_size}")
+  puts("all_max=#{all_max}")
+  puts("sample_max=#{sample_max}")
+
+  splits = partitions(id_size).collect{ |p| p.permutation
+                                       .sort
+                                       .uniq }
+                        .flatten(1)
+
+  times = gather_times(splits)
+  averages = gather_averages(splits, times)
+  show_averages(averages)
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+id_split_timer
