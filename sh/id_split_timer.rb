@@ -70,7 +70,7 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def make_all_dir_names(digits)
-  max = [10**digits, all_max].min
+  max = [alphabet.size**digits, all_max].min
   make_dir_names(max, digits)
 end
 
@@ -84,8 +84,27 @@ def sample_dir_names(digits)
 end
 
 def make_dir_names(max, digits)
-  (0...max).map { |n| "%0#{digits}d" % n }
+  (0...max).map { |n| zerod(n, digits) } #"%0#{digits}d" % n }
            .shuffle
+end
+
+def alphabet
+  '0123456789'
+end
+
+
+def zerod(n,digits)
+  base = 10
+  res = ''
+  loop do
+    index = n % base
+    letter = alphabet[index]
+    res += letter
+    n /= base
+    break if n == 0
+  end
+  res += '0' * (digits - res.length)
+  res.reverse
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
@@ -122,6 +141,7 @@ def sample_dirs(split)
     all_dirs.each { |dir| `mkdir #{dir}` }
     sample = all_dirs.select { |dir| in_sample?(dir, digits) }
   end
+  #puts "sample:#{sample.inspect}:"
   sample.each { |dir| IO.write(dir + '/info.txt', 'hello') }
   sample
 end
