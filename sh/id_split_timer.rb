@@ -141,7 +141,6 @@ def sample_dirs(split)
     }
     sample = all_dirs.select { |dir| in_sample?(dir, digits) }
   end
-  #puts "sample:#{sample.inspect}:"
   sample.each { |dir|
     verbose('>')
     IO.write(dir + '/info.txt', 'hello')
