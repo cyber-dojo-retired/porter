@@ -1,5 +1,7 @@
 
-Alphabet=[0-9a-f]
+Alphabet=[0-9a-f] == 16
+
+all_max=2000
 
 sample_max=1 -> 1
 all
