@@ -6,13 +6,15 @@ require 'json'
 # eg given id == 'ejdqsc'
 # 3/3   -> 'ejd/qsc'
 # 2/2/2 -> 'ej/dq/sc'
+# 1/1/1/1/1/1 -> 'e/j/d/q/s/c'
 # etc
 #
-# On the one hand, 3/3 means fewer dirs (2), but
-# more entries to look through at each dir (10^3==1000)
+# Assuming an alphabet of 0-9 (10 letters):
+# 3/3 means fewer dirs (2)
+# but more entries to look through at each dir (10^3==1000)
 #
-# On the other hand, 2/2/2 means more dirs (3), but
-# less entries to look though at each dir (10^2==100)
+# 1/1/1/1/1/1 means more dirs (6)
+# but less entries to look though at each dir (10^1==10)
 #
 # This program gathers data to help make a decision.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -38,17 +40,11 @@ end
 def all_max
   # The maximum number of dirs to create at a given 'level'.
   # For example, suppose a split of 6 being timed is 5/1
-  # then given an alphabet of 0..9 there are
-  # 10^5 == 100,000 possible dirs for the 'level-0' 5-digit dir
-  # but creating this many dirs takes ages and might fill the disk.
-  # So all_max=1000 would reduce 10^5 down to 1000
+  # then given an alphabet of 0-9 there are
+  # 10^5 == 100,000 possible dirs for the 'level-0' 5-digit dir.
+  # But all_max=1000 would reduce 10^5 down to 1000
+  # As all_max increases to does the chance of filling the disk.
   cla('all_max','2000').to_i
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-def alphabet
-  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,20 +53,25 @@ def sample_max
   # The number of dirs, at each level, to keep 'alive'
   # for the next level.
   # For example, suppose a split of 6 is 3/3
-  # then assuming an alphabet of 0..9
-  # at the first level there are 1000 dirs
-  # (assuming all_max >= 1000).
-  # A sample_max of 5 means only 5 of these dirs are selected to
-  # become the base-dir for the dirs at the next level.
-  # This would result in dirs that are created and actually
-  # contain a file, of
+  # then assuming an alphabet of 0-9
+  # at the first level there are 1000 dirs.
+  # A sample_max of 5 means only 5 of these dirs are selected
+  # to become the base-dir for the dirs at the next level.
+  # This would result in dirs that are created,
+  # and actually contain a file, of (ignoring shuffling)
   # 000/000, 000/001, 000/002, 000/003, 000/004
   # 001/000, 001/001, 001/002, 001/003, 001/004
   # 002/000, 002/001, 002/002, 002/003, 002/004
   # 003/000, 003/001, 003/002, 003/003, 003/004
   # 004/000, 004/001, 004/002, 004/003, 004/004
-  # A large sample_max can easily fill up a disk.
+  # As sample_max increases so does the chance of filling the disk.
   cla('sample_max','3').to_i
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+def alphabet
+  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
@@ -93,7 +94,7 @@ def make_all_dir_names(digits)
            .shuffle
 end
 
-def zerod(n,digits)
+def zerod(n, digits)
   base = alphabet.size
   res = ''
   loop do
@@ -155,7 +156,6 @@ def sample_dirs(split)
   end
   write_files(sample)
   verbose("\n")
-  #verbose(sample[0].inspect)
   sample
 end
 
