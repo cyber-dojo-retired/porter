@@ -187,6 +187,7 @@ def write_files(dirs)
     progress.show
     IO.write(dir + '/info.txt', 'hello')
   end
+  verbose("(#{dirs.size})")
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -326,13 +327,16 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def show_id_splits_times
+  puts("all_max=#{all_max}")
+  puts("sample_max=#{sample_max}")
   es = ARGV.detect{ |arg| arg.start_with?('--split=') }
   if es
-    splits = [ JSON.parse(es.split('=')[1]) ]
+    split = JSON.parse(es.split('=')[1])
+    puts("id_size=#{split.reduce(:+)}")
+    puts
+    splits = [ split ]
   else
     puts("id_size=#{id_size}")
-    puts("all_max=#{all_max}")
-    puts("sample_max=#{sample_max}")
     puts
     splits = gather_splits
   end
