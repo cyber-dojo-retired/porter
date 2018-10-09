@@ -1,3 +1,4 @@
+require 'json'
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Given a 6-digit ID what is the best way to map that ID
@@ -16,9 +17,20 @@
 # This program gathers data to help make a decision.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+def cla(key, default)
+  arg = ARGV.detect{ |arg| arg.start_with?("--#{key}=")}
+  if arg
+    arg.split('=')[1]
+  else
+    default
+  end
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 def id_size
   # The number of digits in the ID
-  (ARGV[0] || '6').to_i
+  cla('id_size','6').to_i
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -30,7 +42,7 @@ def all_max
   # 10^5 == 100,000 possible dirs for the 'level-0' 5-digit dir
   # but creating this many dirs takes ages and might fill the disk.
   # So all_max=1000 would reduce 10^5 down to 1000
-  (ARGV[1] || '2000').to_i
+  cla('all_max','2000').to_i
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,7 +64,7 @@ def sample_max
   # 003/000, 003/001, 003/002, 003/003, 003/004
   # 004/000, 004/001, 004/002, 004/003, 004/004
   # A large sample_max can easily fill up a disk.
-  (ARGV[2] || '3').to_i
+  cla('sample_max','3').to_i
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
@@ -252,6 +264,8 @@ def gather_times(splits)
   times
 end
 
+# - - - - - - - - - - - - - - - - - - - - - - -
+
 def read(dir)
   IO.read(dir+'/info.txt')
 end
@@ -270,7 +284,6 @@ def gather_splits
   partitions(id_size).collect { |p| p.permutation.sort.uniq }
                      .flatten(1)
                      .shuffle
-    # .reject{|split| split.max > 2 }
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -313,12 +326,17 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def show_id_splits_times
-  puts("id_size=#{id_size}")
-  puts("all_max=#{all_max}")
-  puts("sample_max=#{sample_max}")
-  puts
+  es = ARGV.detect{ |arg| arg.start_with?('--split=') }
+  if es
+    splits = [ JSON.parse(es.split('=')[1]) ]
+  else
+    puts("id_size=#{id_size}")
+    puts("all_max=#{all_max}")
+    puts("sample_max=#{sample_max}")
+    puts
+    splits = gather_splits
+  end
 
-  splits = gather_splits
   times = gather_times(splits)
   averages = gather_averages(splits, times)
 
