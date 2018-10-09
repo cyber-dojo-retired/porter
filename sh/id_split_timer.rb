@@ -47,6 +47,12 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+def alphabet
+  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 def sample_max
   # The number of dirs, at each level, to keep 'alive'
   # for the next level.
@@ -99,10 +105,6 @@ def zerod(n,digits)
   end
   res += '0' * (digits - res.length)
   res.reverse
-end
-
-def alphabet
-  '0123456789abcdef'
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
@@ -315,7 +317,7 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def show_sorted_averages(name, split_times)
-  puts "\n#{name}\n"
+  puts "#{name}\n"
   split_times.sort_by { |_split,time| time }
              .each { |split,time|
                 t = '%.07f' % time.to_f
