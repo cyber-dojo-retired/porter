@@ -134,7 +134,7 @@ def sample_dirs(split)
   verbose('% 20s' % split.inspect+' ')
   sample = [ tmp ]
   split.each_with_index do |digits,index|
-    verbose("L#{index}(#{digits}) ")
+    verbose(" L#{index}(#{digits})")
     all_dirs = splice(sample, all_dir_names(digits)).flatten(1)
     all_dirs.each { |dir|
       #verbose('m')
@@ -156,18 +156,19 @@ end
 def splice(lhs,rhs)
   max = lhs.size * rhs.size
   count = 0
-  #print(percent(count,max))
+  verbose(' ' * 4 )
+  verbose("\b\b\b\b#{percent(count,max)}%")
   lhs.map do |a|
     rhs.map do |b|
       count += 1
-      #print(percent(count,max))
+      verbose("\b\b\b\b#{percent(count,max)}%")
       a + '/' + b
     end
   end
 end
 
 def percent(n, max)
-  '% 2d' % (n / max.to_f * 100).to_i
+  '%3d' % (n / max.to_f * 100).to_i
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -192,7 +193,8 @@ def print_ch(ch)
 end
 
 def verbose(s)
-  print(s)
+  STDOUT.print(s)
+  STDOUT.flush
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
