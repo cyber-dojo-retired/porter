@@ -117,7 +117,7 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-def timed2
+def timed
   started = Time.now
   result = yield
   finished = Time.now
@@ -131,9 +131,10 @@ def sample_dirs(split)
   # eg split = [3,2,1]
   tmp = ARGV[0] + "/id_splits"
   `rm -rf #{tmp} && mkdir -p #{tmp}`
-  verbose(split.inspect)
+  verbose('% 20s' % split.inspect+' ')
   sample = [ tmp ]
-  split.each do |digits|
+  split.each_with_index do |digits,index|
+    verbose("L#{index}(#{digits}) ")
     all_dirs = splice(sample, all_dir_names(digits)).flatten(1)
     all_dirs.each { |dir|
       #verbose('m')
@@ -145,8 +146,8 @@ def sample_dirs(split)
     #verbose('>')
     IO.write(dir + '/info.txt', 'hello')
   }
-  verbose(sample[0].inspect)
   verbose("\n")
+  #verbose(sample[0].inspect)
   sample
 end
 
@@ -210,21 +211,21 @@ def gather_times(splits)
     times[:w][split] = []
     sample_dirs(split).each do |dir|
 
-      time,result = timed2 { exists?(dir) }
+      time,result = timed { exists?(dir) }
       unless result === true
-        fail RuntimeError, "exists?(#{dir}) returned #{result}"
+        fail RuntimeError, "exists?(#{dir}) == #{result}"
       end
       times[:e][split] << time
 
-      time,result = timed2 { write(dir) }
+      time,result = timed { write(dir) }
       unless result == ('hello' * 500).size
-        fail RuntimeError, "write(#{dir}) returned #{result}"
+        fail RuntimeError, "write(#{dir}) == #{result}"
       end
       times[:w][split] << time
 
-      time,result = timed2 { read(dir) }
+      time,result = timed { read(dir) }
       unless result == 'hello' * 500
-        fail RuntimeError, "read(#{dir}) returned #{result}"
+        fail RuntimeError, "read(#{dir}) == #{result}"
       end
       times[:r][split] << time
     end
@@ -296,6 +297,7 @@ def show_id_splits_times
   puts("id_size=#{id_size}")
   puts("all_max=#{all_max}")
   puts("sample_max=#{sample_max}")
+  puts
 
   splits = gather_splits
   times = gather_times(splits)
