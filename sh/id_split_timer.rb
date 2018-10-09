@@ -135,17 +135,11 @@ def sample_dirs(split)
   sample = [ tmp ]
   split.each_with_index do |digits,index|
     verbose(" L#{index}(#{digits})")
-    all_dirs = splice(sample, all_dir_names(digits)).flatten(1)
-    all_dirs.each { |dir|
-      #verbose('m')
-      `mkdir #{dir}`
-    }
+    all_dirs = splice_dirs(sample, all_dir_names(digits)).flatten(1)
+    make_dirs(all_dirs)
     sample = all_dirs.select { |dir| in_sample?(dir, digits) }
   end
-  sample.each { |dir|
-    #verbose('>')
-    IO.write(dir + '/info.txt', 'hello')
-  }
+  write_files(sample)
   verbose("\n")
   #verbose(sample[0].inspect)
   sample
@@ -153,22 +147,56 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
-def splice(lhs,rhs)
-  max = lhs.size * rhs.size
-  count = 0
-  verbose(' ' * 4 )
-  verbose("\b\b\b\b#{percent(count,max)}%")
+def splice_dirs(lhs, rhs)
+  progress = ProgressBar.new('S', lhs.size * rhs.size)
   lhs.map do |a|
     rhs.map do |b|
-      count += 1
-      verbose("\b\b\b\b#{percent(count,max)}%")
+      progress.show
       a + '/' + b
     end
   end
 end
 
-def percent(n, max)
-  '%3d' % (n / max.to_f * 100).to_i
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+def make_dirs(dirs)
+  progress = ProgressBar.new('M', dirs.size)
+  dirs.each do |dir|
+    progress.show
+    `mkdir #{dir}`
+  end
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+def write_files(dirs)
+  progress = ProgressBar.new('W', dirs.size)
+  dirs.each do |dir|
+    progress.show
+    IO.write(dir + '/info.txt', 'hello')
+  end
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+class ProgressBar
+  def initialize(prefix,max)
+    @prefix = prefix
+    @max = max
+    @count = 0
+    verbose(percent)
+  end
+  def show
+    @count += 1
+    verbose(backspaced(percent))
+  end
+  private
+  def percent
+    ' ' + @prefix + (':%3d' % (@count / @max.to_f * 100).to_i) + '%'
+  end
+  def backspaced(msg)
+    ("\b" * msg.length) + msg
+  end
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -180,17 +208,6 @@ def in_sample?(dir, digits)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
-
-$tally = 0
-
-def print_ch(ch)
-  $tally += 1
-  # TODO: print running %
-  if $tally % 987 == 0
-    STDOUT.print(ch)
-    STDOUT.flush
-  end
-end
 
 def verbose(s)
   STDOUT.print(s)
