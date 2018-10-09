@@ -18,7 +18,7 @@
 
 def id_size
   # The number of digits in the ID
-  ARGV[1].to_i
+  (ARGV[0] || '6').to_i
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -30,7 +30,7 @@ def all_max
   # 10^5 == 100,000 possible dirs for the 'level-0' 5-digit dir
   # but creating this many dirs takes ages and might fill the disk.
   # So all_max=1000 would reduce 10^5 down to 1000
-  ARGV[2].to_i
+  (ARGV[1] || '2000').to_i
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,7 +52,7 @@ def sample_max
   # 003/000, 003/001, 003/002, 003/003, 003/004
   # 004/000, 004/001, 004/002, 004/003, 004/004
   # A large sample_max can easily fill up a disk.
-  ARGV[3].to_i
+  (ARGV[2] || '3').to_i
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
@@ -129,7 +129,7 @@ end
 
 def sample_dirs(split)
   # eg split = [3,2,1]
-  tmp = ARGV[0] + "/id_splits"
+  tmp =  '/tmp/id_splits'
   `rm -rf #{tmp} && mkdir -p #{tmp}`
   verbose('% 20s' % split.inspect+' ')
   sample = [ tmp ]
