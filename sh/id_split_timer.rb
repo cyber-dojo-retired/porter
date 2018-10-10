@@ -82,8 +82,8 @@ def all_dir_names(digits)
   # eg digits==1 --> [0..9]
   # eg digits==2 --> [00..99]
   # eg digits==3 --> [000..999]
-  $cache_all_dir_names[digits] ||=
-    make_all_dir_names(digits)
+  ($cache_all_dir_names[digits] ||=
+    make_all_dir_names(digits)).shuffle
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,7 +91,6 @@ end
 def make_all_dir_names(digits)
   max = [alphabet.size**digits, all_max].min
   (0...max).map { |n| zerod(n, digits) }
-           .shuffle
 end
 
 def zerod(n, digits)
@@ -110,11 +109,8 @@ end
 
 # = = = = = = = = = = = = = = = = = = = = = =
 
-$cache_sample_dir_names = []
-
 def sample_dir_names(digits)
-  $cache_sample_dir_names[digits] ||=
-    all_dir_names(digits).sample(sample_max)
+  all_dir_names(digits).sample(sample_max)
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
@@ -238,30 +234,41 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def gather_times(splits)
-  times = { e:{}, r:{}, w:{} }
+  times = { m:{}, e:{}, r:{}, w:{} }
   splits.each do |split|
+    times[:m][split] = []
     times[:e][split] = []
     times[:r][split] = []
     times[:w][split] = []
     sample_dirs(split).each do |dir|
 
-      time,result = timed { exists?(dir) }
-      unless result === true
-        fail RuntimeError, "exists?(#{dir}) == #{result}"
-      end
-      times[:e][split] << time
+      (0..10).each do |n|
+        name = dir + '/' + n.to_s
 
-      time,result = timed { write(dir) }
-      unless result == ('hello' * 500).size
-        fail RuntimeError, "write(#{dir}) == #{result}"
-      end
-      times[:w][split] << time
+        time,result = timed { make(name) }
+        unless result === true
+          fail RuntimeError, "make(#{name}) == #{result}"
+        end
+        times[:m][split] << time
 
-      time,result = timed { read(dir) }
-      unless result == 'hello' * 500
-        fail RuntimeError, "read(#{dir}) == #{result}"
+        time,result = timed { exists?(name) }
+        unless result === true
+          fail RuntimeError, "exists?(#{name}) == #{result}"
+        end
+        times[:e][split] << time
+
+        time,result = timed { write(name) }
+        unless result == ('hello' * 500).size
+          fail RuntimeError, "write(#{name}) == #{result}"
+        end
+        times[:w][split] << time
+
+        time,result = timed { read(name) }
+        unless result == 'hello' * 500
+          fail RuntimeError, "read(#{name}) == #{result}"
+        end
+        times[:r][split] << time
       end
-      times[:r][split] << time
     end
   end
   times
@@ -269,16 +276,21 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
+def make(dir)
+  `mkdir #{dir}`
+  true
+end
+
+def exists?(dir)
+  File.directory?(dir)
+end
+
 def read(dir)
   IO.read(dir+'/info.txt')
 end
 
 def write(dir)
   IO.write(dir+'/info.txt', 'hello'* 500)
-end
-
-def exists?(dir)
-  File.directory?(dir)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -292,15 +304,17 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def gather_averages(splits, times)
-  averages = { e:{}, r:{}, w:{}, a:{} }
+  averages = { m:{}, e:{}, r:{}, w:{}, a:{} }
   splits.each do |split|
+    mt = times[:m][split]
     et = times[:e][split]
     rt = times[:r][split]
     wt = times[:w][split]
+    averages[:m][split] = average_of(mt)
     averages[:e][split] = average_of(et)
     averages[:r][split] = average_of(rt)
     averages[:w][split] = average_of(wt)
-    averages[:a][split] = average_of(et + rt + wt)
+    averages[:a][split] = average_of(mt + et + rt + wt)
   end
   averages
 end
@@ -308,6 +322,7 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def show_averages(averages)
+  show_sorted_averages('make',    averages[:m])
   show_sorted_averages('exists?', averages[:e])
   show_sorted_averages('read',    averages[:r])
   show_sorted_averages('write',   averages[:w])
