@@ -328,10 +328,11 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def show_sorted_averages(name, split_times)
+  puts
   split_times.sort_by { |_split,time| time }
              .each { |split,time|
                 t = '%.07f' % time.to_f
-                puts "#{'% 8s' % name} #{split} -->  #{t}"
+                puts "#{'% 8s' % name} #{t} <-- #{split}"
                 # eg 0.020310 <-- [1, 1, 2]
              }
 end
