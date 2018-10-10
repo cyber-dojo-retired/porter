@@ -82,8 +82,8 @@ def all_dir_names(digits)
   # eg digits==1 --> [0..9]
   # eg digits==2 --> [00..99]
   # eg digits==3 --> [000..999]
-  ($cache_all_dir_names[digits] ||=
-    make_all_dir_names(digits)).shuffle
+  $cache_all_dir_names[digits] ||=
+    make_all_dir_names(digits)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,6 +91,7 @@ end
 def make_all_dir_names(digits)
   max = [alphabet.size**digits, all_max].min
   (0...max).map { |n| zerod(n, digits) }
+           .shuffle
 end
 
 def zerod(n, digits)
@@ -105,12 +106,6 @@ def zerod(n, digits)
   end
   res += '0' * (digits - res.length)
   res.reverse
-end
-
-# = = = = = = = = = = = = = = = = = = = = = =
-
-def sample_dir_names(digits)
-  all_dir_names(digits).sample(sample_max)
 end
 
 # = = = = = = = = = = = = = = = = = = = = = =
@@ -146,9 +141,11 @@ def sample_dirs(split)
   sample = [ tmp ]
   split.each_with_index do |digits,index|
     verbose(" L#{index}(#{digits})")
-    all_dirs = splice_dirs(sample, all_dir_names(digits)).flatten(1)
+    rhs_dirs = all_dir_names(digits)
+    all_dirs = splice_dirs(sample, rhs_dirs).flatten(1)
     make_dirs(all_dirs)
-    sample = all_dirs.select { |dir| in_sample?(dir, digits) }
+    sample_dirs = rhs_dirs.sample(sample_max)
+    sample = all_dirs.select { |dir| in_sample?(dir, sample_dirs) }
   end
   write_files(sample)
   verbose("\n")
@@ -185,7 +182,13 @@ def write_files(dirs)
     progress.show
     IO.write(dir + '/info.txt', 'hello')
   end
-  verbose("(#{dirs.size})")
+  verbose("(#{dirs.size}) #{dirs[1]}")
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+def in_sample?(dir, sample_dirs)
+  sample_dirs.any? { |sample| dir.end_with?(sample) }
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -203,19 +206,12 @@ class ProgressBar
   end
   private
   def percent
-    ' ' + @prefix + (':%3d' % (@count / @max.to_f * 100).to_i) + '%'
+    value = ((@count / @max.to_f) * 100).to_i
+    ' ' + @prefix + (':%3d' % value) + '%'
   end
   def backspaced(msg)
     ("\b" * msg.length) + msg
   end
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - -
-
-def in_sample?(dir, digits)
-  sample_dir_names(digits).any? { |sample|
-    dir.end_with?(sample)
-  }
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
