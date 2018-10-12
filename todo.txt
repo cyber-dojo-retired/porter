@@ -1,0 +1,4 @@
+
+find katas in cyber-dojo.org's storer that have duplicate IDs in 1st 6-chars.
+Get tgz file of some to use as test data.
+See porter/notes/id-storer-collision.txt
