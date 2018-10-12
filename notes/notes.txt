@@ -1,4 +1,24 @@
 
+need collection of storer content (tgz files).
+unzip this to a known dir on host.
+volume mount this into storer.
+volume mount this into porter too.
+porter will access storer service and grouper service.
+Once it has successfully ported a kata from
+storer, it will delete the kata from storer.
+Would be best to do this as a shared data-container
+as that is the way storer actually works.
+
+Tool to pipe a storer's tgz file into storer's DC would
+be nice. Can then do a manual test. Pipe kata with known
+ID into DC. Access it from browser. See it work.
+Then docker exec into the storer and see it has gone.
+Then docker exec into the porter and see it's there.
+Can do this for katas with duplicate 6-chars IDs too.
+See their entries in porters map.
+
+//-----------------------
+
 Note that grouper itself cannot create a group with an ID
 unless that ID is unique in its first 6 chars (in its own VM).
 
@@ -112,14 +132,13 @@ Move the kata to a special holding area?
 How will I test this?
 It needs to work for storer's katas many of which are very old.
 
-
 //-----------------------
 
 From web's app/model/Tag
 
   def colour
     # Very early dojos used outcome
-    (@hash['colour'] || @hash['outcome'] || '').to_sym
+    (@hash['colour'] || @hash['outcome'] || '').to_sym # CAN BE UPDATED
   end
 
 

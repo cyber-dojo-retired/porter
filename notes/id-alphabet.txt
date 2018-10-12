@@ -34,6 +34,7 @@ not using...
 ' singleQuote. can make naming the dir in shell tricky
 / forwardSlash. can't be used as dir name
 \ backSlash. can't be used as dir name on windows?
+~ tilde. used for home dir.
 
 What other characters could I reasonably use?
 
@@ -60,19 +61,18 @@ $ dollar
 ; semiColon
 | pipe
 . dot
-~ tilde
 , comma
 
 
-another 25
-(56+25)^6 == 81^6 == 282,429,536,481 == 282 billion
+another 24
+(56+24)^6 == 80^6 == 262,144,000,000 == 262 billion
 
 vs           56^6 ==  30,840,979,456 ==  30 billion
 
 
 It is tempting to use 7 chars...
 
-81^7 == 2.28x10^13 == 22.8 trillion
+80^7 == 2.09x10^13 == 20.9 trillion
 56^7 == 1.72x10^12 == 1.72 trillion
 
 Downside is people are used to using 6 char IDs

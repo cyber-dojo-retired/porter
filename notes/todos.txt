@@ -1,4 +1,0 @@
-
-Base58 needs to ensure every single letter of the alphabet
-can be used as part of a dir name.
-
