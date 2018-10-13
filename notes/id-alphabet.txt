@@ -23,8 +23,7 @@ Suppose there are 200,000 katas in storer.
 At an average of 5 avatars per kata.
 Thats 1 million singler IDs. Ok.
 
-I currently use Base58 but drop L (uppercase and lowercase).
-So alphabet.size == 56
+I currently use Base58
 
 Remember the id is spelled out phonetically.
 
@@ -63,6 +62,7 @@ $ dollar
 . dot
 , comma
 
+Problem with these is many of them are not allowed, as-is, in a URL.
 
 another 24
 (56+24)^6 == 80^6 == 262,144,000,000 == 262 billion
@@ -76,4 +76,5 @@ It is tempting to use 7 chars...
 56^7 == 1.72x10^12 == 1.72 trillion
 
 Downside is people are used to using 6 char IDs
+
 
