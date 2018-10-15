@@ -1,10 +1,4 @@
 
-find katas in cyber-dojo.org's storer that have duplicate IDs in 1st 6-chars.
-Get tgz file of some to use as test data.
-See porter/notes/id-storer-collision.txt
-
--------------------------------------------
-
 The basic hook into porter will be in web.
 saver will not be coupled to porter or storer.
 
@@ -68,22 +62,29 @@ using-mapping
                http://www.cyber-dojo.org/kata/edit/e13AD0UkeY?avatar=eagle
             eg this was created from [we're in a group]
                http://www.cyber-dojo.org/kata/edit/9bkHemGPHR?avatar=dolphin
-              id_6 = porter.port(id_10, avatar_name)
+
+            id_6 = porter.port(id_10, avatar_name)
+
             and it will port that avatar
             will it also port all the other avatars (with that id_10) too?
 
-porter.port(id_10) will check id_10
-  if there is a mapping match (for 10 chars)
+//----------------------------------------------------------
+
+porter.port(id-10,avatar_name)
+  if there is a mapping match (for id-10)
      use that
   else if there is no kata-match (6-chars)
      then nothing to do, no match
   else if there is a single kata-match (6-chars)
      try and save it in grouper with this 6 char ID
      if it works use that
-     if it fails use mapping
+     if it fails use mapping (saver generates the ID)
   if there are 2+ kata-matches (6-chars)
-     use mapping
+     need to use mapping
+     easiest is to use mapping for all duplicates
+     feasible to try its own ID for one duplicate?
 
+//----------------------------------------------------------
 
 when porter is in place
 new server's commander can still create empty Data-Container
