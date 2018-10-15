@@ -1,9 +1,30 @@
 
+find katas in cyber-dojo.org's storer that have duplicate IDs in 1st 6-chars.
+Get tgz file of some to use as test data.
+See porter/notes/id-storer-collision.txt
+
+-------------------------------------------
+
+The basic hook into porter will be in web.
+saver will not be coupled to porter or storer.
+
+web --> porter --> storer
+               --> saver
+    --> saver
+
+This means that saver.group_exists?(id) could generate an ID-6
+which is used in the 1st 6-chars of an existing 10-ID inside storer.
+If this happens, then porter will need to map that 10-ID.
+
+-------------------------------------------
+
+Testing
+-------
 need collection of storer content (tgz files).
 unzip this to a known dir on host.
-volume mount this into storer.
-volume mount this into porter too.
-porter will access storer service and grouper service.
+volume mount this into storer (read-write)
+volume mount this into porter too (read-only)
+porter will access storer service and saver service.
 Once it has successfully ported a kata from
 storer, it will delete the kata from storer.
 Would be best to do this as a shared data-container
@@ -19,7 +40,7 @@ See their entries in porters map.
 
 //-----------------------
 
-Note that grouper itself cannot create a group with an ID
+Note that saver itself cannot create a group with an ID
 unless that ID is unique in its first 6 chars (in its own VM).
 
 However....
@@ -27,20 +48,31 @@ o) the IDs in the storer are 10 chars long and the IDs
    in URLs are 10 chars.
 o) there are katas in the storer that are NOT unique
    in their first 6 chars.
-Options...
-1) bypass grouper's check and save direct to the /grouper/ids/...
-2) some katas from storer would have to be dropped
-3) create some mapping...
+So... create a persistent mapping for these.
+This can be a simple dir-ID structure.
 
-There is a lot to be said for 2)3)
+using-mapping
+  save each kata in saver
+  and record original 10-char-ID ==> new 6-char ID
+  in a persistent map
 
 //----------------------------------------------------------
 
-So web checks with grouper.id?(ID)
-will match for new IDs             (6 chars)
-for old IDs calls porter.port(ID)  (10 chars)
+ 6-char ID: new saver ID
+            no avatar-name --> individual session, id == kata-id
+            has avatar-name --> group session, id==group-id. kata-id is hidden
 
-porter.port(ID) will check ID
+10-char ID: old storer ID.
+            always comes with an avatar-name too...
+            eg this was created from [i'm on my own]
+               http://www.cyber-dojo.org/kata/edit/e13AD0UkeY?avatar=eagle
+            eg this was created from [we're in a group]
+               http://www.cyber-dojo.org/kata/edit/9bkHemGPHR?avatar=dolphin
+              id_6 = porter.port(id_10, avatar_name)
+            and it will port that avatar
+            will it also port all the other avatars (with that id_10) too?
+
+porter.port(id_10) will check id_10
   if there is a mapping match (for 10 chars)
      use that
   else if there is no kata-match (6-chars)
@@ -52,10 +84,6 @@ porter.port(ID) will check ID
   if there are 2+ kata-matches (6-chars)
      use mapping
 
-using-mapping
-  save each kata in grouper
-  and record original 10-char-ID ==> new 6-char ID
-  in a persistent map
 
 when porter is in place
 new server's commander can still create empty Data-Container
