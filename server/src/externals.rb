@@ -1,6 +1,6 @@
 require_relative 'external_disk_writer'
-require_relative 'saver'
-require_relative 'storer'
+require_relative 'external_saver'
+require_relative 'external_storer'
 require_relative 'image'
 
 class Externals
