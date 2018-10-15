@@ -1,6 +1,6 @@
 require_relative 'http_json_service'
 
-class SaverService
+class ExternalSaver
 
   def m(arg)
     get(__method__, arg)
@@ -15,7 +15,7 @@ class SaverService
   end
 
   def port
-    ?
+    4537
   end
 
 end

@@ -1,6 +1,6 @@
 require_relative 'http_json_service'
 
-class StorerService
+class ExternalStorer
 
   def m(arg)
     get(__method__, arg)
@@ -15,7 +15,7 @@ class StorerService
   end
 
   def port
-    ?
+    4577
   end
 
 end

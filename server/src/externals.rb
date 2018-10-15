@@ -14,11 +14,11 @@ class Externals
   end
 
   def saver
-    @saver ||= SaverService.new
+    @saver ||= ExternalSaver.new
   end
 
   def storer
-    @storer ||= StorerService.new
+    @storer ||= ExternalStorer.new
   end
 
   def image
