@@ -1,0 +1,62 @@
+
+version: '2.2'
+
+services:
+
+  porter_client:
+    build:
+      context: client
+    user: nobody
+    image: cyberdojo/porter-client
+    init: true
+    container_name: test-porter-client
+    read_only: true
+    tmpfs: /tmp
+    restart: 'no'
+    depends_on:
+      - porter
+    ports:
+      - 4598:4598
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  porter:
+    build:
+      context: server
+      args:
+        - SHA
+    user: porter
+    image: cyberdojo/porter
+    init: true
+    container_name: test-porter-server
+    read_only: true
+    tmpfs: /tmp
+    restart: 'no'
+    volumes:
+      - /tmp/id-map:/id-map:rw
+    depends_on:
+      - storer
+      - saver
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  storer:
+    user: storer
+    image: cyberdojo/storer
+    init: true
+    container_name: test-porter-storer
+    read_only: true
+    tmpfs: /tmp
+    volumes:
+      - /tmp/storer:/usr/src/cyber-dojo/katas:rw
+
+  saver:
+    user: saver
+    image: cyberdojo/saver
+    init: true
+    container_name: test-porter-saver
+    read_only: true
+    tmpfs: /tmp
+    volumes:
+      - /tmp/groups:/groups:rw
+      - /tmp/katas:/katas:rw
