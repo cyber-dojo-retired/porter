@@ -2,8 +2,8 @@ require_relative 'http_json_service'
 
 class ExternalStorer
 
-  def m(arg)
-    get(__method__, arg)
+  def kata_exists?(kata_id)
+    get(__method__, kata_id)
   end
 
   private
