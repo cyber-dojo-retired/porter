@@ -27,6 +27,6 @@ RUN echo ${SHA} > ${PORT_HOME}/sha.txt
 # - - - - - - - - - - - - - - - - - -
 
 USER porter
-EXPOSE 4597
+EXPOSE 4517
 CMD [ "./up.sh" ]
 

@@ -6,8 +6,6 @@ client_status=0
 readonly ROOT_DIR="$( cd "$( dirname "${0}" )" && cd .. && pwd )"
 readonly MY_NAME="${ROOT_DIR##*/}"
 
-readonly SAVER_CID=`docker ps --all --quiet --filter "name=test-${MY_NAME}-saver"`
-
 readonly SERVER_CID=`docker ps --all --quiet --filter "name=test-${MY_NAME}-server"`
 readonly CLIENT_CID=`docker ps --all --quiet --filter "name=test-${MY_NAME}-client"`
 
@@ -17,15 +15,6 @@ readonly COVERAGE_ROOT=/tmp/coverage
 
 run_server_tests()
 {
-  docker exec \
-    --user root \
-    "${SAVER_CID}" \
-      sh -c 'rm -rf /groups/* && chown -R saver:saver /groups'
-  docker exec \
-    --user root \
-    "${SAVER_CID}" \
-      sh -c 'rm -rf /katas/* && chown -R saver:saver /katas'
-
   docker exec \
     --env COVERAGE_ROOT=${COVERAGE_ROOT} \
     "${SERVER_CID}" \

@@ -34,3 +34,31 @@ wait_till_up "test-${MY_NAME}-server"
 wait_till_up "test-${MY_NAME}-client"
 wait_till_up "test-${MY_NAME}-storer"
 wait_till_up "test-${MY_NAME}-saver"
+
+# - - - - - - - - - - - - - - - - - - - -
+
+docker exec \
+  --user root \
+    "test-${MY_NAME}-storer" \
+      sh -c 'cd /usr/src/cyber-dojo/katas && rm -rf *'
+
+docker exec \
+  --user root \
+    "test-${MY_NAME}-saver" \
+      sh -c 'cd /groups && rm -rf *'
+
+docker exec \
+  --user root \
+    "test-${MY_NAME}-saver" \
+      sh -c 'cd /groups && rm -rf *'
+
+docker exec \
+  --user root \
+    "test-${MY_NAME}-saver" \
+      sh -c 'cd /katas && rm -rf *'
+
+docker exec \
+  --user root \
+    "test-${MY_NAME}-server" \
+      sh -c 'cd /id-map && rm -rf *'
+

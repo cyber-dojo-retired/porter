@@ -7,7 +7,10 @@ readonly SH_DIR="${ROOT_DIR}/sh"
 
 "${SH_DIR}/build_docker_images.sh"
 "${SH_DIR}/docker_containers_up.sh"
-#"${MY_DIR}/katas_old/tar_pipe_in.sh"
+
+"${ROOT_DIR}/katas_old/tar_pipe_in.sh"
+"${ROOT_DIR}/katas_dup/tar_pipe_in.sh"
+
 if "${SH_DIR}/run_tests_in_containers.sh" "$@"; then
   "${SH_DIR}/docker_containers_down.sh"
   docker rmi "cyberdojo/${MY_NAME}-client" > /dev/null 2>&1
