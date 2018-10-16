@@ -20,7 +20,7 @@ RUN  chown -R porter ${PORTER_HOME}
 # - - - - - - - - - - - - - - - - -
 
 ARG SHA
-RUN echo ${SHA} > ${PORT_HOME}/sha.txt
+RUN echo ${SHA} > ${PORTER_HOME}/sha.txt
 
 # - - - - - - - - - - - - - - - - - -
 # bring it up
