@@ -1,8 +1,3 @@
 
-
-when porter generates a group-id it must not clash
-with an id in storer, since that would prevent a
-session in storer from being accessed.
-
 porter removes 'output' file from visible_files in manifest
 
