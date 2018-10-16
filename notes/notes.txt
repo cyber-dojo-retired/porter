@@ -1,4 +1,11 @@
 
+getting manifest:malformed error
+1. say which service the error is coming from
+2. make the error message more fine grained
+3. fix the failing test
+
+-------------------------------------------
+
 The basic hook into porter will be in web.
 saver will not be coupled to porter or storer.
 
@@ -43,7 +50,7 @@ o) the IDs in the storer are 10 chars long and the IDs
 o) there are katas in the storer that are NOT unique
    in their first 6 chars.
 So... create a persistent mapping for these.
-This can be a simple dir-ID structure.
+This can be a simple id-map/ dir structure.
 
 using-mapping
   save each kata in saver
@@ -70,7 +77,7 @@ using-mapping
 
 //----------------------------------------------------------
 
-porter.port(id-10,avatar_name)
+porter.port(id-10)
   if there is a mapping match (for id-10)
      use that
   else if there is no kata-match (6-chars)
@@ -122,20 +129,19 @@ No. That would complicate the ID mapping.
 At the moment the only kata IDs are IDs in storer and these
 always have avatars.
 
-- new ID?avatar=lion
-  web will find a grouper.id?(ID)
+- newID?avatar=lion
+  web will find saver.joined(newID) is not nil
   so porter will not be called
-  then web will get singler's ID from grouper.joined(ID)
-  this implies grouper.joined(ID) could usefully return nil
-  if there is no ID match.
+  (won't anyway since newID is 6-chars long)
+  then web will get lion's kata-ID from saver.joined(newID) hash
 
-- new ID
-  no avatar. new format. Must be a singler ID.
+- newID
+  no avatar. new format. Must be a saver.kata_exists?(newID) is true
 
-- old ID?avatar=lion
-  web will not find a grouper.id?(ID)
-  porter wll do grouper.create(ID), grouper.join(ID, [lions'INDEX])
-  then translate to the created singler ID
+- oldID?avatar=lion
+  web will find saver.group_exists?(oldID) is false
+  porter wll do newID = port(oldID)
+    then web will get lion's kata-ID from saver.joined(newID)
 
 What to do when an individual tries to rejoin a kata is a different
 question. If grouper.joined(ID) shows only a single avatar then
@@ -145,15 +151,18 @@ I will also write a script which will call porter in a loop
 and this port all of 1) to 2/3).
 
 If port(id) matches the id against 1) then it will do what
-grouper.create() would do, but it will do it with the given
+saver.group_create() would do, but it will do it with the given
 id, assuming that id is available and uniquely completeable.
-It will then do what grouper.join() would do for each avatar
+It will then do what saver.join() would do for each avatar
 in 1).
 If port(id) succeeds it will delete the kata from 1).
 I thought about doing a mv, but its simpler to delete
 - it takes less disk space
 - I can still record the IDs of successfully ported IDs
 - I can rely on a whole disk backup.
+- May need to revisit this
+- What if several people are re-entering an old kata?
+    what if several porter.port(kata_id) calls happen at the same time?
 
 If port(id) fails, what should it do?
 Move the kata to a special holding area?
