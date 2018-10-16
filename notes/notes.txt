@@ -1,11 +1,4 @@
 
-getting manifest:malformed error
-1. say which service the error is coming from
-2. make the error message more fine grained
-3. fix the failing test
-
--------------------------------------------
-
 The basic hook into porter will be in web.
 saver will not be coupled to porter or storer.
 
