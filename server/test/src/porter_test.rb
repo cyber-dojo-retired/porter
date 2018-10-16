@@ -14,8 +14,9 @@ class PorterTest < TestBase
     kata_id = '1F00C1BFC8'
     id = kata_id[0..5]
     refute saver.group_exists?(id)
-    port(kata_id)
+    id6 = port(kata_id)
     assert saver.group_exists?(id)
+    assert_equal id6, id
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
