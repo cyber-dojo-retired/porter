@@ -6,7 +6,7 @@ set -e
 bundle exec rackup \
   --warn \
   --host 0.0.0.0 \
-  --port 4598 \
+  --port 4518 \
   --server thin \
   --env production \
     config.ru
