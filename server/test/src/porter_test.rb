@@ -6,6 +6,20 @@ class PorterTest < TestBase
     '3BE'
   end
 
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '1E5', %w(
+  after port of id with no duplicate, saver says kata exists with its original id
+  ) do
+    kata_id = '1F00C1BFC8'
+    id = kata_id[0..5]
+    refute saver.group_exists?(id)
+    port(kata_id)
+    assert saver.group_exists?(id)
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
   test '55C', %w(
   data_has_been_tar_piped_into_storer
   ) do

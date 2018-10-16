@@ -6,8 +6,8 @@ class PorterService
     get(__method__)
   end
 
-  def port(kata_id, avatar_name)
-    post(__method__, kata_id, avatar_name)
+  def port(kata_id)
+    post(__method__, kata_id)
   end
 
   private

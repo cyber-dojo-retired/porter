@@ -3,8 +3,8 @@ require_relative '../../src/externals'
 
 class TestBase < HexMiniTest
 
-  def port(kata_id, avatar_name)
-    porter.port(kata_id, avatar_name)
+  def port(kata_id)
+    porter.port(kata_id)
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -14,6 +14,10 @@ class TestBase < HexMiniTest
   end
 
   private
+
+  def porter
+    externals.porter
+  end
 
   def saver
     externals.saver

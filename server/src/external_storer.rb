@@ -6,6 +6,10 @@ class ExternalStorer
     get(__method__, kata_id)
   end
 
+  def kata_manifest(kata_id)
+    get(__method__, kata_id)
+  end
+
   private
 
   include HttpJsonService
