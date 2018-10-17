@@ -51,10 +51,10 @@ class Porter
 
   def set_id(manifest)
     id6 = manifest['id'][0..5]
-    if non_unique?(id6)
-      force_saver_to_generate_a_new_id(manifest)
-    else
+    if unique?(id6)
       manifest['id'] = id6
+    else
+      force_saver_to_generate_a_new_id(manifest)
     end
   end
 
@@ -66,13 +66,13 @@ class Porter
 
   # - - - - - - - - - - - - - - - - - - -
 
-  def non_unique?(partial_id)
+  def unique?(partial_id)
     ported = Dir.glob("/id-map/#{partial_id}**")
     if ported != []
-      true
+      false
     else
       id = storer.katas_completed(partial_id)
-      id.length == 0
+      id.length == 10
     end
   end
 
