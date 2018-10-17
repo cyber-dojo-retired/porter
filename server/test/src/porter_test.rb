@@ -11,6 +11,7 @@ class PorterTest < TestBase
   test '1E5', %w(
   after port of storer id which is unique in 1st 6 chars,
   saver has saved the practice-session with its original id
+  and the operation is idempotent
   ) do
     # 421F303E80 has
     # { "colour"=>"amber",
@@ -32,6 +33,8 @@ class PorterTest < TestBase
       now = now_data(gid)
       #refute storer.kata_exists?(kata_id) # TODO
       assert_ported(was, now, kata_id)
+
+      # TODO: check idempotence
     end
   end
 
@@ -40,6 +43,7 @@ class PorterTest < TestBase
   test '1E6', %w(
   after port of storer id which is not unique in 1st 6 chars
   saver has saved the practice-session with a new id
+  and the operation is idempotent
   ) do
     Katas_dup_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
@@ -53,6 +57,8 @@ class PorterTest < TestBase
       now = now_data(gid)
       #refute storer.kata_exists?(kata_id) # TODO
       assert_ported(was, now, kata_id)
+
+      # TODO: check idempotence
     end
   end
 
