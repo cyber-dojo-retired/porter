@@ -34,23 +34,17 @@ class RackDispatcher
   private # = = = = = = = = = = = = = = = = = = =
 
   def validated_name_args(name, body)
-    @well_formed_args = WellFormedArgs.new(body)
+    image = @externals.image
+    porter = @externals.porter
+    wfa = WellFormedArgs.new(body)
     args = case name
       when /^sha$/  then [image]
-      when /^port$/ then [porter, kata_id]
+      when /^port$/ then [porter, wfa.kata_id]
       else
         raise ClientError, "#{name}:unknown:"
     end
     target = args.shift
     [target, name, args]
-  end
-
-  def porter
-    @externals.porter
-  end
-
-  def image
-    @externals.image
   end
 
   # - - - - - - - - - - - - - - - -
@@ -71,11 +65,11 @@ class RackDispatcher
   end
 
   def code(error)
-    error.is_a?(ClientError) ? 400 : 500
-  end
-
-  def kata_id
-    @well_formed_args.public_send(__method__)
+    if error.is_a?(ClientError)
+      400
+    else
+      500
+    end
   end
 
 end
