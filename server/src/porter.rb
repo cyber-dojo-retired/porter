@@ -7,10 +7,8 @@ class Porter
   end
 
   def port(kata_id)
-    #...
     manifest = storer.kata_manifest(kata_id)
-    id = manifest['id'][0..5]
-    manifest['id'] = id
+    set_id(manifest)
     manifest['visible_files'].delete('output')
     id6 = saver.group_create(manifest)
 
@@ -19,7 +17,7 @@ class Porter
       indexes = (0..63).to_a.shuffle
       indexes.delete(index)
       indexes.unshift(index)
-      _,kid = saver.group_join(id, indexes)
+      _,kid = saver.group_join(id6, indexes)
 
       increments = storer.avatar_increments(kata_id, avatar_name)
       increments[1..-1].each do |increment|
@@ -38,6 +36,25 @@ class Porter
   end
 
   private
+
+  def set_id(manifest)
+    partial_id = manifest['id'][0..5]
+    if unique?(partial_id)
+      manifest['id'] = partial_id
+    else
+      # force saver.group_create() to choose a new id
+      manifest.delete('id')
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - - - -
+
+  def unique?(partial_id)
+    id = storer.katas_completed(partial_id)
+    id.length == 10
+  end
+
+  # - - - - - - - - - - - - - - - - - - -
 
   Avatars_names =
     %w(alligator antelope     bat       bear

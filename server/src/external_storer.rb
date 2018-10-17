@@ -2,6 +2,10 @@ require_relative 'http_json_service'
 
 class ExternalStorer
 
+  def katas_completed(partial_id)
+    get(__method__, partial_id)
+  end
+
   def kata_exists?(kata_id)
     get(__method__, kata_id)
   end

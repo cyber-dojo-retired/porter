@@ -41,7 +41,7 @@ class PorterTest < TestBase
   after port of storer id which is not unique in 1st 6 chars
   saver has saved the practice-session with a new id
   ) do
-    kata_ids = %w( 0BA7E1E01B ) #0BA7E16149 463748A0E8 463748D943 )
+    kata_ids = %w( 0BA7E1E01B 0BA7E16149 463748A0E8 463748D943 )
     kata_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
       was = was_data(kata_id)
