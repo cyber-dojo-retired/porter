@@ -9,11 +9,13 @@ class Porter
   def port(kata_id)
     id6 = kata_id[0..5]
     if saver.group_exists?(id6)
+      # unique kata-id, already ported
       return id6
     end
 
     filename = "/id-map/#{kata_id}"
     if File.exist?(filename)
+      # non-unique kata-id, already ported
       return IO.read(filename)
     end
 
@@ -25,11 +27,7 @@ class Porter
     remember_mapping(id6, kata_id)
 
     storer.avatars_started(kata_id).each do |avatar_name|
-      index = Avatars_names.index(avatar_name)
-      indexes = (0..63).to_a.shuffle
-      indexes.delete(index)
-      indexes.unshift(index)
-      _,kid = saver.group_join(id6, indexes)
+      kid = group_join(id6, avatar_name)
 
       increments = storer.avatar_increments(kata_id, avatar_name)
       increments[1..-1].each do |increment|
@@ -52,21 +50,30 @@ class Porter
   private
 
   def set_id(manifest)
-    partial_id = manifest['id'][0..5]
-    if storer_duplicate?(partial_id)
-      manifest.delete('id')
-    elsif mapped?(partial_id)
-      manifest.delete('id')
+    id6 = manifest['id'][0..5]
+    if non_unique?(id6)
+      force_saver_to_generate_a_new_id(manifest)
     else
-      manifest['id'] = partial_id
+      manifest['id'] = id6
     end
   end
 
   # - - - - - - - - - - - - - - - - - - -
 
-  def storer_duplicate?(partial_id)
-    id = storer.katas_completed(partial_id)
-    id.length == 0
+  def force_saver_to_generate_a_new_id(manifest)
+    manifest.delete('id')
+  end
+
+  # - - - - - - - - - - - - - - - - - - -
+
+  def non_unique?(partial_id)
+    ported = Dir.glob("/id-map/#{partial_id}**")
+    if ported != []
+      true
+    else
+      id = storer.katas_completed(partial_id)
+      id.length == 0
+    end
   end
 
   # - - - - - - - - - - - - - - - - - - -
@@ -79,8 +86,13 @@ class Porter
 
   # - - - - - - - - - - - - - - - - - - -
 
-  def mapped?(partial_id)
-    Dir.glob("/id-map/#{partial_id}**") != []
+  def group_join(id, avatar_name)
+    index = Avatars_names.index(avatar_name)
+    indexes = (0..63).to_a.shuffle
+    indexes.delete(index)
+    indexes.unshift(index)
+    _,kid = saver.group_join(id, indexes)
+    kid
   end
 
   # - - - - - - - - - - - - - - - - - - -
@@ -103,6 +115,8 @@ class Porter
        toucan    tuna         turtle    vulture
        walrus    whale        wolf      zebra
     )
+
+  # - - - - - - - - - - - - - - - - - - -
 
   def storer
     @externals.storer
