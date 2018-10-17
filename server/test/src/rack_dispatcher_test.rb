@@ -1,4 +1,5 @@
 require_relative 'rack_dispatcher_externals_stub'
+require_relative 'rack_dispatcher_stub'
 require_relative 'rack_request_stub'
 require_relative 'test_base'
 require_relative '../../src/rack_dispatcher'
@@ -9,7 +10,27 @@ class RackDispatcherTest < TestBase
     'FF0'
   end
 
-  include RackDispatcherExternalsStub
+  def stub
+    @stub ||= RackDispatcherStub.new
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  class ThrowingRackDispatcherStub
+    def port(_kata_id)
+      fail ArgumentError, 'wibble'
+    end
+  end
+
+  test 'F1A',
+  'dispatch returns 500 status when implementation raises' do
+    @stub = ThrowingRackDispatcherStub.new
+    assert_dispatch_raises('port',
+      { kata_id:'12345abcde' }.to_json,
+      500,
+      'PorterService',
+      'wibble')
+  end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -123,7 +144,8 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   def rack_call(name, args)
-    rack = RackDispatcher.new(self, RackRequestStub)
+    externals_stub = RackDispatcherExternalsStub.new(stub)
+    rack = RackDispatcher.new(externals_stub, RackRequestStub)
     env = { path_info:name, body:args }
     rack.call(env)
   end

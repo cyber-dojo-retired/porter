@@ -1,6 +1,11 @@
-require_relative 'rack_dispatcher_stub'
 
-module RackDispatcherExternalsStub
+class RackDispatcherExternalsStub
+
+  def initialize(stub)
+    @stub = stub
+  end
+
+  attr_reader :stub
 
   def porter
     stub
@@ -8,10 +13,6 @@ module RackDispatcherExternalsStub
 
   def image
     stub
-  end
-
-  def stub
-    RackDispatcherStub.new
   end
 
 end
