@@ -10,11 +10,7 @@ class PorterTest < TestBase
 
   test '1E5', %w(
   after port of storer id with no duplicate,
-    saver says kata exists with its original id,
-    there is no 'output' file in the manifest,
-    all the avatars increments have been copied,
-    all the avatars tag_visible_files have been copied,
-    and there is no 'output' file in the tag_visible_files
+  saver has saved the practice-session with its original id
   ) do
     kata_id = '1F00C1BFC8'
     id6 = kata_id[0..5]
@@ -92,15 +88,23 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   def assert_ported(was, now)
-    #TODO: check manifests are the same
     assert was[:manifest]['visible_files'].keys.include?('output')
+    was[:manifest]['visible_files'].delete('output')
+    was[:manifest].delete('id') # 10-chars long
     refute now[:manifest]['visible_files'].keys.include?('output')
+    now[:manifest].delete('id') #  6-chars long
+    assert_equal was[:manifest], now[:manifest]
 
     assert_equal was[:increments], now[:increments]
 
-    assert_equal was[:tag_files].keys.sort, now[:tag_files].keys.sort
-    was[:tag_files].each do |avatar_name, was_tags|
-      now_tags = now[:tag_files][avatar_name]
+    was_tag_files = was[:tag_files]
+    now_tag_files = now[:tag_files]
+    was_avatar_names = was_tag_files.keys
+    now_avatar_names = now_tag_files.keys
+    assert_equal was_avatar_names.sort, now_avatar_names.sort
+
+    was_tag_files.each do |avatar_name, was_tags|
+      now_tags = now_tag_files[avatar_name]
       assert_equal was_tags.keys.sort, now_tags.keys.sort
       was_tags.keys.each do |n|
         old_files = was[:tag_files][avatar_name][n]
