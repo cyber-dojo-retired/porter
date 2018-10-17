@@ -35,18 +35,17 @@ Returns the git commit sha used to create the docker image.
 - - - -
 
 ## POST port
-Ports an old-format practice-session with the given kata_id and avatar_name
-from storer into saver.
+Ports an old-format practice-session with the given kata_id from storer into saver.
 - parameters, eg
 ```
-    { "port": {
-         "kata_id": "55D3B9f58b",
-          "avatar": "lion"
-    }
+    { "kata_id": "55D3B9f58b" }
 ```
-- returns the id of the ported practice-session, eg
+- returns the id of the ported practice-session. If the 1st 6 characters
+of the kata_id can be used as the new id they will be.
+eg
 ```
   { "port": "55D3B9" }
+  { "port": "79s7Bk" }
 ```
 
 - - - -
