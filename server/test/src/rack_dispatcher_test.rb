@@ -16,7 +16,7 @@ class RackDispatcherTest < TestBase
   test 'E5A',
   'dispatch raises when method name is unknown' do
     assert_dispatch_raises('unknown',
-      {},
+      {}.to_json,
       400,
       'PorterService',
       'json:malformed')
@@ -28,7 +28,7 @@ class RackDispatcherTest < TestBase
 
   test 'E41',
   'dispatch to sha' do
-    assert_dispatch('sha', {},
+    assert_dispatch('sha', {}.to_json,
       "hello from #{stub_name}.sha"
     )
   end
@@ -41,13 +41,13 @@ class RackDispatcherTest < TestBase
   test 'E5B',
   'dispatch raises when any argument is malformed' do
     assert_dispatch_raises('port',
-      { kata_id: 'df/de' },  # !Base58
+      { kata_id: 'df/de' }.to_json,  # !Base58
       400,
       'PorterService',
       'kata_id:malformed'
     )
     assert_dispatch_raises('port',
-      { kata_id: '12345abcd' }, # !10 chars
+      { kata_id: '12345abcd' }.to_json, # !10 chars
       400,
       'PorterService',
       'kata_id:malformed'
@@ -59,7 +59,7 @@ class RackDispatcherTest < TestBase
   test 'E60',
   'dispatch to port' do
     assert_dispatch('port',
-      { kata_id: '12345abcde' },
+      { kata_id: '12345abcde' }.to_json,
       "hello from #{stub_name}.port"
     )
   end
@@ -80,7 +80,7 @@ class RackDispatcherTest < TestBase
 
   def assert_dispatch_raises(name, args, status, class_name, message)
     response,stderr = with_captured_stderr { rack_call(name, args) }
-    body = args.to_json
+    body = args
     assert_equal status, response[0]
     assert_equal({ 'Content-Type' => 'application/json' }, response[1])
     assert_exception(response[2][0], name, body, class_name, message)
@@ -113,7 +113,7 @@ class RackDispatcherTest < TestBase
 
   def rack_call(name, args)
     rack = RackDispatcher.new(self, RackRequestStub)
-    env = { path_info:name, body:args.to_json }
+    env = { path_info:name, body:args }
     rack.call(env)
   end
 
