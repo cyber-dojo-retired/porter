@@ -62,8 +62,8 @@ class PorterTest < TestBase
       assert_ported(was, now, kata_id)
 
       # Idempotent
-      #gid2 = port(kata_id)
-      #assert_equal gid, gid2, kata_id
+      gid2 = port(kata_id)
+      assert_equal gid, gid2, kata_id
     end
   end
 
