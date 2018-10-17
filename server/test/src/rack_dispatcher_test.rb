@@ -23,6 +23,17 @@ class RackDispatcherTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  test 'E5C',
+  'dispatch raises when json is malformed' do
+    assert_dispatch_raises('port',
+      'xxx',
+      400,
+      'PorterService',
+      'json:malformed')
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - -
   # image
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
