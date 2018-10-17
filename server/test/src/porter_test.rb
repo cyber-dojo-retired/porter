@@ -18,7 +18,7 @@ class PorterTest < TestBase
     #   "time" => [2013, 2, 18, 14, 46, 15],
     #   "number" => 7
     # }
-    kata_ids = %w( 1F00C1BFC8 5A0F824303 420B05BA0A 420F2A2979 420BD5D5BE 421AFD7EC5 )
+    kata_ids = Katas_old_ids - [ '421F303E80' ]
     kata_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
       was = was_data(kata_id)
@@ -41,8 +41,7 @@ class PorterTest < TestBase
   after port of storer id which is not unique in 1st 6 chars
   saver has saved the practice-session with a new id
   ) do
-    kata_ids = %w( 0BA7E1E01B 0BA7E16149 463748A0E8 463748D943 )
-    kata_ids.each do |kata_id|
+    Katas_dup_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
       was = was_data(kata_id)
 
@@ -62,16 +61,7 @@ class PorterTest < TestBase
   test '55C', %w(
   katas with unique ids (in 1st 6 chars) have been tar-piped into storer
   ) do
-    katas_old = %w(
-      1F00C1BFC8
-      5A0F824303
-      420B05BA0A
-      420F2A2979
-      421F303E80
-      420BD5D5BE
-      421AFD7EC5
-    )
-    katas_old.each do |kata_id|
+    Katas_old_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
     end
   end
@@ -81,18 +71,31 @@ class PorterTest < TestBase
   test '55D', %w(
   katas with non-unique ids (in 1st 6 chars) have been tar-piped into storer
   ) do
-    katas_dup = %w(
-      0BA7E1E01B
-      0BA7E16149
-      463748A0E8
-      463748D943
-    )
-    katas_dup.each do |kata_id|
+    Katas_dup_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
     end
   end
 
   private
+
+  Katas_old_ids = %w(
+    1F00C1BFC8
+    5A0F824303
+    420B05BA0A
+    420F2A2979
+    421F303E80
+    420BD5D5BE
+    421AFD7EC5
+  )
+
+  Katas_dup_ids = %w(
+    0BA7E1E01B
+    0BA7E16149
+    463748A0E8
+    463748D943
+  )
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
 
   def was_data(kata_id)
     was = {}
@@ -119,7 +122,7 @@ class PorterTest < TestBase
     now[:tag_files] = {}
     joined = saver.group_joined(id6)
     joined.each do |index,id|
-      avatar_name = avatars_names[index.to_i]
+      avatar_name = Avatars_names[index.to_i]
       now[:tag_files][avatar_name] = {}
       tags = saver.kata_tags(id)
       now[:increments][avatar_name] = tags
@@ -167,7 +170,7 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-  def avatars_names
+  Avatars_names =
     %w(alligator antelope     bat       bear
        bee       beetle       buffalo   butterfly
        cheetah   crab         deer      dolphin
@@ -185,6 +188,5 @@ class PorterTest < TestBase
        toucan    tuna         turtle    vulture
        walrus    whale        wolf      zebra
     )
-  end
 
 end
