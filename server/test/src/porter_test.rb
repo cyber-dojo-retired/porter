@@ -18,68 +18,17 @@ class PorterTest < TestBase
   ) do
     kata_id = '1F00C1BFC8'
     id6 = kata_id[0..5]
-
-    was = {}
-    was[:manifest] = storer.kata_manifest(kata_id)
-    was[:increments] = storer.kata_increments(kata_id)
-    was[:tag_files] = {}
-    was[:increments].each do |avatar_name,increments|
-      was[:tag_files][avatar_name] = {}
-      increments.each do |increment|
-        tag = increment['number']
-        was_files = storer.tag_visible_files(kata_id, avatar_name, tag)
-        was[:tag_files][avatar_name][tag] = was_files
-      end
-    end
-
     assert storer.kata_exists?(kata_id)
+    was = was_data(kata_id)
     refute saver.group_exists?(id6)
 
     gid = port(kata_id)
 
     assert saver.group_exists?(id6)
+    now = now_data(id6)
     #refute storer.kata_exists?(kata_id) # TODO
-
+    assert_ported(was, now)
     assert_equal id6, gid
-
-    now = {}
-    now[:manifest] = saver.group_manifest(id6)
-    now[:increments] = {}
-    now[:tag_files] = {}
-    joined = saver.group_joined(id6)
-    joined.each do |index,id|
-      avatar_name = avatars_names[index.to_i]
-      now[:tag_files][avatar_name] = {}
-      tags = saver.kata_tags(id)
-      now[:increments][avatar_name] = tags
-      tags.each do |tag|
-        n = tag['number']
-        now_info = saver.kata_tag(id, n)
-        now[:tag_files][avatar_name][n] = now_info
-      end
-    end
-
-    assert was[:manifest]['visible_files'].keys.include?('output')
-    refute now[:manifest]['visible_files'].keys.include?('output')
-
-    assert_equal was[:increments], now[:increments]
-
-    #TODO: check manifests are the same
-
-    assert_equal was[:tag_files].keys.sort, now[:tag_files].keys.sort
-    was[:tag_files].each do |avatar_name, was_tags|
-      now_tags = now[:tag_files][avatar_name]
-      assert_equal was_tags.keys.sort, now_tags.keys.sort
-      was_tags.keys.each do |n|
-        old_files = was[:tag_files][avatar_name][n]
-        assert old_files.keys.include?('output')
-        stdout = old_files.delete('output')
-        new_info = now[:tag_files][avatar_name][n]
-        assert_equal old_files, new_info['files']
-        assert_equal stdout, new_info['stdout']
-      end
-    end
-
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,6 +50,70 @@ class PorterTest < TestBase
   end
 
   private
+
+  def was_data(kata_id)
+    was = {}
+    was[:manifest] = storer.kata_manifest(kata_id)
+    was[:increments] = storer.kata_increments(kata_id)
+    was[:tag_files] = {}
+    was[:increments].each do |avatar_name,increments|
+      was[:tag_files][avatar_name] = {}
+      increments.each do |increment|
+        tag = increment['number']
+        was_files = storer.tag_visible_files(kata_id, avatar_name, tag)
+        was[:tag_files][avatar_name][tag] = was_files
+      end
+    end
+    was
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  def now_data(id6)
+    now = {}
+    now[:manifest] = saver.group_manifest(id6)
+    now[:increments] = {}
+    now[:tag_files] = {}
+    joined = saver.group_joined(id6)
+    joined.each do |index,id|
+      avatar_name = avatars_names[index.to_i]
+      now[:tag_files][avatar_name] = {}
+      tags = saver.kata_tags(id)
+      now[:increments][avatar_name] = tags
+      tags.each do |tag|
+        n = tag['number']
+        now_info = saver.kata_tag(id, n)
+        now[:tag_files][avatar_name][n] = now_info
+      end
+    end
+    now
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  def assert_ported(was, now)
+    #TODO: check manifests are the same
+    assert was[:manifest]['visible_files'].keys.include?('output')
+    refute now[:manifest]['visible_files'].keys.include?('output')
+
+    assert_equal was[:increments], now[:increments]
+
+    assert_equal was[:tag_files].keys.sort, now[:tag_files].keys.sort
+    was[:tag_files].each do |avatar_name, was_tags|
+      now_tags = now[:tag_files][avatar_name]
+      assert_equal was_tags.keys.sort, now_tags.keys.sort
+      was_tags.keys.each do |n|
+        old_files = was[:tag_files][avatar_name][n]
+        assert old_files.keys.include?('output')
+        stdout = old_files.delete('output')
+        new_info = now[:tag_files][avatar_name][n]
+        assert_equal old_files, new_info['files']
+        assert_equal stdout, new_info['stdout']
+      end
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
 
   def avatars_names
     %w(alligator antelope     bat       bear
