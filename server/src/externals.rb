@@ -10,10 +10,6 @@ class Externals
     @porter ||= Porter.new(self)
   end
 
-  def disk
-    @disk ||= ExternalDiskWriter.new
-  end
-
   def saver
     @saver ||= ExternalSaver.new
   end
@@ -24,6 +20,10 @@ class Externals
 
   def image
     @image ||= Image.new(disk)
+  end
+
+  def disk
+    @disk ||= ExternalDiskWriter.new
   end
 
 end
