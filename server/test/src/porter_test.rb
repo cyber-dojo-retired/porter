@@ -120,25 +120,24 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   def assert_ported(was, now, kata_id)
+    # manifest
     assert was[:manifest]['visible_files'].keys.include?('output'), kata_id
     was[:manifest]['visible_files'].delete('output')
     was[:manifest].delete('id') # 10-chars long
     refute now[:manifest]['visible_files'].keys.include?('output'), kata_id
     now[:manifest].delete('id') #  6-chars long
     assert_equal was[:manifest], now[:manifest], kata_id
-
+    # increments
     was[:increments].values.each do |incs|
       incs = incs.map{ |inc| inc.delete('revert_tag'); inc }
     end
-
     assert_equal was[:increments], now[:increments], kata_id
-
+    # tag_files
     was_tag_files = was[:tag_files]
     now_tag_files = now[:tag_files]
     was_avatar_names = was_tag_files.keys
     now_avatar_names = now_tag_files.keys
     assert_equal was_avatar_names.sort, now_avatar_names.sort, kata_id
-
     was_tag_files.each do |avatar_name, was_tags|
       now_tags = now_tag_files[avatar_name]
       assert_equal was_tags.keys.sort, now_tags.keys.sort, kata_id+":#{avatar_name}:"
