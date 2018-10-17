@@ -8,17 +8,35 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
+  test '1E4', %w(
+  port removes rever_tags
+  ) do
+    kata_id = '421F303E80'
+    assert storer.kata_exists?(kata_id), kata_id
+    was = was_data(kata_id)
+    id6 = kata_id[0..5]
+    refute saver.group_exists?(id6), kata_id
+
+    gid = port(kata_id)
+
+    assert_equal id6, gid, kata_id
+    assert saver.group_exists?(gid), kata_id
+    now = now_data(gid)
+    refute storer.kata_exists?(kata_id), kata_id
+    assert_ported(was, now, kata_id)
+
+    # Idempotent
+    gid2 = port(kata_id)
+    assert_equal gid, gid2, kata_id
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
   test '1E5', %w(
   after port of storer id which is unique in 1st 6 chars,
   saver has saved the practice-session with its original id
   and the operation is idempotent
   ) do
-    # 421F303E80 has
-    # { "colour"=>"amber",
-    #   "revert_tag" => nil,
-    #   "time" => [2013, 2, 18, 14, 46, 15],
-    #   "number" => 7
-    # }
     kata_ids = Katas_old_ids - [ '421F303E80' ]
     kata_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
@@ -135,6 +153,10 @@ class PorterTest < TestBase
     refute now[:manifest]['visible_files'].keys.include?('output'), kata_id
     now[:manifest].delete('id') #  6-chars long
     assert_equal was[:manifest], now[:manifest], kata_id
+
+    was[:increments].values.each do |incs|
+      incs = incs.map{ |inc| inc.delete('revert_tag'); inc }
+    end
 
     assert_equal was[:increments], now[:increments], kata_id
 
