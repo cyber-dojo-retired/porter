@@ -9,7 +9,9 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1E5', %w(
-  after port of id with no duplicate, saver says kata exists with its original id
+  after port of storer id with no duplicate,
+  saver says kata exists with its original id
+  there is no output in the visible_files
   ) do
     kata_id = '1F00C1BFC8'
     id = kata_id[0..5]
@@ -17,6 +19,12 @@ class PorterTest < TestBase
     id6 = port(kata_id)
     assert saver.group_exists?(id)
     assert_equal id6, id
+
+    old_manifest = storer.kata_manifest(kata_id)
+    assert old_manifest['visible_files'].keys.include?('output')
+
+    new_manifest = saver.group_manifest(id)
+    refute new_manifest['visible_files'].keys.include?('output')
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -

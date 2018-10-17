@@ -10,6 +10,10 @@ class ExternalSaver
     post(__method__, manifest)
   end
 
+  def group_manifest(id)
+    get(__method__, id)
+  end
+
   private
 
   include HttpJsonService
