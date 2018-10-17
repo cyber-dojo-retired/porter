@@ -21,7 +21,7 @@ class RackDispatcher
       'exception' => {
         'path' => path,
         'body' => body,
-        'class' => error.class.name,
+        'class' => 'PorterService',
         'message' => error.message,
         'backtrace' => error.backtrace
       }
@@ -37,7 +37,7 @@ class RackDispatcher
     @well_formed_args = WellFormedArgs.new(body)
     args = case name
       when /^sha$/  then [image]
-      when /^port$/ then [porter, kata_id, avatar_name]
+      when /^port$/ then [porter, kata_id]
       else
         raise ClientError, 'json:malformed'
     end
@@ -71,22 +71,11 @@ class RackDispatcher
   end
 
   def code(error)
-    if error.is_a?(ClientError)
-      400 # client_error
-    else
-      500 # server_error
-    end
+    error.is_a?(ClientError) ? 400 : 500
   end
 
-  def self.well_formed_args(*names)
-    names.each do |name|
-      define_method name, &lambda {
-        @well_formed_args.send(name)
-      }
-    end
+  def kata_id
+    @well_formed_args.public_send(__method__)
   end
-
-  well_formed_args :kata_id,
-                   :avatar_name
 
 end

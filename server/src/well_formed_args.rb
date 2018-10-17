@@ -1,4 +1,5 @@
 require_relative 'base58'
+require_relative 'client_error'
 require 'json'
 
 # Checks for arguments synactic correctness
@@ -15,17 +16,12 @@ class WellFormedArgs
 
   def kata_id
     @arg_name = __method__.to_s
-    unless Base58.string?(arg) && arg.size == 10
+    unless Base58.string?(arg)
       malformed
     end
-    arg
-  end
-
-  # - - - - - - - - - - - - - - - -
-
-  def avatar_name
-    @arg_name = __method__.to_s
-    # TODO: checking
+    unless arg.size == 10
+      malformed
+    end
     arg
   end
 
@@ -40,7 +36,7 @@ class WellFormedArgs
   # - - - - - - - - - - - - - - - -
 
   def malformed
-    raise ArgumentError.new("#{arg_name}:malformed")
+    raise ClientError.new("#{arg_name}:malformed")
   end
 
 end
