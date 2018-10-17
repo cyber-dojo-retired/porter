@@ -19,35 +19,62 @@ class PorterTest < TestBase
     kata_id = '1F00C1BFC8'
     id6 = kata_id[0..5]
 
-    old_manifest = storer.kata_manifest(kata_id)
-    assert old_manifest['visible_files'].keys.include?('output')
-    old_increments = storer.kata_increments(kata_id)
+    was = {}
+    was[:manifest] = storer.kata_manifest(kata_id)
+    was[:increments] = storer.kata_increments(kata_id)
+    was[:tag_files] = {}
+    was[:increments].each do |avatar_name,increments|
+      was[:tag_files][avatar_name] = {}
+      increments.each do |increment|
+        tag = increment['number']
+        was_files = storer.tag_visible_files(kata_id, avatar_name, tag)
+        was[:tag_files][avatar_name][tag] = was_files
+      end
+    end
+
+    assert storer.kata_exists?(kata_id)
     refute saver.group_exists?(id6)
 
     gid = port(kata_id)
 
-    assert_equal id6, gid
     assert saver.group_exists?(id6)
+    #refute storer.kata_exists?(kata_id) # TODO
 
-    new_manifest = saver.group_manifest(id6)
-    refute new_manifest['visible_files'].keys.include?('output')
-    new_increments = {}
-    new_ids = {}
+    assert_equal id6, gid
+
+    now = {}
+    now[:manifest] = saver.group_manifest(id6)
+    now[:increments] = {}
+    now[:tag_files] = {}
     joined = saver.group_joined(id6)
     joined.each do |index,id|
       avatar_name = avatars_names[index.to_i]
-      new_increments[avatar_name] = saver.kata_tags(id)
-      new_ids[avatar_name] = id
+      now[:tag_files][avatar_name] = {}
+      tags = saver.kata_tags(id)
+      now[:increments][avatar_name] = tags
+      tags.each do |tag|
+        n = tag['number']
+        now_info = saver.kata_tag(id, n)
+        now[:tag_files][avatar_name][n] = now_info
+      end
     end
-    assert_equal new_increments, old_increments
 
-    # check the tag_visible_files are the same
-    old_increments.each do |avatar_name,increments|
-      increments.each do |increment|
-        tag = increment['number']
-        old_files = storer.tag_visible_files(kata_id, avatar_name, tag)
+    assert was[:manifest]['visible_files'].keys.include?('output')
+    refute now[:manifest]['visible_files'].keys.include?('output')
+
+    assert_equal was[:increments], now[:increments]
+
+    #TODO: check manifests are the same
+
+    assert_equal was[:tag_files].keys.sort, now[:tag_files].keys.sort
+    was[:tag_files].each do |avatar_name, was_tags|
+      now_tags = now[:tag_files][avatar_name]
+      assert_equal was_tags.keys.sort, now_tags.keys.sort
+      was_tags.keys.each do |n|
+        old_files = was[:tag_files][avatar_name][n]
+        assert old_files.keys.include?('output')
         stdout = old_files.delete('output')
-        new_info = saver.kata_tag(new_ids[avatar_name], tag)
+        new_info = now[:tag_files][avatar_name][n]
         assert_equal old_files, new_info['files']
         assert_equal stdout, new_info['stdout']
       end
