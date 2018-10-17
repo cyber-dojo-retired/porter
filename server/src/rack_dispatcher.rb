@@ -39,7 +39,7 @@ class RackDispatcher
       when /^sha$/  then [image]
       when /^port$/ then [porter, kata_id]
       else
-        raise ClientError, 'json:malformed'
+        raise ClientError, "#{name}:unknown:"
     end
     target = args.shift
     [target, name, args]

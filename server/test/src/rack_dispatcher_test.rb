@@ -15,11 +15,11 @@ class RackDispatcherTest < TestBase
 
   test 'E5A',
   'dispatch raises when method name is unknown' do
-    assert_dispatch_raises('unknown',
+    assert_dispatch_raises('xyz',
       {}.to_json,
       400,
       'PorterService',
-      'json:malformed')
+      'xyz:unknown:')
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
