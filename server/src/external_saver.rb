@@ -14,6 +14,24 @@ class ExternalSaver
     get(__method__, id)
   end
 
+  def group_join(id, indexes)
+    post(__method__, id, indexes)
+  end
+
+  def group_joined(id)
+    get(__method__, id)
+  end
+
+  def kata_ran_tests(id, n, files, now, stdout, stderr, status, colour)
+    post(__method__, id, n, files, now, stdout, stderr, status, colour)
+  end
+
+  # - - - - - - - - - - - - - -
+
+  def kata_tags(id)
+    get(__method__, id)
+  end
+
   private
 
   include HttpJsonService

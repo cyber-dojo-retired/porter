@@ -8,23 +8,60 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
+  def avatars_names
+    %w(alligator antelope     bat       bear
+       bee       beetle       buffalo   butterfly
+       cheetah   crab         deer      dolphin
+       eagle     elephant     flamingo  fox
+       frog      gopher       gorilla   heron
+       hippo     hummingbird  hyena     jellyfish
+       kangaroo  kingfisher   koala     leopard
+       lion      lizard       lobster   moose
+       mouse     ostrich      owl       panda
+       parrot    peacock      penguin   porcupine
+       puffin    rabbit       raccoon   ray
+       rhino     salmon       seal      shark
+       skunk     snake        spider    squid
+       squirrel  starfish     swan      tiger
+       toucan    tuna         turtle    vulture
+       walrus    whale        wolf      zebra
+    )
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
   test '1E5', %w(
   after port of storer id with no duplicate,
-  saver says kata exists with its original id
-  there is no output in the visible_files
+    saver says kata exists with its original id,
+    there is no 'output' file in the manifest,
+    all the avatars increments have been copied,
+    all the avatars tag_visible_files have been copied,
+    and there is no 'output' file in the tag_visible_files
   ) do
     kata_id = '1F00C1BFC8'
-    id = kata_id[0..5]
-    refute saver.group_exists?(id)
-    id6 = port(kata_id)
-    assert saver.group_exists?(id)
-    assert_equal id6, id
+    id6 = kata_id[0..5]
 
     old_manifest = storer.kata_manifest(kata_id)
     assert old_manifest['visible_files'].keys.include?('output')
+    old_increments = storer.kata_increments(kata_id)
+    refute saver.group_exists?(id6)
 
-    new_manifest = saver.group_manifest(id)
+    gid = port(kata_id)
+
+    assert_equal id6, gid
+    assert saver.group_exists?(id6)
+
+    new_manifest = saver.group_manifest(id6)
     refute new_manifest['visible_files'].keys.include?('output')
+    new_increments = {}
+    joined = saver.group_joined(id6)
+    joined.each do |index,id|
+      avatar_name = avatars_names[index.to_i]
+      new_increments[avatar_name] = saver.kata_tags(id)
+    end
+    assert_equal new_increments, old_increments
+
+    #TODO: assert the tag_visible_files are the same
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -

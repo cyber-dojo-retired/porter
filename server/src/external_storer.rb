@@ -10,6 +10,22 @@ class ExternalStorer
     get(__method__, kata_id)
   end
 
+  def kata_increments(kata_id)
+    get(__method__, kata_id)
+  end
+
+  def avatars_started(kata_id)
+    get(__method__, kata_id)
+  end
+
+  def avatar_increments(kata_id, avatar_name)
+    get(__method__, kata_id, avatar_name)
+  end
+
+  def tag_visible_files(kata_id, avatar_name, tag)
+    get(__method__, kata_id, avatar_name, tag)
+  end
+
   private
 
   include HttpJsonService
