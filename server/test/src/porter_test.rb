@@ -9,28 +9,44 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1E5', %w(
-  after port of storer id with no duplicate,
+  after port of storer id which is unique in 1st 6 chars,
   saver has saved the practice-session with its original id
   ) do
-    kata_id = '1F00C1BFC8'
-    id6 = kata_id[0..5]
-    assert storer.kata_exists?(kata_id)
-    was = was_data(kata_id)
-    refute saver.group_exists?(id6)
+    # 421F303E80 has
+    # { "colour"=>"amber",
+    #   "revert_tag" => nil,
+    #   "time" => [2013, 2, 18, 14, 46, 15],
+    #   "number" => 7
+    # }
+    kata_ids = %w( 1F00C1BFC8 5A0F824303 420B05BA0A 420F2A2979 420BD5D5BE 421AFD7EC5 )
+    kata_ids.each do |kata_id|
+      id6 = kata_id[0..5]
+      assert storer.kata_exists?(kata_id), kata_id
+      was = was_data(kata_id)
+      refute saver.group_exists?(id6), kata_id
 
-    gid = port(kata_id)
+      gid = port(kata_id)
 
-    assert saver.group_exists?(id6)
-    now = now_data(id6)
-    #refute storer.kata_exists?(kata_id) # TODO
-    assert_ported(was, now)
-    assert_equal id6, gid
+      assert saver.group_exists?(id6), kata_id
+      now = now_data(id6)
+      #refute storer.kata_exists?(kata_id) # TODO
+      assert_ported(was, now, kata_id)
+      assert_equal id6, gid, kata_id
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '1E6', %w(
+  after port of storer id which is not unique in 1st 6 chars
+  saver has saved the practice-session with a new id
+  ) do
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '55C', %w(
-  data_has_been_tar_piped_into_storer
+  katas with unique ids (in 1st 6 chars) have been tar-piped into storer
   ) do
     katas_old = %w(
     1F00C1BFC8 5A0F824303 420B05BA0A 420F2A2979 421F303E80 420BD5D5BE 421AFD7EC5
@@ -44,6 +60,9 @@ class PorterTest < TestBase
       assert storer.kata_exists?(kata_id), kata_id
     end
   end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
 
   private
 
@@ -87,32 +106,33 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-  def assert_ported(was, now)
-    assert was[:manifest]['visible_files'].keys.include?('output')
+  def assert_ported(was, now, kata_id)
+    assert was[:manifest]['visible_files'].keys.include?('output'), kata_id
     was[:manifest]['visible_files'].delete('output')
     was[:manifest].delete('id') # 10-chars long
-    refute now[:manifest]['visible_files'].keys.include?('output')
+    refute now[:manifest]['visible_files'].keys.include?('output'), kata_id
     now[:manifest].delete('id') #  6-chars long
-    assert_equal was[:manifest], now[:manifest]
+    assert_equal was[:manifest], now[:manifest], kata_id
 
-    assert_equal was[:increments], now[:increments]
+    assert_equal was[:increments], now[:increments], kata_id
 
     was_tag_files = was[:tag_files]
     now_tag_files = now[:tag_files]
     was_avatar_names = was_tag_files.keys
     now_avatar_names = now_tag_files.keys
-    assert_equal was_avatar_names.sort, now_avatar_names.sort
+    assert_equal was_avatar_names.sort, now_avatar_names.sort, kata_id
 
     was_tag_files.each do |avatar_name, was_tags|
       now_tags = now_tag_files[avatar_name]
-      assert_equal was_tags.keys.sort, now_tags.keys.sort
+      assert_equal was_tags.keys.sort, now_tags.keys.sort, kata_id+":#{avatar_name}:"
       was_tags.keys.each do |n|
         old_files = was[:tag_files][avatar_name][n]
-        assert old_files.keys.include?('output')
+        diagnostic = kata_id+":#{avatar_name}:#{n}:"
+        assert old_files.keys.include?('output'), diagnostic
         stdout = old_files.delete('output')
         new_info = now[:tag_files][avatar_name][n]
-        assert_equal old_files, new_info['files']
-        assert_equal stdout, new_info['stdout']
+        assert_equal old_files, new_info['files'], diagnostic
+        assert_equal stdout, new_info['stdout'], diagnostic
       end
     end
   end
