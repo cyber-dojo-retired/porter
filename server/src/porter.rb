@@ -7,6 +7,10 @@ class Porter
   end
 
   def port(kata_id)
+    id6 = kata_id[0..5]
+    if saver.group_exists?(id6)
+      return id6
+    end
 
     manifest = storer.kata_manifest(kata_id)
     set_id(manifest)
