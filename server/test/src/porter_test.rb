@@ -8,28 +8,6 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-  def avatars_names
-    %w(alligator antelope     bat       bear
-       bee       beetle       buffalo   butterfly
-       cheetah   crab         deer      dolphin
-       eagle     elephant     flamingo  fox
-       frog      gopher       gorilla   heron
-       hippo     hummingbird  hyena     jellyfish
-       kangaroo  kingfisher   koala     leopard
-       lion      lizard       lobster   moose
-       mouse     ostrich      owl       panda
-       parrot    peacock      penguin   porcupine
-       puffin    rabbit       raccoon   ray
-       rhino     salmon       seal      shark
-       skunk     snake        spider    squid
-       squirrel  starfish     swan      tiger
-       toucan    tuna         turtle    vulture
-       walrus    whale        wolf      zebra
-    )
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - -
-
   test '1E5', %w(
   after port of storer id with no duplicate,
     saver says kata exists with its original id,
@@ -54,14 +32,27 @@ class PorterTest < TestBase
     new_manifest = saver.group_manifest(id6)
     refute new_manifest['visible_files'].keys.include?('output')
     new_increments = {}
+    new_ids = {}
     joined = saver.group_joined(id6)
     joined.each do |index,id|
       avatar_name = avatars_names[index.to_i]
       new_increments[avatar_name] = saver.kata_tags(id)
+      new_ids[avatar_name] = id
     end
     assert_equal new_increments, old_increments
 
-    #TODO: assert the tag_visible_files are the same
+    # check the tag_visible_files are the same
+    old_increments.each do |avatar_name,increments|
+      increments.each do |increment|
+        tag = increment['number']
+        old_files = storer.tag_visible_files(kata_id, avatar_name, tag)
+        stdout = old_files.delete('output')
+        new_info = saver.kata_tag(new_ids[avatar_name], tag)
+        assert_equal old_files, new_info['files']
+        assert_equal stdout, new_info['stdout']
+      end
+    end
+
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
@@ -80,6 +71,28 @@ class PorterTest < TestBase
     katas_dup.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
     end
+  end
+
+  private
+
+  def avatars_names
+    %w(alligator antelope     bat       bear
+       bee       beetle       buffalo   butterfly
+       cheetah   crab         deer      dolphin
+       eagle     elephant     flamingo  fox
+       frog      gopher       gorilla   heron
+       hippo     hummingbird  hyena     jellyfish
+       kangaroo  kingfisher   koala     leopard
+       lion      lizard       lobster   moose
+       mouse     ostrich      owl       panda
+       parrot    peacock      penguin   porcupine
+       puffin    rabbit       raccoon   ray
+       rhino     salmon       seal      shark
+       skunk     snake        spider    squid
+       squirrel  starfish     swan      tiger
+       toucan    tuna         turtle    vulture
+       walrus    whale        wolf      zebra
+    )
   end
 
 end
