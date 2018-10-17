@@ -13,6 +13,8 @@ class Porter
     manifest['visible_files'].delete('output')
     id6 = saver.group_create(manifest)
 
+    remember_mapping(id6, kata_id)
+
     storer.avatars_started(kata_id).each do |avatar_name|
       index = Avatars_names.index(avatar_name)
       indexes = (0..63).to_a.shuffle
@@ -44,6 +46,8 @@ class Porter
     partial_id = manifest['id'][0..5]
     if storer_duplicate?(partial_id)
       manifest.delete('id')
+    elsif mapped?(partial_id)
+      manifest.delete('id')
     else
       manifest['id'] = partial_id
     end
@@ -54,6 +58,20 @@ class Porter
   def storer_duplicate?(partial_id)
     id = storer.katas_completed(partial_id)
     id.length == 0
+  end
+
+  # - - - - - - - - - - - - - - - - - - -
+
+  def remember_mapping(id6, kata_id)
+    if id6 != kata_id[0..5]
+      IO.write("/id-map/#{kata_id}", id6)
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - - - -
+
+  def mapped?(partial_id)
+    Dir.glob("/id-map/#{partial_id}**") != []
   end
 
   # - - - - - - - - - - - - - - - - - - -
