@@ -56,26 +56,6 @@ class PorterTest < TestBase
     end
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - -
-
-  test '55C', %w(
-  katas with unique ids (in 1st 6 chars) have been tar-piped into storer
-  ) do
-    Katas_old_ids.each do |kata_id|
-      assert storer.kata_exists?(kata_id), kata_id
-    end
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - -
-
-  test '55D', %w(
-  katas with non-unique ids (in 1st 6 chars) have been tar-piped into storer
-  ) do
-    Katas_dup_ids.each do |kata_id|
-      assert storer.kata_exists?(kata_id), kata_id
-    end
-  end
-
   private
 
   Katas_old_ids = %w(
