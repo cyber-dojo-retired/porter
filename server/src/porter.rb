@@ -7,6 +7,7 @@ class Porter
   end
 
   def port(kata_id)
+
     manifest = storer.kata_manifest(kata_id)
     set_id(manifest)
     manifest['visible_files'].delete('output')
@@ -32,6 +33,8 @@ class Porter
       end
     end
 
+    storer.kata_delete(kata_id)
+
     id6
   end
 
@@ -39,19 +42,18 @@ class Porter
 
   def set_id(manifest)
     partial_id = manifest['id'][0..5]
-    if unique?(partial_id)
-      manifest['id'] = partial_id
-    else
-      # force saver.group_create() to choose a new id
+    if storer_duplicate?(partial_id)
       manifest.delete('id')
+    else
+      manifest['id'] = partial_id
     end
   end
 
   # - - - - - - - - - - - - - - - - - - -
 
-  def unique?(partial_id)
+  def storer_duplicate?(partial_id)
     id = storer.katas_completed(partial_id)
-    id.length == 10
+    id.length == 0
   end
 
   # - - - - - - - - - - - - - - - - - - -

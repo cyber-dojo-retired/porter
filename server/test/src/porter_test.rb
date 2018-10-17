@@ -31,10 +31,12 @@ class PorterTest < TestBase
       assert_equal id6, gid, kata_id
       assert saver.group_exists?(gid), kata_id
       now = now_data(gid)
-      #refute storer.kata_exists?(kata_id) # TODO
+      refute storer.kata_exists?(kata_id), kata_id
       assert_ported(was, now, kata_id)
 
-      # TODO: check idempotence
+      # Idempotent
+      #gid2 = port(kata_id)
+      #assert_equal gid, gid2, kata_id
     end
   end
 
@@ -52,7 +54,11 @@ class PorterTest < TestBase
       gid = port(kata_id)
 
       id6 = kata_id[0..5]
+      # This is failing...
+      # After port of 0BA7E1E01B
+      # 0BA7E16149 is seen as unique...
       refute_equal id6, gid, kata_id
+
       assert saver.group_exists?(gid), kata_id
       now = now_data(gid)
       #refute storer.kata_exists?(kata_id) # TODO
