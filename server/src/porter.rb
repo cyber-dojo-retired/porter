@@ -12,6 +12,11 @@ class Porter
       return id6
     end
 
+    filename = "/id-map/#{kata_id}"
+    if File.exist?(filename)
+      return IO.read(filename)
+    end
+
     manifest = storer.kata_manifest(kata_id)
     set_id(manifest)
     manifest['visible_files'].delete('output')
