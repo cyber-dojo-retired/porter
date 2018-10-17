@@ -11,7 +11,7 @@ class RackDispatcher
 
   def call(env)
     request = @request_class.new(env)
-    path = request.path_info[1..-1] # lose leading /
+    path = request.path_info[1..-1]
     body = request.body.read
     target, name, args = validated_name_args(path, body)
     result = target.public_send(name, *args)
@@ -56,20 +56,20 @@ class RackDispatcher
     ]
   end
 
-  def plain(body)
-    JSON.generate(body)
-  end
-
-  def pretty(body)
-    JSON.pretty_generate(body)
-  end
-
   def code(error)
     if error.is_a?(ClientError)
       400
     else
       500
     end
+  end
+
+  def plain(body)
+    JSON.generate(body)
+  end
+
+  def pretty(body)
+    JSON.pretty_generate(body)
   end
 
 end
