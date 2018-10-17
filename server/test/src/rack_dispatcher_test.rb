@@ -10,10 +10,6 @@ class RackDispatcherTest < TestBase
     'FF0'
   end
 
-  def stub
-    @stub ||= RackDispatcherStub.new
-  end
-
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   class ThrowingRackDispatcherStub
@@ -28,7 +24,6 @@ class RackDispatcherTest < TestBase
     assert_dispatch_raises('port',
       { kata_id:'12345abcde' }.to_json,
       500,
-      'PorterService',
       'wibble')
   end
 
@@ -39,7 +34,6 @@ class RackDispatcherTest < TestBase
     assert_dispatch_raises('xyz',
       {}.to_json,
       400,
-      'PorterService',
       'xyz:unknown:')
   end
 
@@ -50,7 +44,6 @@ class RackDispatcherTest < TestBase
     assert_dispatch_raises('port',
       'xxx',
       400,
-      'PorterService',
       'json:malformed')
   end
 
@@ -75,13 +68,11 @@ class RackDispatcherTest < TestBase
     assert_dispatch_raises('port',
       { kata_id: 'df/de' }.to_json,  # !Base58
       400,
-      'PorterService',
       'kata_id:malformed'
     )
     assert_dispatch_raises('port',
       { kata_id: '12345abcd' }.to_json, # !10 chars
       400,
-      'PorterService',
       'kata_id:malformed'
     )
   end
@@ -110,24 +101,24 @@ class RackDispatcherTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  def assert_dispatch_raises(name, args, status, class_name, message)
+  def assert_dispatch_raises(name, args, status, message)
     response,stderr = with_captured_stderr { rack_call(name, args) }
     body = args
     assert_equal status, response[0]
     assert_equal({ 'Content-Type' => 'application/json' }, response[1])
-    assert_exception(response[2][0], name, body, class_name, message)
-    assert_exception(stderr,         name, body, class_name, message)
+    assert_exception(response[2][0], name, body, message)
+    assert_exception(stderr,         name, body, message)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  def assert_exception(s, name, body, class_name, message)
+  def assert_exception(s, name, body, message)
     json = JSON.parse(s)
     exception = json['exception']
     refute_nil exception
     assert_equal name, exception['path']
     assert_equal body, exception['body']
-    assert_equal class_name, exception['class']
+    assert_equal 'PorterService', exception['class']
     assert_equal message, exception['message']
     assert_equal 'Array', exception['backtrace'].class.name
   end
@@ -142,6 +133,10 @@ class RackDispatcherTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  def stub
+    @stub ||= RackDispatcherStub.new
+  end
 
   def rack_call(name, args)
     externals_stub = RackDispatcherExternalsStub.new(stub)
