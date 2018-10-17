@@ -8,37 +8,12 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '1E4', %w(
-  port removes rever_tags
-  ) do
-    kata_id = '421F303E80'
-    assert storer.kata_exists?(kata_id), kata_id
-    was = was_data(kata_id)
-    id6 = kata_id[0..5]
-    refute saver.group_exists?(id6), kata_id
-
-    gid = port(kata_id)
-
-    assert_equal id6, gid, kata_id
-    assert saver.group_exists?(gid), kata_id
-    now = now_data(gid)
-    refute storer.kata_exists?(kata_id), kata_id
-    assert_ported(was, now, kata_id)
-
-    # Idempotent
-    gid2 = port(kata_id)
-    assert_equal gid, gid2, kata_id
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - -
-
   test '1E5', %w(
   after port of storer id which is unique in 1st 6 chars,
   saver has saved the practice-session with its original id
   and the operation is idempotent
   ) do
-    kata_ids = Katas_old_ids - [ '421F303E80' ]
-    kata_ids.each do |kata_id|
+    Katas_old_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
       was = was_data(kata_id)
       id6 = kata_id[0..5]
@@ -51,7 +26,6 @@ class PorterTest < TestBase
       now = now_data(gid)
       refute storer.kata_exists?(kata_id), kata_id
       assert_ported(was, now, kata_id)
-
       # Idempotent
       gid2 = port(kata_id)
       assert_equal gid, gid2, kata_id
@@ -73,12 +47,10 @@ class PorterTest < TestBase
 
       id6 = kata_id[0..5]
       refute_equal id6, gid, kata_id
-
       assert saver.group_exists?(gid), kata_id
       now = now_data(gid)
       refute storer.kata_exists?(kata_id)
       assert_ported(was, now, kata_id)
-
       # Idempotent
       gid2 = port(kata_id)
       assert_equal gid, gid2, kata_id
@@ -87,6 +59,7 @@ class PorterTest < TestBase
 
   private
 
+  # 421F303E80 has revert_tag entries in its increments
   Katas_old_ids = %w(
     1F00C1BFC8
     5A0F824303
