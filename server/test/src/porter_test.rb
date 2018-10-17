@@ -20,18 +20,18 @@ class PorterTest < TestBase
     # }
     kata_ids = %w( 1F00C1BFC8 5A0F824303 420B05BA0A 420F2A2979 420BD5D5BE 421AFD7EC5 )
     kata_ids.each do |kata_id|
-      id6 = kata_id[0..5]
       assert storer.kata_exists?(kata_id), kata_id
       was = was_data(kata_id)
+      id6 = kata_id[0..5]
       refute saver.group_exists?(id6), kata_id
 
       gid = port(kata_id)
 
-      assert saver.group_exists?(id6), kata_id
-      now = now_data(id6)
+      assert_equal id6, gid, kata_id
+      assert saver.group_exists?(gid), kata_id
+      now = now_data(gid)
       #refute storer.kata_exists?(kata_id) # TODO
       assert_ported(was, now, kata_id)
-      assert_equal id6, gid, kata_id
     end
   end
 
@@ -41,6 +41,20 @@ class PorterTest < TestBase
   after port of storer id which is not unique in 1st 6 chars
   saver has saved the practice-session with a new id
   ) do
+    kata_ids = %w( 0BA7E1E01B ) #0BA7E16149 463748A0E8 463748D943 )
+    kata_ids.each do |kata_id|
+      assert storer.kata_exists?(kata_id), kata_id
+      was = was_data(kata_id)
+
+      gid = port(kata_id)
+
+      id6 = kata_id[0..5]
+      refute_equal id6, gid, kata_id
+      assert saver.group_exists?(gid), kata_id
+      now = now_data(gid)
+      #refute storer.kata_exists?(kata_id) # TODO
+      assert_ported(was, now, kata_id)
+    end
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
@@ -49,20 +63,34 @@ class PorterTest < TestBase
   katas with unique ids (in 1st 6 chars) have been tar-piped into storer
   ) do
     katas_old = %w(
-    1F00C1BFC8 5A0F824303 420B05BA0A 420F2A2979 421F303E80 420BD5D5BE 421AFD7EC5
+      1F00C1BFC8
+      5A0F824303
+      420B05BA0A
+      420F2A2979
+      421F303E80
+      420BD5D5BE
+      421AFD7EC5
     )
     katas_old.each do |kata_id|
-      assert storer.kata_exists?(kata_id), kata_id
-    end
-
-    katas_dup = %w( 0BA7E1E01B 0BA7E16149 463748A0E8 463748D943 )
-    katas_dup.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
     end
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
+  test '55D', %w(
+  katas with non-unique ids (in 1st 6 chars) have been tar-piped into storer
+  ) do
+    katas_dup = %w(
+      0BA7E1E01B
+      0BA7E16149
+      463748A0E8
+      463748D943
+    )
+    katas_dup.each do |kata_id|
+      assert storer.kata_exists?(kata_id), kata_id
+    end
+  end
 
   private
 
