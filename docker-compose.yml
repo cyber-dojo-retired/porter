@@ -41,7 +41,7 @@ services:
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   storer:
-    user: storer
+    user: storer:storer
     image: cyberdojo/storer
     init: true
     container_name: test-porter-storer
@@ -51,7 +51,7 @@ services:
       - /tmp/storer:/usr/src/cyber-dojo/katas:rw
 
   saver:
-    user: saver
+    user: saver:saver
     image: cyberdojo/saver
     init: true
     container_name: test-porter-saver
