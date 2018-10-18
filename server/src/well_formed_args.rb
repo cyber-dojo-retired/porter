@@ -17,17 +17,18 @@ class WellFormedArgs
   def kata_id
     @arg_name = __method__.to_s
     unless Base58.string?(arg)
-      malformed
+      malformed('!Base58')
     end
     unless arg.size == 10
-      malformed
+      malformed('size!=10')
     end
     arg
   end
 
   private
 
-  attr_reader :args, :arg_name
+  attr_reader :args,
+              :arg_name
 
   def arg
     args[arg_name]
@@ -35,8 +36,8 @@ class WellFormedArgs
 
   # - - - - - - - - - - - - - - - -
 
-  def malformed
-    raise ClientError.new("#{arg_name}:malformed")
+  def malformed(msg)
+    raise ClientError.new("#{arg_name}:malformed:#{msg}:")
   end
 
 end

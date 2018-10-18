@@ -66,14 +66,14 @@ class RackDispatcherTest < TestBase
   test 'E5B',
   'dispatch raises when any argument is malformed' do
     assert_dispatch_raises('port',
-      { kata_id: 'df/de' }.to_json,  # !Base58
+      { kata_id: 'df/de' }.to_json,
       400,
-      'kata_id:malformed'
+      'kata_id:malformed:!Base58:'
     )
     assert_dispatch_raises('port',
-      { kata_id: '12345abcd' }.to_json, # !10 chars
+      { kata_id: '12345abcd' }.to_json,
       400,
-      'kata_id:malformed'
+      'kata_id:malformed:size!=10:'
     )
   end
 
