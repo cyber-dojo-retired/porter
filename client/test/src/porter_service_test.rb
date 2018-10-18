@@ -1,3 +1,4 @@
+require_relative '../../src/service_error'
 require_relative 'test_base'
 
 class PorterServiceTest < TestBase

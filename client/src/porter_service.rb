@@ -14,12 +14,4 @@ class PorterService
 
   include HttpJsonService
 
-  def hostname
-    'porter'
-  end
-
-  def port
-    4517
-  end
-
 end

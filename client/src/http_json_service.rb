@@ -21,7 +21,7 @@ module HttpJsonService # mix-in
   end
 
   def http(method, args)
-    uri = URI.parse("http://#{hostname}:#{port}/" + method)
+    uri = URI.parse("http://porter:4517/" + method)
     http = Net::HTTP.new(uri.host, uri.port)
     request = yield uri.request_uri
     request.content_type = 'application/json'
