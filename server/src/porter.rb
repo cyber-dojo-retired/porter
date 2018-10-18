@@ -41,7 +41,7 @@ class Porter
         files = storer.tag_visible_files(kata_id, avatar_name, tag)
         stdout = files.delete('output')
         stderr = ''
-        status = 0 # TODO: alter based on colour
+        status = 0
         saver.kata_ran_tests(kid, tag, files, time, stdout, stderr, status, colour)
       end
     end
