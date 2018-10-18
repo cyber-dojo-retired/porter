@@ -16,6 +16,7 @@ readonly COVERAGE_ROOT=/tmp/coverage
 run_server_tests()
 {
   docker exec \
+    --user porter:porter \
     --env COVERAGE_ROOT=${COVERAGE_ROOT} \
     "${SERVER_CID}" \
       sh -c "cd /app/test && ./run.sh ${*}"
@@ -38,6 +39,7 @@ run_server_tests()
 run_client_tests()
 {
   docker exec \
+    --user nobody:nogroup \
     --env COVERAGE_ROOT=${COVERAGE_ROOT} \
     "${CLIENT_CID}" \
       sh -c "cd /app/test && ./run.sh ${*}"
@@ -81,4 +83,3 @@ else
   echo
   exit 1
 fi
-

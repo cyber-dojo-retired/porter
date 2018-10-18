@@ -6,7 +6,7 @@ services:
   porter_client:
     build:
       context: client
-    user: nobody
+    user: nobody:nogroup
     image: cyberdojo/porter-client
     init: true
     container_name: test-porter-client
@@ -25,7 +25,7 @@ services:
       context: server
       args:
         - SHA
-    user: porter
+    user: porter:porter
     image: cyberdojo/porter
     init: true
     container_name: test-porter-server
