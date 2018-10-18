@@ -19,6 +19,10 @@ class Porter
       return IO.read(filename)
     end
 
+    unless storer.kata_exists?(kata_id)
+      return kata_id
+    end
+
     manifest = storer.kata_manifest(kata_id)
     set_id(manifest)
     manifest['visible_files'].delete('output')

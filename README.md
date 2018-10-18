@@ -40,12 +40,14 @@ Ports an old-format practice-session with the given kata_id from storer into sav
 ```
     { "kata_id": "55D3B9f58b" }
 ```
-- returns the id of the ported practice-session. If the 1st 6 characters
+- if successful, returns the 6-char id of the ported practice-session. If the 1st 6 characters
 of the kata_id can be used as the new id they will be.
+- if unsuccessful, returns the 10-char id unchanged.
 eg
 ```
   { "port": "55D3B9" }
   { "port": "79s7Bk" }
+  { "port": "55D3B9f58b" }
 ```
 
 - - - -

@@ -8,6 +8,16 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
+  test '1E4', %w(
+  port of kata_id that does not exist returns 10-char kata-id
+  ) do
+    kata_id = '9k81d464AD'
+    id = port(kata_id)
+    assert_equal kata_id, id
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
   test '1E5', %w(
   after port of storer id which is unique in 1st 6 chars,
   saver has saved the practice-session with its original id
