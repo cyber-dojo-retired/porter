@@ -5,7 +5,7 @@ set -e
 
 readonly MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
 readonly KATA_IDS=(1F00C1BFC8 5A0F824303 420B05BA0A 420F2A2979 421F303E80 420BD5D5BE 421AFD7EC5)
-readonly STORER_CONTAINER='test-porter-storer'
+readonly STORER_CONTAINER=${1:-test-porter-storer}
 
 # this must be set to the same value as Storer's path.
 readonly CYBER_DOJO_KATAS_ROOT=/usr/src/cyber-dojo/katas
