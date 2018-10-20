@@ -35,19 +35,23 @@ Returns the git commit sha used to create the docker image.
 - - - -
 
 ## POST port
-Ports an old-format practice-session with the given kata_id from storer into saver.
-- parameters, eg
+Ports an old-format practice-session with the given partial_id from storer into saver.
+- parameter, eg
 ```
-    { "kata_id": "55D3B9f58b" }
+    { "partial_id": "55D3B9" }
 ```
-- if successful, returns the 6-char id of the ported practice-session. If the 1st 6 characters
-of the kata_id can be used as the new id they will be.
-- if unsuccessful, returns the 10-char id unchanged.
+- partial_id must be 6..10 chars long.
+- if partial_id uniquely identifies a practice-session in storer, porter will
+port the practice-session to saver, and return the new id, which will be 6 chars long.
+The new id will be the 1st 6 chars of the partial_id if they are unique in storer.
+- if partial_id does not uniquely identify a practice-session in storer
+(either because there is no match, or there is more than one match), porter
+will not port anything, and will return the empty string.
 eg
 ```
   { "port": "55D3B9" }
   { "port": "79s7Bk" }
-  { "port": "55D3B9f58b" }
+  { "port": "" }
 ```
 
 - - - -

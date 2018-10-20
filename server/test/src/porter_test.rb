@@ -9,35 +9,36 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1E4', %w(
-  port of kata_id that does not exist returns 10-char kata-id
+  port of partial_id that does not exist returns empty string
   ) do
-    kata_id = '9k81d464AD'
-    id = port(kata_id)
-    assert_equal kata_id, id
+    partial_id = '9k81d4'
+    id = port(partial_id)
+    assert_equal '', id
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1E5', %w(
-  after port of storer id which is unique in 1st 6 chars,
-  saver has saved the practice-session with its original id
+  after port of partial_id which is unique in 1st 6 chars in storer,
+  saver has saved the practice-session with an id equal to its original 1st 6 chars
   and the operation is idempotent
   ) do
     Katas_old_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
+      partial_id = kata_id[0..5]
+      assert_equal kata_id, storer.katas_completed(partial_id)
       was = was_data(kata_id)
-      id6 = kata_id[0..5]
-      refute saver.group_exists?(id6), kata_id
+      refute saver.group_exists?(partial_id), kata_id
 
-      gid = port(kata_id)
+      gid = port(partial_id)
 
-      assert_equal id6, gid, kata_id
+      assert_equal partial_id, gid, kata_id
       assert saver.group_exists?(gid), kata_id
       now = now_data(gid)
       refute storer.kata_exists?(kata_id), kata_id
       assert_ported(was, now, kata_id)
       # Idempotent
-      gid2 = port(kata_id)
+      gid2 = port(partial_id)
       assert_equal gid, gid2, kata_id
     end
   end
@@ -45,16 +46,42 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1E6', %w(
-  after port of storer id which is not unique in 1st 6 chars
+  port of partial_id that has more than one match
+  ports nothing and returns the empty string
+  and the operation is idempotent
+  ) do
+    katas_dup_ids = %w( 0BA7E1E01B 0BA7E16149 )
+    katas_dup_ids.each do |kata_id|
+      assert storer.kata_exists?(kata_id), kata_id
+      partial_id = kata_id[0..5]
+
+      gid = port(partial_id)
+
+      assert_equal '', gid, kata_id
+      assert storer.kata_exists?(kata_id), kata_id
+      # Idempotent
+      gid2 = port(partial_id)
+      assert_equal '', gid2, kata_id
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '1E7', %w(
+  after port of partial_id which is unique in 1st 7 chars in storer
   saver has saved the practice-session with a new id
   and the operation is idempotent
   ) do
-    Katas_dup_ids.each do |kata_id|
+    katas_dup_ids = %w( 463748A0E8 463748D943 )
+    katas_dup_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
+      partial_id = kata_id[0..6]
+      assert_equal kata_id, storer.katas_completed(partial_id)
       was = was_data(kata_id)
 
-      gid = port(kata_id)
+      gid = port(partial_id)
 
+      assert_equal 6, gid.size
       id6 = kata_id[0..5]
       refute_equal id6, gid, kata_id
       assert saver.group_exists?(gid), kata_id
@@ -62,7 +89,7 @@ class PorterTest < TestBase
       refute storer.kata_exists?(kata_id)
       assert_ported(was, now, kata_id)
       # Idempotent
-      gid2 = port(kata_id)
+      gid2 = port(partial_id)
       assert_equal gid, gid2, kata_id
     end
   end
@@ -78,13 +105,6 @@ class PorterTest < TestBase
     421F303E80
     420BD5D5BE
     421AFD7EC5
-  )
-
-  Katas_dup_ids = %w(
-    0BA7E1E01B
-    0BA7E16149
-    463748A0E8
-    463748D943
   )
 
   # - - - - - - - - - - - - - - - - - - - - - - -

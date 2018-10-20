@@ -22,14 +22,14 @@ class RackDispatcherTest < TestBase
   'dispatch returns 500 status when implementation raises' do
     @stub = ThrowingRackDispatcherStub.new
     assert_dispatch_raises('port',
-      { kata_id:'12345abcde' }.to_json,
+      { partial_id:'12345abcde' }.to_json,
       500,
       'wibble')
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test 'E5A',
+  test 'F1B',
   'dispatch raises when method name is unknown' do
     assert_dispatch_raises('xyz',
       {}.to_json,
@@ -39,7 +39,7 @@ class RackDispatcherTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test 'E5C',
+  test 'F1C',
   'dispatch raises when json is malformed' do
     assert_dispatch_raises('port',
       'xxx',
@@ -64,25 +64,56 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 'E5B',
-  'dispatch raises when any argument is malformed' do
+  'dispatch to port raises when any partial_id is not Base58 string' do
+    bad_char = '&'
+    partial_id = "abc#{bad_char}def"
     assert_dispatch_raises('port',
-      { kata_id: 'df/de' }.to_json,
+      { partial_id:partial_id }.to_json,
       400,
-      'kata_id:malformed:!Base58:'
+      'partial_id:malformed:!Base58:'
     )
+  end
+
+  test 'E5C',
+  'dispatch to port raises when partial_id is less than 6 chars long' do
+    partial_id = '12345'
+    assert_equal 5, partial_id.size
     assert_dispatch_raises('port',
-      { kata_id: '12345abcd' }.to_json,
+      { partial_id:partial_id }.to_json,
       400,
-      'kata_id:malformed:size!=10:'
+      'partial_id:malformed:size==5:'
+    )
+  end
+
+  test 'E5D',
+  'dispatch to port raises when partial_id is more than 10 chars long' do
+    partial_id = '12345abcdef'
+    assert_equal 11, partial_id.size
+    assert_dispatch_raises('port',
+      { partial_id:partial_id }.to_json,
+      400,
+      'partial_id:malformed:size==11:'
     )
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 'E60',
-  'dispatch to port' do
+  'dispatch to port with partial_id of 6 chars does not raise' do
+    partial_id = '123456'
+    assert_equal 6, partial_id.size
     assert_dispatch('port',
-      { kata_id: '12345abcde' }.to_json,
+      { partial_id:partial_id }.to_json,
+      "hello from #{stub_name}.port"
+    )
+  end
+
+  test 'E61',
+  'dispatch to port with partial_id of 10 chars does not raise' do
+    partial_id = '12345abcde'
+    assert_equal 10, partial_id.size
+    assert_dispatch('port',
+      { partial_id:partial_id }.to_json,
       "hello from #{stub_name}.port"
     )
   end

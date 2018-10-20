@@ -25,15 +25,15 @@ class PorterServiceTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test '7E1',
-  %w( port of malformed kata_id raises ) do
+  %w( port of malformed partial_id raises ) do
     error = assert_raises(ServiceError) {
       porter.port('345')
     }
     json = JSON.parse(error.message)
     assert_equal 'port', json['path']
-    assert_equal({'kata_id' => '345'}, JSON.parse(json['body']))
+    assert_equal({'partial_id' => '345'}, JSON.parse(json['body']))
     assert_equal 'PorterService', json['class']
-    assert_equal 'kata_id:malformed:size!=10:', json['message']
+    assert_equal 'partial_id:malformed:size==3:', json['message']
     assert_equal 'Array', json['backtrace'].class.name
     assert_equal 'String', json['backtrace'][0].class.name
   end
@@ -41,10 +41,9 @@ class PorterServiceTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test '7ED',
-  %w( port of non-existent kata_id returns it unchanged ) do
-    kata_id = 'a4211p6ACF'
-    id = porter.port(kata_id)
-    assert_equal kata_id, id
+  %w( port of non-existent partial_id returns empty string ) do
+    id = porter.port('a4211p6A')
+    assert_equal '', id
   end
 
 end

@@ -2,7 +2,7 @@ require_relative 'base58'
 require_relative 'client_error'
 require 'json'
 
-# Checks for arguments synactic correctness
+# Checks for arguments syntactic correctness
 
 class WellFormedArgs
 
@@ -14,13 +14,13 @@ class WellFormedArgs
 
   # - - - - - - - - - - - - - - - -
 
-  def kata_id
+  def partial_id
     @arg_name = __method__.to_s
     unless Base58.string?(arg)
       malformed('!Base58')
     end
-    unless arg.size == 10
-      malformed('size!=10')
+    unless (6..10).include?(arg.size)
+      malformed("size==#{arg.size}")
     end
     arg
   end
