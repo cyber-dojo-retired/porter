@@ -14,10 +14,10 @@ class Porter
       return id6
     end
 
-    filename = "/id-map/#{partial_id}"
-    if File.exist?(filename)
+    filenames = Dir.glob("/id-map/#{partial_id}**")
+    if filenames.size == 1
       # non-unique kata-id, already ported
-      return IO.read(filename)
+      return IO.read(filenames[0])
     end
 
     kata_id = storer.katas_completed(partial_id)
@@ -31,7 +31,7 @@ class Porter
     manifest['visible_files'].delete('output')
     id6 = saver.group_create(manifest)
 
-    remember_mapping(id6, partial_id)
+    remember_mapping(kata_id, id6)
 
     storer.avatars_started(kata_id).each do |avatar_name|
       kid = group_join(id6, avatar_name)
@@ -85,9 +85,9 @@ class Porter
 
   # - - - - - - - - - - - - - - - - - - -
 
-  def remember_mapping(id6, partial_id)
-    if id6 != partial_id[0..5]
-      IO.write("/id-map/#{partial_id}", id6)
+  def remember_mapping(kata_id, id6)
+    if id6 != kata_id[0..5]
+      IO.write("/id-map/#{kata_id}", id6)
     end
   end
 

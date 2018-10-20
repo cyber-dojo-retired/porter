@@ -50,7 +50,8 @@ class PorterTest < TestBase
   ports nothing and returns the empty string
   and the operation is idempotent
   ) do
-    katas_dup_ids = %w( 0BA7E1E01B 0BA7E16149 )
+    katas_dup_ids = %w( 0BA7E1E01B
+                        0BA7E16149 )
     katas_dup_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
       partial_id = kata_id[0..5]
@@ -72,6 +73,7 @@ class PorterTest < TestBase
   saver has saved the practice-session with a new id
   and the operation is idempotent
   ) do
+    ids = {}
     katas_dup_ids = %w( 463748A0E8 463748D943 )
     katas_dup_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
@@ -83,14 +85,21 @@ class PorterTest < TestBase
 
       assert_equal 6, gid.size
       id6 = kata_id[0..5]
-      refute_equal id6, gid, kata_id
+      refute_equal id6, gid, kata_id # new-id
       assert saver.group_exists?(gid), kata_id
       now = now_data(gid)
       refute storer.kata_exists?(kata_id)
       assert_ported(was, now, kata_id)
-      # Idempotent
-      gid2 = port(partial_id)
-      assert_equal gid, gid2, kata_id
+      ids[kata_id] = gid
+    end
+
+    # Idempotent
+    katas_dup_ids.each do |kata_id|
+      (6..10).each do |n|
+        partial_id = kata_id[0..n]
+        gid = port(partial_id)
+        assert_equal ids[kata_id], gid, kata_id
+      end
     end
   end
 
