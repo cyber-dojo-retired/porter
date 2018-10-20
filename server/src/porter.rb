@@ -30,7 +30,6 @@ class Porter
     set_id(manifest)
     manifest['visible_files'].delete('output')
     id6 = saver.group_create(manifest)
-
     remember_mapping(kata_id, id6)
 
     storer.avatars_started(kata_id).each do |avatar_name|
