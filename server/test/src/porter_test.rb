@@ -26,7 +26,7 @@ class PorterTest < TestBase
     Katas_old_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
       partial_id = kata_id[0..5]
-      assert_equal kata_id, storer.katas_completed(partial_id)
+      assert_equal [kata_id], storer.katas_completed(partial_id)
       was = was_data(kata_id)
       refute saver.group_exists?(partial_id), kata_id
 
@@ -71,14 +71,17 @@ class PorterTest < TestBase
   test '1E7', %w(
   after port of partial_id which is unique in 1st 7 chars in storer
   saver has saved the practice-session with a new id
+  and you cannot access the new practice-sesssion with partial_id's 1st 6 chars
   and the operation is idempotent
   ) do
     ids = {}
-    katas_dup_ids = %w( 463748A0E8 463748D943 )
+    katas_dup_ids = %w( 463748A0E8
+                        463748D943 )
     katas_dup_ids.each do |kata_id|
       assert storer.kata_exists?(kata_id), kata_id
       partial_id = kata_id[0..6]
-      assert_equal kata_id, storer.katas_completed(partial_id)
+      assert_equal 7, partial_id.size
+      assert_equal [kata_id], storer.katas_completed(partial_id)
       was = was_data(kata_id)
 
       gid = port(partial_id)
@@ -91,6 +94,11 @@ class PorterTest < TestBase
       refute storer.kata_exists?(kata_id)
       assert_ported(was, now, kata_id)
       ids[kata_id] = gid
+
+      dup_id = kata_id[0..5]
+      assert_equal 6, dup_id.size
+      gid = port(dup_id)
+      assert_equal '', gid, kata_id
     end
 
     # Idempotent

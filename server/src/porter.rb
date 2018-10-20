@@ -15,21 +15,24 @@ class Porter
     end
 
     filenames = Dir.glob("/id-map/#{partial_id}**")
+    kata_ids = storer.katas_completed(partial_id)
+
+    if filenames.size + kata_ids.size != 1
+      # not-unique
+      return ''
+    end
+
     if filenames.size == 1
       # non-unique kata-id, already ported
       return IO.read(filenames[0])
     end
 
-    kata_id = storer.katas_completed(partial_id)
-    unless kata_id.size == 10
-      # zero matches, or more than 1 match
-      return ''
-    end
-
+    kata_id = kata_ids[0]
     manifest = storer.kata_manifest(kata_id)
     set_id(manifest)
     manifest['visible_files'].delete('output')
     id6 = saver.group_create(manifest)
+
     remember_mapping(kata_id, id6)
 
     storer.avatars_started(kata_id).each do |avatar_name|
@@ -74,12 +77,8 @@ class Porter
 
   def unique?(id6)
     ported = Dir.glob("/id-map/#{id6}**")
-    if ported != []
-      false
-    else
-      id = storer.katas_completed(id6)
-      id.length == 10
-    end
+    ids = storer.katas_completed(id6)
+    ported.size + ids.size == 1
   end
 
   # - - - - - - - - - - - - - - - - - - -
