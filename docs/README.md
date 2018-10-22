@@ -17,7 +17,7 @@ API:
     * If the method raises an exception, the key equals "exception".
 
 - [GET sha](#get-sha)
-- [POST port](#post-port(partial_id))
+- [POST port](#post-portpartial_id)
 
 - - - -
 
