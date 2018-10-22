@@ -22,7 +22,7 @@ services:
 
   porter:
     build:
-      context: server
+      context: .
       args:
         - SHA
     user: porter:porter
