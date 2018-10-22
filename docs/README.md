@@ -16,8 +16,8 @@ API:
     * If the method completes, the key equals the method's name.
     * If the method raises an exception, the key equals "exception".
 
-- [GET sha](#get-sha--)
-- [POST port](#post-port-partial-id-)
+- [GET sha](#get-sha)
+- [POST port](#post-portpartialid)
 
 - - - -
 
