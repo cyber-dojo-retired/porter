@@ -7,7 +7,10 @@ alt="cyber-dojo yin/yang logo" width="50px" height="50px"/>
 # cyberdojo/porter docker image
 
 - A docker-containerized micro-service for [cyber-dojo](http://cyber-dojo.org).
-- Ports old practice sessions from storer to saver.
+- Ports old practice sessions from
+[storer](https://github.com/cyber-dojo/storer)
+to
+[saver](https://github.com/cyber-dojo/saver).
 - Work in progress - not yet used
 
 API:
