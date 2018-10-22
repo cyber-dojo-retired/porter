@@ -39,6 +39,8 @@ Ports an old-format practice-session with the given partial_id from storer into 
 - parameter, eg
 ```
     { "partial_id": "55D3B9" }
+    { "partial_id": "0BA7E1" }
+    { "partial_id": "0BA7E1E" }
 ```
 - partial_id must be 6..10 chars long.
 - if partial_id uniquely identifies a practice-session in storer, porter will
@@ -50,8 +52,8 @@ will not port anything, and will return the empty string.
 - returns, eg
 ```
   { "port": "55D3B9" }
-  { "port": "79s7Bk" }
   { "port": "" }
+  { "port": "79s7Bk" }
 ```
 
 - - - -
