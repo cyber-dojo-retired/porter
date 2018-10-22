@@ -1,3 +1,0 @@
-
-porter removes 'output' file from visible_files in manifest
-
