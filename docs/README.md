@@ -16,12 +16,12 @@ API:
     * If the method completes, the key equals the method's name.
     * If the method raises an exception, the key equals "exception".
 
-- [GET sha](#get-sha)
-- [POST port](#post-port)
+- [GET sha](#get-sha())
+- [POST port](#post-port(partial_id))
 
 - - - -
 
-## GET sha
+## GET sha()
 Returns the git commit sha used to create the docker image.
 - parameters, none
 ```
@@ -34,7 +34,7 @@ Returns the git commit sha used to create the docker image.
 
 - - - -
 
-## POST port
+## POST port(partial_id)
 Ports an old-format practice-session with the given partial_id from storer into saver.
 - parameter, eg
 ```
