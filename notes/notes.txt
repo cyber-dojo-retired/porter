@@ -3,26 +3,24 @@ The basic hook into porter will be in web.
 saver will not be coupled to porter or storer.
 
 web --> porter --> storer
-               --> saver
-    --> saver
+               --> saver --> storer
 
-This means that saver.group_exists?(id) could generate an ID-6
-which is used in the 1st 6-chars of an existing 10-ID inside storer.
-If this happens, then porter will need to map that 10-ID.
+storer is coupled to saver.
+This is because when saver generates an id
+it must not clash with an existing, yet-to-be ported
+id from storer. This is so that when a kata in
+storer is ported it retains its id (1st 6 chars)
+in saver unless that 6-char id is not unique.
 
 -------------------------------------------
 
 Testing
 -------
 need collection of storer content (tgz files).
-unzip this to a known dir on host.
-volume mount this into storer (read-write)
-volume mount this into porter too (read-only)
-porter will access storer service and saver service.
-Once it has successfully ported a kata from
+Then tar-pipe these into the /usr/src/cyber-dojo/katas
+dir inside storer.
+Once porter has successfully ported a kata from
 storer, it will delete the kata from storer.
-Would be best to do this as a shared data-container
-as that is the way storer actually works.
 
 Tool to pipe a storer's tgz file into storer's DC would
 be nice. Can then do a manual test. Pipe kata with known
@@ -30,7 +28,7 @@ ID into DC. Access it from browser. See it work.
 Then docker exec into the storer and see it has gone.
 Then docker exec into the porter and see it's there.
 Can do this for katas with duplicate 6-chars IDs too.
-See their entries in porters map.
+See their entries in porters id-map/.
 
 //-----------------------
 
@@ -57,32 +55,13 @@ using-mapping
             has avatar-name --> group session, id==group-id. kata-id is hidden
 
 10-char ID: old storer ID.
-            always comes with an avatar-name too...
+            usually comes with an avatar-name too...
             eg this was created from [i'm on my own]
                http://www.cyber-dojo.org/kata/edit/e13AD0UkeY?avatar=eagle
             eg this was created from [we're in a group]
                http://www.cyber-dojo.org/kata/edit/9bkHemGPHR?avatar=dolphin
 
-            id_6 = porter.port(id_10, avatar_name)
-
-            and it will port that avatar
-            will it also port all the other avatars (with that id_10) too?
-
-//----------------------------------------------------------
-
-porter.port(id-10)
-  if there is a mapping match (for id-10)
-     use that
-  else if there is no kata-match (6-chars)
-     then nothing to do, no match
-  else if there is a single kata-match (6-chars)
-     try and save it in grouper with this 6 char ID
-     if it works use that
-     if it fails use mapping (saver generates the ID)
-  if there are 2+ kata-matches (6-chars)
-     need to use mapping
-     easiest is to use mapping for all duplicates
-     feasible to try its own ID for one duplicate?
+            id_6 = porter.port(partial_id)
 
 //----------------------------------------------------------
 
@@ -92,23 +71,6 @@ it will simply never get filled!
 
 //----------------------------------------------------------
 
-The plan is for porter to be a service that
-1) has a read-write volume-mount of storer's data-container
-2) has a read-write volume-mount of singer's ids/ dir
-3) has a read-write volume-mount of grouper's ids/ dir
-
-It will then port katas from 1) into katas in 2/3)
-It will have a single method in its API, port(id) which accepts
-a kata-id in 1)
-
-It does not access singler/grouper via their services for speed.
-Hmmm. But maybe its better to use the grouper service?
-Maybe it could have both!
-You could do a grouper.create() and then have access to the
-manifest/etc by knowing the ID and with the ID gain access
-to the raw data in the dir. You could then rewrite the manifest
-to the original ID and mv the dir to its new-ID dir.
-This sounds quite fiddly.
 Why not just allow grouper.create() to be passed a manifest
 that already has an ID inside it.
 If it can't honour the ID (eg taken or not uniquely completable)
@@ -140,14 +102,12 @@ What to do when an individual tries to rejoin a kata is a different
 question. If grouper.joined(ID) shows only a single avatar then
 go straight to that.
 
-I will also write a script which will call porter in a loop
-and this port all of 1) to 2/3).
-
-If port(id) matches the id against 1) then it will do what
+If port(id) matches the id in storer then it will do what
 saver.group_create() would do, but it will do it with the given
 id, assuming that id is available and uniquely completeable.
 It will then do what saver.join() would do for each avatar
-in 1).
+in storer.
+
 If port(id) succeeds it will delete the kata from 1).
 I thought about doing a mv, but its simpler to delete
 - it takes less disk space
@@ -181,4 +141,3 @@ in the tag file in a new format
   'stderr' => 'sdsdsd',
   'status' => 23
 }
-

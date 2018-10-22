@@ -8,18 +8,18 @@ readonly KATA_IDS=(1F00C1BFC8 5A0F824303 420B05BA0A 420F2A2979 421F303E80 420BD5
 readonly STORER_CONTAINER=${1:-test-porter-storer}
 
 # this must be set to the same value as Storer's path.
-readonly CYBER_DOJO_KATAS_ROOT=/usr/src/cyber-dojo/katas
+readonly KATAS_ROOT=/usr/src/cyber-dojo/katas
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
-# make sure ${CYBER_DOJO_KATAS_ROOT} dir exists
+# make sure ${KATAS_ROOT} dir exists
 
 docker exec \
   --user root \
   ${STORER_CONTAINER} \
-    sh -c "mkdir -p ${CYBER_DOJO_KATAS_ROOT}"
+    sh -c "mkdir -p ${KATAS_ROOT}"
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
-# tar-pipe test data into storer-container
+# tar-pipe test data in
 
 for KATA_ID in "${KATA_IDS[@]}"
 do
@@ -28,7 +28,7 @@ do
         --user root \
         --interactive \
         ${STORER_CONTAINER} \
-            sh -c "tar -zxf - -C ${CYBER_DOJO_KATAS_ROOT}"
+            sh -c "tar -zxf - -C ${KATAS_ROOT}"
 done
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
@@ -37,4 +37,4 @@ done
 docker exec \
     --user root \
     ${STORER_CONTAINER} \
-      sh -c "chown -R storer:storer ${CYBER_DOJO_KATAS_ROOT}"
+      sh -c "chown -R storer:storer ${KATAS_ROOT}"

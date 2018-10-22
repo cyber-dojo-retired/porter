@@ -6,18 +6,6 @@ will not require id-completion at all.
 
 However, it does make it more likely that moving grouper/singler
 katas from one server to another will result in an ID collision.
-The larger the alphabet, the less the chance of an ID collision.
-Merging grouper and singler into a single service would make
-data merges a bit easier?
-Suppose there are collisions in a merge?
-It would be possible to create an id-collision map
-in the same way porter will have to do when its ports storer data.
-
-Note also, that the ID currently becomes part of the name of the
-docker container the runner runs.
-Are there restrictions on the name of a docker container?
-Would it be better to decouple these and hash the ID inside
-the runner?
 
 Suppose there are 200,000 katas in storer.
 At an average of 5 avatars per kata.
@@ -76,5 +64,3 @@ It is tempting to use 7 chars...
 56^7 == 1.72x10^12 == 1.72 trillion
 
 Downside is people are used to using 6 char IDs
-
-
