@@ -47,7 +47,7 @@ The new id will be the 1st 6 chars of the partial_id if they are unique in store
 - if partial_id does not uniquely identify a practice-session in storer
 (either because there is no match, or there is more than one match), porter
 will not port anything, and will return the empty string.
-eg
+- returns, eg
 ```
   { "port": "55D3B9" }
   { "port": "79s7Bk" }
