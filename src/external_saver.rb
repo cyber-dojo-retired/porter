@@ -26,14 +26,12 @@ class ExternalSaver
     post(__method__, id, n, files, now, stdout, stderr, status, colour)
   end
 
-  def kata_tag(id, n)
-    get(__method__, id, n)
+  def kata_events(id)
+    get(__method__, id)
   end
 
-  # - - - - - - - - - - - - - -
-
-  def kata_tags(id)
-    get(__method__, id)
+  def kata_event(id, n)
+    get(__method__, id, n)
   end
 
   private

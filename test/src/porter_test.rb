@@ -153,11 +153,11 @@ class PorterTest < TestBase
     joined.each do |index,id|
       avatar_name = Avatars_names[index.to_i]
       now[:tag_files][avatar_name] = {}
-      tags = saver.kata_tags(id)
-      now[:increments][avatar_name] = tags
-      tags.each do |tag|
-        n = tag['number']
-        now_info = saver.kata_tag(id, n)
+      events = saver.kata_events(id)
+      now[:increments][avatar_name] = events
+      events.each do |event|
+        n = event['number']
+        now_info = saver.kata_event(id, n)
         now[:tag_files][avatar_name][n] = now_info
       end
     end
