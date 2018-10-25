@@ -22,6 +22,10 @@ class ExternalSaver
     get(__method__, id)
   end
 
+  def kata_manifest(id)
+    get(__method__, id)
+  end
+
   def kata_ran_tests(id, n, files, now, stdout, stderr, status, colour)
     post(__method__, id, n, files, now, stdout, stderr, status, colour)
   end

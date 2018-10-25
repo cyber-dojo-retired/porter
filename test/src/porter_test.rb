@@ -150,16 +150,17 @@ class PorterTest < TestBase
     now[:increments] = {}
     now[:tag_files] = {}
     joined = saver.group_joined(id6)
-    joined.each do |index,id|
+    joined.each do |kid|
+      index = saver.kata_manifest(kid)['index']
       avatar_name = Avatars_names[index.to_i]
       now[:tag_files][avatar_name] = {}
-      events = saver.kata_events(id)
-      now[:increments][avatar_name] = events
-      events.each do |event|
-        n = event['number']
-        now_info = saver.kata_event(id, n)
+      events = saver.kata_events(kid)
+      events.each_with_index do |event,n|
+        event['number'] = n
+        now_info = saver.kata_event(kid, n)
         now[:tag_files][avatar_name][n] = now_info
       end
+      now[:increments][avatar_name] = events
     end
     now
   end

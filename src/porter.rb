@@ -37,7 +37,6 @@ class Porter
 
     storer.avatars_started(kata_id).each do |avatar_name|
       kid = group_join(id6, avatar_name)
-
       increments = storer.avatar_increments(kata_id, avatar_name)
       increments[1..-1].each do |increment|
         colour = increment['colour']
@@ -69,16 +68,16 @@ class Porter
 
   # - - - - - - - - - - - - - - - - - - -
 
-  def force_saver_to_generate_a_new_id(manifest)
-    manifest.delete('id')
-  end
-
-  # - - - - - - - - - - - - - - - - - - -
-
   def unique?(id6)
     ported = Dir.glob("/id-map/#{id6}**")
     ids = storer.katas_completed(id6)
     ported.size + ids.size == 1
+  end
+
+  # - - - - - - - - - - - - - - - - - - -
+
+  def force_saver_to_generate_a_new_id(manifest)
+    manifest.delete('id')
   end
 
   # - - - - - - - - - - - - - - - - - - -
@@ -96,8 +95,7 @@ class Porter
     indexes = (0..63).to_a.shuffle
     indexes.delete(index)
     indexes.unshift(index)
-    _,kid = saver.group_join(id, indexes)
-    kid
+    saver.group_join(id, indexes)
   end
 
   # - - - - - - - - - - - - - - - - - - -
