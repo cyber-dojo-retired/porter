@@ -41,12 +41,12 @@ class Porter
       increments[1..-1].each do |increment|
         colour = increment['colour']
         time = increment['time']
-        tag = increment['number']
-        files = storer.tag_visible_files(kata_id, avatar_name, tag)
+        index = increment['number']
+        files = storer.tag_visible_files(kata_id, avatar_name, index)
         stdout = files.delete('output')
         stderr = ''
         status = 0
-        saver.kata_ran_tests(kid, tag, files, time, stdout, stderr, status, colour)
+        saver.kata_ran_tests(kid, index, files, time, stdout, stderr, status, colour)
       end
     end
 
