@@ -151,7 +151,7 @@ class PorterTest < TestBase
     now[:tag_files] = {}
     joined = saver.group_joined(id6)
     joined.each do |kid|
-      index = saver.kata_manifest(kid)['index']
+      index = saver.kata_manifest(kid)['group_index']
       avatar_name = Avatars_names[index.to_i]
       now[:tag_files][avatar_name] = {}
       events = saver.kata_events(kid)
@@ -189,14 +189,24 @@ class PorterTest < TestBase
     was_tag_files.each do |avatar_name, was_tags|
       now_tags = now_tag_files[avatar_name]
       assert_equal was_tags.keys.sort, now_tags.keys.sort, kata_id+":#{avatar_name}:"
-      was_tags.keys.each do |n|
-        old_files = was[:tag_files][avatar_name][n]
-        diagnostic = kata_id+":#{avatar_name}:#{n}:"
-        assert old_files.keys.include?('output'), diagnostic
-        stdout = old_files.delete('output')
-        new_info = now[:tag_files][avatar_name][n]
-        assert_equal old_files, new_info['files'], diagnostic
-        assert_equal stdout, new_info['stdout'], diagnostic
+      was_tags.keys.each do |tag|
+        old_files = was[:tag_files][avatar_name][tag]
+        diagnostic = kata_id+":#{avatar_name}:#{tag}:"
+        assert old_files.keys.include?('output'), "195:#{diagnostic}"
+        old_stdout = old_files.delete('output')
+        new_info = now[:tag_files][avatar_name][tag]
+        assert_equal old_files, new_info['files'], "198:#{diagnostic}"
+        if tag == 0
+          # tag zero == creation event
+          assert_nil new_info['stdout'], "200:#{diagnostic}"
+          assert_nil new_info['stderr'], "201:#{diagnostic}"
+          assert_nil new_info['status'], "202:#{diagnostic}"
+        else
+          # every other event is a test event
+          assert_equal old_stdout, new_info['stdout'], "204:#{diagnostic}"
+          assert_equal '',         new_info['stderr'], "205:#{diagnostic}"
+          assert_equal 0,          new_info['status'], "206:#{diagnostic}"
+        end
       end
     end
   end
