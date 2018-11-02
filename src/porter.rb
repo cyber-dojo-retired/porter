@@ -92,7 +92,7 @@ class Porter
 
   def group_join(id, avatar_name)
     index = Avatars_names.index(avatar_name)
-    indexes = (0..63).to_a.shuffle
+    indexes = (0..63).to_a
     indexes.delete(index)
     indexes.unshift(index)
     saver.group_join(id, indexes)
