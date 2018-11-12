@@ -174,11 +174,24 @@ class PorterTest < TestBase
     was[:manifest].delete('id') # 10-chars long
     refute now[:manifest]['visible_files'].keys.include?('output'), kata_id
     now[:manifest].delete('id') #  6-chars long
+    was_created = was[:manifest].delete('created')
+    now_created = now[:manifest].delete('created')
+    assert_equal was_created << 0, now_created, kata_id
     assert_equal was[:manifest], now[:manifest], kata_id
     # increments
     was[:increments].values.each do |incs|
+      # for a while I experimented with holding revert information
       incs = incs.map{ |inc| inc.delete('revert_tag'); inc }
+      incs.each_with_index do |inc,index|
+        # time-stamps now use 7th usec integer
+        inc['time'] << 0
+        # duration is now stored on test events
+        unless index == 0
+          inc['duration'] = 0.0
+        end
+      end
     end
+
     assert_equal was[:increments], now[:increments], kata_id
     # tag_files
     was_tag_files = was[:tag_files]

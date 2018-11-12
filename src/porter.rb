@@ -30,7 +30,12 @@ class Porter
     kata_id = kata_ids[0]
     manifest = storer.kata_manifest(kata_id)
     set_id(manifest)
+    # output is now stdout/stderr.status which
+    # are separated from files
     manifest['visible_files'].delete('output')
+    # time-stamps now use 7th usec integer
+    manifest['created'] << 0
+
     id6 = saver.group_create(manifest)
 
     remember_mapping(kata_id, id6)
@@ -41,12 +46,16 @@ class Porter
       increments[1..-1].each do |increment|
         colour = increment['colour']
         time = increment['time']
+        # time-stamps now use 7th usec integer
+        time << 0
+        # duration is now stored
+        duration = 0.0
         index = increment['number']
         files = storer.tag_visible_files(kata_id, avatar_name, index)
         stdout = files.delete('output')
         stderr = ''
         status = 0
-        saver.kata_ran_tests(kid, index, files, time, stdout, stderr, status, colour)
+        saver.kata_ran_tests(kid, index, files, time, duration, stdout, stderr, status, colour)
       end
     end
 
