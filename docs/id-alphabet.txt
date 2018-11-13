@@ -1,15 +1,15 @@
 
-I have decided to switch to 6-char identifiers on grouper/singler.
+I have decided to switch to 6-char identifiers in saver.
 
-This allows me to use a plain 6-char identifier and grouper/singler
+This allows me to use a plain 6-char identifier and saver
 will not require id-completion at all.
 
-However, it does make it more likely that moving grouper/singler
-katas from one server to another will result in an ID collision.
+However, it does make it more likely that moving saver katas
+from one server to another will result in an ID collision.
 
-Suppose there are 200,000 katas in storer.
-At an average of 5 avatars per kata.
-Thats 1 million singler IDs. Ok.
+Suppose there are 200,000 katas in storer,
+at an average of 5 avatars per kata.
+Thats 1 million saver (singler) IDs. Ok.
 
 I currently use Base58
 
