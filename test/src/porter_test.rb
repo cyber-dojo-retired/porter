@@ -45,6 +45,31 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
+  test '1E3', %w(
+  port of some newer partial_ids some of which include l (ell)
+  ) do
+    Katas_new_ids.each do |kata_id|
+      assert storer.kata_exists?(kata_id), kata_id
+      partial_id = kata_id[0..5]
+      assert_equal [kata_id], storer.katas_completed(partial_id)
+      was = was_data(kata_id)
+      refute saver.group_exists?(partial_id), kata_id
+
+      gid = port(partial_id)
+
+      assert_equal partial_id, gid, kata_id
+      assert saver.group_exists?(gid), kata_id
+      now = now_data(gid)
+      refute storer.kata_exists?(kata_id), kata_id
+      assert_ported(was, now, kata_id)
+      # Idempotent
+      gid2 = port(partial_id)
+      assert_equal gid, gid2, kata_id
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
   test '1E6', %w(
   port of partial_id that has more than one match
   ports nothing and returns the empty string
@@ -124,6 +149,17 @@ class PorterTest < TestBase
     421AFD7EC5
   )
 
+  Katas_new_ids = %w(
+    9f8TeZMZAq
+    9f67Q9PyZm
+    9fcW44ltyz
+    9fDYJR3BfG
+    9fH6TumFV2
+    9fSqUqMecK
+    9fT2wMW0BM
+    9fUSFm6hmT
+    9fvMuUlKbh
+  )
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   def was_data(kata_id)
