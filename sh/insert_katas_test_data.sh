@@ -8,4 +8,4 @@ docker run \
    --volume /var/run/docker.sock:/var/run/docker.sock \
    cyberdojo/inserter \
      test-porter-storer \
-       dup old new
+       dup old new lot
