@@ -377,9 +377,6 @@ class PorterTest < TestBase
   def was_data(kata_id)
     was = {}
     was[:manifest] = storer.kata_manifest(kata_id)
-    dead_manifest_properties.each do |name|
-      was[:manifest].delete(name)
-    end
     was[:increments] = storer.kata_increments(kata_id)
     was[:tag_files] = {}
     was[:increments].each do |avatar_name,increments|
@@ -395,10 +392,6 @@ class PorterTest < TestBase
       end
     end
     was
-  end
-
-  def dead_manifest_properties
-    %w( diff_id diff_language diff_exercise diff_avatar diff_tag )
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -

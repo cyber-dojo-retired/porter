@@ -34,9 +34,6 @@ class Porter
     manifest['visible_files'].delete('output')
     # time-stamps now use 7th usec integer
     manifest['created'] << 0
-    dead_manifest_properties.each do |name|
-      manifest.delete(name)
-    end
     id6 = saver.group_create(manifest)
 
     remember_mapping(kata_id, id6)
@@ -66,10 +63,6 @@ class Porter
   end
 
   private
-
-  def dead_manifest_properties
-    %w( diff_id diff_language diff_exercise diff_avatar diff_tag )
-  end
 
   def set_id(manifest)
     id6 = manifest['id'][0..5]
