@@ -177,7 +177,7 @@ class PorterTest < TestBase
 
   test '1EC', %w(
   ids from 7E dir that initially failed to port
-  because they hold a bunch of now-dead diff/port-related properties
+  because they hold a bunch of now-dead diff/fork-related properties
   ) do
     kata_ids = %w(
       7EBAEC5207
