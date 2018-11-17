@@ -168,7 +168,21 @@ class PorterTest < TestBase
       7E53666BFE 7EBAEC5207 7EA354ED66 7EC98B56F7 7E246F2339
       7E12E5A294 7EA0979D3E 7E53732F00 7EC7A19DF3
     )
-    #...
+    kata_id = Kata_ids[0]
+    assert storer.kata_exists?(kata_id), kata_id
+    was = was_data(kata_id)
+
+    gid = port(kata_id)
+
+    assert saver.group_exists?(gid), kata_id
+    now = now_data(gid)
+    refute storer.kata_exists?(kata_id), kata_id
+    assert_ported(was, now, kata_id)
+    # Idempotent
+    gid2 = port(kata_id)
+    assert_equal gid, gid2, kata_id
+    print '.'
+    STDOUT.flush
   end
 
   private
