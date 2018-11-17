@@ -219,12 +219,13 @@ class PorterTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
-  
+
 =begin
   test '1EF', %w(
   ids from 7E dir that still fail to port
-  because they are missing entries in storer's Updater.cache
-  for a display_name of 'Java Countdown, Round 1'
+  because the manifest for some custom display_name's,
+  eg 'Java Countdown, Round 1',
+  have no runner_choice
   ) do
     kata_ids = %w(
       7EC7A19DF3
