@@ -175,10 +175,23 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '1EB', %w(
-  ids from 7E/ dir that initially failed to port ) do
+  test '1EC', %w(
+  ids from 7E dir that initially failed to port
+  because they hold a bunch of now-dead diff/port-related properties
+  ) do
     kata_ids = %w(
       7EBAEC5207
+    )
+    kata_ids.each do |kata_id|
+      assert_now_ported(kata_id)
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '1ED', %w(
+  ids from 7E dir that initially failed to port ) do
+    kata_ids = %w(
       7E246F2339
       7E12E5A294
       7E53732F00
@@ -349,6 +362,9 @@ class PorterTest < TestBase
   def was_data(kata_id)
     was = {}
     was[:manifest] = storer.kata_manifest(kata_id)
+    dead_manifest_properties.each do |name|
+      was[:manifest].delete(name)
+    end
     was[:increments] = storer.kata_increments(kata_id)
     was[:tag_files] = {}
     was[:increments].each do |avatar_name,increments|
@@ -364,6 +380,10 @@ class PorterTest < TestBase
       end
     end
     was
+  end
+
+  def dead_manifest_properties
+    %w( diff_id diff_language diff_exercise diff_avatar diff_tag )
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
