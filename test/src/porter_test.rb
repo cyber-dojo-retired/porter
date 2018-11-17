@@ -204,8 +204,7 @@ class PorterTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
-  
-=begin
+
   test '1EE', %w(
   ids from 7E dir that still fail to port
   because they are missing entries in storer's Updater.cache
@@ -220,7 +219,8 @@ class PorterTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
-
+  
+=begin
   test '1EF', %w(
   ids from 7E dir that still fail to port
   because they are missing entries in storer's Updater.cache
