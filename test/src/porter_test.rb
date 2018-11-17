@@ -152,10 +152,19 @@ class PorterTest < TestBase
   ids from 7E dir that initially failed to port
   because they have a display_name
   that was missing from storer's Updater.cache ) do
-    kata_ids = %w(
-      7E010BE86C 7E2AEE8E64 7E9B1F7E60 7E218AC28C
-      7E6DEF1D86 7EA354ED66 7EC98B56F7 7EA0979D3E
-    )
+    kata_ids = [
+      '7E010BE86C', # 'Java, JUnit-Mockito'
+      '7E2AEE8E64', # 'Java, JUnit-Mockito'
+      '7E9B1F7E60', # 'Scala, scalatest'
+      '7E218AC28C', # 'Scala, scalatest'
+      '7E6DEF1D86', # 'Scala, scalatest'
+      '7EA354ED66', # 'Ruby, Approval'
+      '7EC98B56F7', # 'Java, JUnit-Mockito'
+      '7EA0979D3E', # 'Java, Approval'
+      '7E246F2339', # 'C (gcc), Unity'
+      '7E12E5A294', # 'C (gcc), Unity'
+      '7E53732F00', # 'Clojure, .test'
+    ]
     kata_ids.each do |kata_id|
       assert_now_ported(kata_id)
     end
@@ -183,37 +192,6 @@ class PorterTest < TestBase
   ) do
     kata_ids = %w(
       7EBAEC5207
-    )
-    kata_ids.each do |kata_id|
-      assert_now_ported(kata_id)
-    end
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - -
-
-  test '1ED', %w(
-  ids from 7E dir that initially failed to port
-  because their display_name is 'C (gcc), Unity'
-  which was missing in storer's Updater.cache
-  ) do
-    kata_ids = %w(
-      7E246F2339
-      7E12E5A294
-    )
-    kata_ids.each do |kata_id|
-      assert_now_ported(kata_id)
-    end
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - -
-
-  test '1EE', %w(
-  ids from 7E dir that initially failed to port
-  because their display_name is 'Clojure, .test'
-  which was missing from storer's Updater.cache
-  ) do
-    kata_ids = %w(
-      7E53732F00
     )
     kata_ids.each do |kata_id|
       assert_now_ported(kata_id)
