@@ -189,9 +189,34 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1EA', %w(
-  ids from 7E/ dir that initially failed to port ) do
+  ids from 7E/ dir that initially failed to port
+  because 'colour' used to be called 'outcome' ) do
     kata_ids = %w(
       7E53666BFE
+    )
+    kata_ids.each do |kata_id|
+      assert storer.kata_exists?(kata_id), kata_id
+      was = was_data(kata_id)
+
+      gid = port(kata_id)
+
+      assert saver.group_exists?(gid), kata_id
+      now = now_data(gid)
+      refute storer.kata_exists?(kata_id), kata_id
+      assert_ported(was, now, kata_id)
+      # Idempotent
+      gid2 = port(kata_id)
+      assert_equal gid, gid2, kata_id
+      print '.'
+      STDOUT.flush
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '1EB', %w(
+  ids from 7E/ dir that initially failed to port ) do
+    kata_ids = %w(
       7EBAEC5207
       7E246F2339
       7E12E5A294
@@ -202,7 +227,12 @@ class PorterTest < TestBase
       assert storer.kata_exists?(kata_id), kata_id
       was = was_data(kata_id)
 
-      gid = port(kata_id)
+      begin
+        gid = port(kata_id)
+      rescue => error
+        puts "error in :#{kata_id}:"
+        raise
+      end
 
       assert saver.group_exists?(gid), kata_id
       now = now_data(gid)
@@ -285,6 +315,10 @@ class PorterTest < TestBase
     was[:increments].each do |avatar_name,increments|
       was[:tag_files][avatar_name] = {}
       increments.each do |increment|
+        outcome = increment.delete('outcome')
+        unless outcome.nil?
+          increment['colour'] = outcome
+        end
         tag = increment['number']
         was_files = storer.tag_visible_files(kata_id, avatar_name, tag)
         was[:tag_files][avatar_name][tag] = was_files

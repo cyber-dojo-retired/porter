@@ -43,7 +43,7 @@ class Porter
       kid = group_join(id6, avatar_name)
       increments = storer.avatar_increments(kata_id, avatar_name)
       increments[1..-1].each do |increment|
-        colour = increment['colour']
+        colour = increment['colour'] || increment['outcome']
         time = increment['time']
         # time-stamps now use 7th usec integer
         time << 0
