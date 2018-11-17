@@ -161,28 +161,59 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '1E9',
-  'ids from 7E/ dir that initially failed to port' do
-    Kata_ids = %w(
-      7E010BE86C 7E2AEE8E64 7E9B1F7E60 7E218AC28C 7E6DEF1D86
-      7E53666BFE 7EBAEC5207 7EA354ED66 7EC98B56F7 7E246F2339
-      7E12E5A294 7EA0979D3E 7E53732F00 7EC7A19DF3
+  test '1E9', %w(
+  ids from 7E/ dir that initially failed to port
+  because they were missing entries in Update.cache ) do
+    kata_ids = %w(
+      7E010BE86C 7E2AEE8E64 7E9B1F7E60 7E218AC28C
+      7E6DEF1D86 7EA354ED66 7EC98B56F7 7EA0979D3E
     )
-    kata_id = Kata_ids[0]
-    assert storer.kata_exists?(kata_id), kata_id
-    was = was_data(kata_id)
+    kata_ids.each do |kata_id|
+      assert storer.kata_exists?(kata_id), kata_id
+      was = was_data(kata_id)
 
-    gid = port(kata_id)
+      gid = port(kata_id)
 
-    assert saver.group_exists?(gid), kata_id
-    now = now_data(gid)
-    refute storer.kata_exists?(kata_id), kata_id
-    assert_ported(was, now, kata_id)
-    # Idempotent
-    gid2 = port(kata_id)
-    assert_equal gid, gid2, kata_id
-    print '.'
-    STDOUT.flush
+      assert saver.group_exists?(gid), kata_id
+      now = now_data(gid)
+      refute storer.kata_exists?(kata_id), kata_id
+      assert_ported(was, now, kata_id)
+      # Idempotent
+      gid2 = port(kata_id)
+      assert_equal gid, gid2, kata_id
+      print '.'
+      STDOUT.flush
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '1EA', %w(
+  ids from 7E/ dir that initially failed to port ) do
+    kata_ids = %w(
+      7E53666BFE
+      7EBAEC5207
+      7E246F2339
+      7E12E5A294
+      7E53732F00
+      7EC7A19DF3
+    )
+    kata_ids.each do |kata_id|
+      assert storer.kata_exists?(kata_id), kata_id
+      was = was_data(kata_id)
+
+      gid = port(kata_id)
+
+      assert saver.group_exists?(gid), kata_id
+      now = now_data(gid)
+      refute storer.kata_exists?(kata_id), kata_id
+      assert_ported(was, now, kata_id)
+      # Idempotent
+      gid2 = port(kata_id)
+      assert_equal gid, gid2, kata_id
+      print '.'
+      STDOUT.flush
+    end
   end
 
   private
