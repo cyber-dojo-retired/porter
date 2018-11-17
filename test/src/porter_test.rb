@@ -139,76 +139,37 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1E8',
-  'test all of 7E/ folder' do
+  'all of katas from 7E dir port' do
     Katas_lot_ids.each do |id8|
       kata_id = "7E#{id8}"
-      assert storer.kata_exists?(kata_id), kata_id
-      was = was_data(kata_id)
-
-      gid = port(kata_id)
-
-      assert saver.group_exists?(gid), kata_id
-      now = now_data(gid)
-      refute storer.kata_exists?(kata_id), kata_id
-      assert_ported(was, now, kata_id)
-      # Idempotent
-      gid2 = port(kata_id)
-      assert_equal gid, gid2, kata_id
-      print '.'
-      STDOUT.flush
+      assert_now_ported(kata_id)
     end
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1E9', %w(
-  ids from 7E/ dir that initially failed to port
-  because they were missing entries in Update.cache ) do
+  ids from 7E dir that initially failed to port
+  because they were missing entries in storer's Updater.cache ) do
     kata_ids = %w(
       7E010BE86C 7E2AEE8E64 7E9B1F7E60 7E218AC28C
       7E6DEF1D86 7EA354ED66 7EC98B56F7 7EA0979D3E
     )
     kata_ids.each do |kata_id|
-      assert storer.kata_exists?(kata_id), kata_id
-      was = was_data(kata_id)
-
-      gid = port(kata_id)
-
-      assert saver.group_exists?(gid), kata_id
-      now = now_data(gid)
-      refute storer.kata_exists?(kata_id), kata_id
-      assert_ported(was, now, kata_id)
-      # Idempotent
-      gid2 = port(kata_id)
-      assert_equal gid, gid2, kata_id
-      print '.'
-      STDOUT.flush
+      assert_now_ported(kata_id)
     end
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1EA', %w(
-  ids from 7E/ dir that initially failed to port
+  ids from 7E dir that initially failed to port
   because 'colour' used to be called 'outcome' ) do
     kata_ids = %w(
       7E53666BFE
     )
     kata_ids.each do |kata_id|
-      assert storer.kata_exists?(kata_id), kata_id
-      was = was_data(kata_id)
-
-      gid = port(kata_id)
-
-      assert saver.group_exists?(gid), kata_id
-      now = now_data(gid)
-      refute storer.kata_exists?(kata_id), kata_id
-      assert_ported(was, now, kata_id)
-      # Idempotent
-      gid2 = port(kata_id)
-      assert_equal gid, gid2, kata_id
-      print '.'
-      STDOUT.flush
+      assert_now_ported(kata_id)
     end
   end
 
@@ -307,47 +268,21 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-  def was_data(kata_id)
-    was = {}
-    was[:manifest] = storer.kata_manifest(kata_id)
-    was[:increments] = storer.kata_increments(kata_id)
-    was[:tag_files] = {}
-    was[:increments].each do |avatar_name,increments|
-      was[:tag_files][avatar_name] = {}
-      increments.each do |increment|
-        outcome = increment.delete('outcome')
-        unless outcome.nil?
-          increment['colour'] = outcome
-        end
-        tag = increment['number']
-        was_files = storer.tag_visible_files(kata_id, avatar_name, tag)
-        was[:tag_files][avatar_name][tag] = was_files
-      end
-    end
-    was
-  end
+  def assert_now_ported(kata_id)
+    assert storer.kata_exists?(kata_id), kata_id
+    was = was_data(kata_id)
 
-  # - - - - - - - - - - - - - - - - - - - - - - -
+    gid = port(kata_id)
 
-  def now_data(id6)
-    now = {}
-    now[:manifest] = saver.group_manifest(id6)
-    now[:increments] = {}
-    now[:tag_files] = {}
-    joined = saver.group_joined(id6)
-    joined.each do |kid|
-      index = saver.kata_manifest(kid)['group_index']
-      avatar_name = Avatars_names[index.to_i]
-      now[:tag_files][avatar_name] = {}
-      events = saver.kata_events(kid)
-      events.each_with_index do |event,n|
-        event['number'] = n
-        now_info = saver.kata_event(kid, n)
-        now[:tag_files][avatar_name][n] = now_info
-      end
-      now[:increments][avatar_name] = events
-    end
-    now
+    assert saver.group_exists?(gid), kata_id
+    now = now_data(gid)
+    refute storer.kata_exists?(kata_id), kata_id
+    assert_ported(was, now, kata_id)
+    # Idempotent
+    gid2 = port(kata_id)
+    assert_equal gid, gid2, kata_id
+    print '.'
+    STDOUT.flush
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
@@ -407,6 +342,51 @@ class PorterTest < TestBase
         end
       end
     end
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  def was_data(kata_id)
+    was = {}
+    was[:manifest] = storer.kata_manifest(kata_id)
+    was[:increments] = storer.kata_increments(kata_id)
+    was[:tag_files] = {}
+    was[:increments].each do |avatar_name,increments|
+      was[:tag_files][avatar_name] = {}
+      increments.each do |increment|
+        outcome = increment.delete('outcome')
+        unless outcome.nil?
+          increment['colour'] = outcome
+        end
+        tag = increment['number']
+        was_files = storer.tag_visible_files(kata_id, avatar_name, tag)
+        was[:tag_files][avatar_name][tag] = was_files
+      end
+    end
+    was
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  def now_data(id6)
+    now = {}
+    now[:manifest] = saver.group_manifest(id6)
+    now[:increments] = {}
+    now[:tag_files] = {}
+    joined = saver.group_joined(id6)
+    joined.each do |kid|
+      index = saver.kata_manifest(kid)['group_index']
+      avatar_name = Avatars_names[index.to_i]
+      now[:tag_files][avatar_name] = {}
+      events = saver.kata_events(kid)
+      events.each_with_index do |event,n|
+        event['number'] = n
+        now_info = saver.kata_event(kid, n)
+        now[:tag_files][avatar_name][n] = now_info
+      end
+      now[:increments][avatar_name] = events
+    end
+    now
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -

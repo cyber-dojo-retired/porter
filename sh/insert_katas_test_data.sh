@@ -9,3 +9,5 @@ docker run \
    cyberdojo/inserter \
      test-porter-storer \
        dup old new lot red
+
+#      red
