@@ -222,12 +222,13 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-=begin
   test '1EF', %w(
-  ids from 7E dir that still fail to port
-  because the manifest for some custom display_name's,
-  eg 'Java Countdown, Round 1',
-  have no runner_choice
+  ids from 7E dir that initially failed to port
+  because they are for (modern) custom start-points,
+  whose manifest does do contain an 'image_name'
+  but do not contain a 'runner_choice',
+    eg 'Java Countdown, Round 1',
+  and storer failed to cater for this
   ) do
     kata_ids = %w(
       7EC7A19DF3
@@ -236,7 +237,6 @@ class PorterTest < TestBase
       assert_now_ported(kata_id)
     end
   end
-=end
 
   private
 
