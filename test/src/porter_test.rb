@@ -150,7 +150,8 @@ class PorterTest < TestBase
 
   test '1E9', %w(
   ids from 7E dir that initially failed to port
-  because they were missing entries in storer's Updater.cache ) do
+  because they have a display_name
+  that was missing from storer's Updater.cache ) do
     kata_ids = %w(
       7E010BE86C 7E2AEE8E64 7E9B1F7E60 7E218AC28C
       7E6DEF1D86 7EA354ED66 7EC98B56F7 7EA0979D3E
@@ -164,7 +165,7 @@ class PorterTest < TestBase
 
   test '1EA', %w(
   ids from 7E dir that initially failed to port
-  because 'colour' used to be called 'outcome' ) do
+  because in storer 'colour' used to be called 'outcome' ) do
     kata_ids = %w(
       7E53666BFE
     )
@@ -177,7 +178,8 @@ class PorterTest < TestBase
 
   test '1EC', %w(
   ids from 7E dir that initially failed to port
-  because they hold a bunch of now-dead diff/fork-related properties
+  because they hold a bunch of now-dead diff/fork related properties
+  which storer was not deleting
   ) do
     kata_ids = %w(
       7EBAEC5207
@@ -190,9 +192,9 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1ED', %w(
-  ids from 7E dir that still fail to port
-  because they are missing entries in storer's Updater.cache
-  for a display_name of 'C (gcc), Unity'
+  ids from 7E dir that initially failed to port
+  because their display_name is 'C (gcc), Unity'
+  which was missing in storer's Updater.cache
   ) do
     kata_ids = %w(
       7E246F2339
@@ -206,9 +208,9 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1EE', %w(
-  ids from 7E dir that still fail to port
-  because they are missing entries in storer's Updater.cache
-  for a display_name of 'Clojure, .test'
+  ids from 7E dir that initially failed to port
+  because their display_name is 'Clojure, .test'
+  which was missing from storer's Updater.cache
   ) do
     kata_ids = %w(
       7E53732F00
