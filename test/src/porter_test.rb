@@ -206,6 +206,15 @@ class PorterTest < TestBase
     end
   end
 
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '120', %w(
+  ids from 4D that initially failed to port
+  ) do
+    # "display_name"=>"git, bash"
+    assert_now_ported('4D29143FE1') 
+  end
+
   private
 
   # 421F303E80 has revert_tag entries in its increments
