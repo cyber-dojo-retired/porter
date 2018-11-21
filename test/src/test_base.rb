@@ -30,7 +30,7 @@ class TestBase < HexMiniTest
     STDOUT.flush
   end
 
-  private
+  # - - - - - - - - - - - - - - - - - - - - - - -
 
   def assert_ported(was, now, kata_id)
     # manifest
@@ -42,6 +42,10 @@ class TestBase < HexMiniTest
     was_created = was[:manifest].delete('created')
     now_created = now[:manifest].delete('created')
     assert_equal was_created << 0, now_created, kata_id
+    # runner_choice has been dropped
+    was[:manifest].delete('runner_choice')
+    # each manifest file now stored in hash
+    update_files(was[:manifest]['visible_files'])
     assert_equal was[:manifest], now[:manifest], kata_id
     # increments
     was[:increments].values.each do |incs|
@@ -73,23 +77,28 @@ class TestBase < HexMiniTest
         assert old_files.keys.include?('output'), "A:#{diagnostic}"
         old_stdout = old_files.delete('output')
         new_info = now[:tag_files][avatar_name][tag]
-        assert_equal old_files, new_info['files'], "B:#{diagnostic}"
+
+        assert_equal old_files.keys.sort, new_info['files'].keys.sort, "B1:#{diagnostic}"
+        old_files.each do |filename,content|
+          assert_equal content, new_info['files'][filename]['content'], "B2:#{diagnostic}"
+        end
+
         if tag == 0
           # tag zero == creation event
-          assert_nil new_info['stdout'], "C:#{diagnostic}"
-          assert_nil new_info['stderr'], "D:#{diagnostic}"
-          assert_nil new_info['status'], "E:#{diagnostic}"
+          assert_nil new_info['stdout'], "C1:#{diagnostic}"
+          assert_nil new_info['stderr'], "C2:#{diagnostic}"
+          assert_nil new_info['status'], "C3:#{diagnostic}"
         else
           # every other event is a test event
-          assert_equal old_stdout, new_info['stdout'], "F:#{diagnostic}"
-          assert_equal '',         new_info['stderr'], "G:#{diagnostic}"
-          assert_equal 0,          new_info['status'], "H:#{diagnostic}"
+          assert_equal old_stdout, new_info['stdout']['content'], "D1:#{diagnostic}"
+          assert_equal '',         new_info['stderr']['content'], "D2:#{diagnostic}"
+          assert_equal 0,          new_info['status'], "D3:#{diagnostic}"
         end
       end
     end
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - -
+  private
 
   def was_data(kata_id)
     was = {}
@@ -99,6 +108,7 @@ class TestBase < HexMiniTest
     was[:increments].each do |avatar_name,increments|
       was[:tag_files][avatar_name] = {}
       increments.each do |increment|
+        # TODO: do this in the port() call?
         outcome = increment.delete('outcome')
         unless outcome.nil?
           increment['colour'] = outcome
@@ -125,13 +135,25 @@ class TestBase < HexMiniTest
       now[:tag_files][avatar_name] = {}
       events = saver.kata_events(kid)
       events.each_with_index do |event,n|
-        event['number'] = n
+        event['number'] = n # TODO: revist this. Better to drop from was_data?
         now_info = saver.kata_event(kid, n)
         now[:tag_files][avatar_name][n] = now_info
       end
       now[:increments][avatar_name] = events
     end
     now
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  def update_files(files)
+    files.transform_values!{ |content| file(content) }
+  end
+
+  # - - - - - - - - - - - - - - - - - - -
+
+  def file(content)
+    { 'content' => content }
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -

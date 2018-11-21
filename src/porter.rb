@@ -28,12 +28,8 @@ class Porter
 
     kata_id = kata_ids[0]
     manifest = storer.kata_manifest(kata_id)
+    update_manifest(manifest)
     set_id(manifest)
-    # output is now stdout/stderr/status which
-    # are separated from files
-    manifest['visible_files'].delete('output')
-    # time-stamps now use 7th usec integer
-    manifest['created'] << 0
     id6 = saver.group_create(manifest)
 
     remember_mapping(kata_id, id6)
@@ -50,9 +46,10 @@ class Porter
         duration = 0.0
         index = increment['number']
         files = storer.tag_visible_files(kata_id, avatar_name, index)
-        stdout = files.delete('output')
-        stderr = ''
+        stdout = file(files.delete('output'))
+        stderr = file('')
         status = 0
+        update_files(files)
         saver.kata_ran_tests(kid, index, files, time, duration, stdout, stderr, status, colour)
       end
     end
@@ -63,6 +60,36 @@ class Porter
   end
 
   private
+
+  def update_manifest(manifest)
+    # output is now stdout/stderr/status which
+    # are separated from files
+    manifest['visible_files'].delete('output')
+    # time-stamps now use 7th usec integer
+    manifest['created'] << 0
+    # runner_choice is now dropped
+    manifest.delete('runner_choice')
+    # each file is now stored in a hash
+    manifest['visible_files'].transform_values!{ |content|
+      { 'content' => content }
+    }
+  end
+
+  # - - - - - - - - - - - - - - - - - - -
+
+  def update_files(files)
+    files.transform_values!{ |content| file(content) }
+  end
+
+  # - - - - - - - - - - - - - - - - - - -
+
+  def file(content, truncated = false)
+    { 'content' => content,
+      'truncated' => truncated
+    }
+  end
+
+  # - - - - - - - - - - - - - - - - - - -
 
   def set_id(manifest)
     id6 = manifest['id'][0..5]

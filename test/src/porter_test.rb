@@ -212,7 +212,7 @@ class PorterTest < TestBase
   ids from 4D that initially failed to port
   ) do
     # "display_name"=>"git, bash"
-    assert_now_ported('4D29143FE1') 
+    assert_now_ported('4D29143FE1')
   end
 
   private
