@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ev
 
 readonly ROOT_DIR="$( cd "$( dirname "${0}" )" && cd .. && pwd )"
 
