@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ev
+set -e
 
 # https://github.com/cyber-dojo/inserter
 

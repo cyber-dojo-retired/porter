@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ev
+set -e
 
 readonly ROOT_DIR="$( cd "$( dirname "${0}" )" && pwd )"
 readonly MY_NAME="${ROOT_DIR##*/}"

@@ -1,5 +1,4 @@
 #!/bin/bash
-set -v
 
 declare server_status=0
 declare client_status=0
