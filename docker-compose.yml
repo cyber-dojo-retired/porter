@@ -30,10 +30,10 @@ services:
     init: true
     container_name: test-porter-server
     read_only: true
-    tmpfs: /tmp
+    tmpfs:
+      - /id-map:uid=19664,gid=19664
+      - /tmp:uid=19664,gid=19664
     restart: 'no'
-    volumes:
-      - /tmp/id-map:/id-map:rw
     depends_on:
       - storer
       - saver
@@ -46,9 +46,11 @@ services:
     init: true
     container_name: test-porter-storer
     read_only: true
-    tmpfs: /tmp
-    volumes:
-      - /tmp/storer:/usr/src/cyber-dojo/katas:rw
+    tmpfs:
+      - /usr/src/cyber-dojo/katas:uid=19661,gid=19661
+      - /tmp:uid=19661,gid=19661
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   saver:
     user: saver:saver
@@ -56,7 +58,6 @@ services:
     init: true
     container_name: test-porter-saver
     read_only: true
-    tmpfs: /tmp
-    volumes:
-      - /tmp/groups:/groups:rw
-      - /tmp/katas:/katas:rw
+    tmpfs:
+      - /cyber-dojo:uid=19663,gid=19663
+      - /tmp:uid=19663,gid=19663
