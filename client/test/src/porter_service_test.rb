@@ -40,10 +40,12 @@ class PorterServiceTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+=begin
   test '7ED',
   %w( port of non-existent partial_id returns empty string ) do
     id = porter.port('a4211p6A')
     assert_equal '', id
   end
+=end
 
 end
