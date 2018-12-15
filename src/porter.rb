@@ -13,37 +13,16 @@ class Porter
       fail "malformed:id:#{id} !exist"
     end
 
-    id6 = id[0..5]
-
-    if saver.group_exists?(id6)
-      # unique kata-id, already ported
-      return id6
-    end
-
-    filenames = Dir.glob("/id-map/#{id}**")
-    kata_ids = storer.katas_completed(id)
-
-    if filenames.size + kata_ids.size != 1
-      # not-unique
-      return ''
-    end
-
-    if filenames.size == 1
-      # non-unique kata-id, already ported
-      return IO.read(filenames[0])
-    end
-
-    kata_id = kata_ids[0]
-    manifest = storer.kata_manifest(kata_id)
+    manifest = storer.kata_manifest(id)
     update_manifest(manifest)
     set_id(manifest)
     id6 = saver.group_create(manifest)
 
-    remember_mapping(kata_id, id6)
+    remember_mapping(id, id6)
 
-    storer.avatars_started(kata_id).each do |avatar_name|
+    storer.avatars_started(id).each do |avatar_name|
       kid = group_join(id6, avatar_name)
-      increments = storer.avatar_increments(kata_id, avatar_name)
+      increments = storer.avatar_increments(id, avatar_name)
       increments[1..-1].each do |increment|
         colour = increment['colour'] || increment['outcome']
         time = increment['time']
@@ -52,7 +31,7 @@ class Porter
         # duration is now stored
         duration = 0.0
         index = increment['number']
-        files = storer.tag_visible_files(kata_id, avatar_name, index)
+        files = storer.tag_visible_files(id, avatar_name, index)
         stdout = file(files.delete('output'))
         stderr = file('')
         status = 0
@@ -61,7 +40,7 @@ class Porter
       end
     end
 
-    storer.kata_delete(kata_id)
+    storer.kata_delete(id)
 
     id6
   end
