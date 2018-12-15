@@ -12,7 +12,18 @@ class PorterTest < TestBase
   port of id that does not exist raises
   ) do
     id = '9k81d40123'
-    error = assert_raises { port(id) }
+    error = assert_raises(RuntimeError) { port(id) }
+    assert_equal "malformed:id:#{id} !exist", error.message
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '1E2', %w(
+  port of id that has already been ported raises
+  ) do
+    id = '9f8TeZMZAq'
+    port(id)
+    error = assert_raises(RuntimeError) { port(id) }
     assert_equal "malformed:id:#{id} !exist", error.message
   end
 
@@ -37,16 +48,13 @@ class PorterTest < TestBase
       now = now_data(gid)
       refute storer.kata_exists?(id10), id10
       assert_ported(was, now, id10)
-      # Idempotent
-      gid2 = port(id10)
-      assert_equal gid, gid2, id10
     end
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1E3', %w(
-  port of some newer ids some of which include l (ell)
+  port of newer ids some of which include l (ell, lowercase L)
   ) do
     Katas_new_ids.each do |id10|
       assert storer.kata_exists?(id10), id10
@@ -62,9 +70,6 @@ class PorterTest < TestBase
       now = now_data(gid)
       refute storer.kata_exists?(id10), id10
       assert_ported(was, now, id10)
-      # Idempotent
-      gid2 = port(id10)
-      assert_equal gid, gid2, id10
     end
   end
 
@@ -83,9 +88,6 @@ class PorterTest < TestBase
       gid = port(id10)
       assert_equal '', gid, id10
       assert storer.kata_exists?(id10), id10
-      # Idempotent
-      gid2 = port(id10)
-      assert_equal '', gid2, id10
     end
   end
 =end
@@ -124,15 +126,6 @@ class PorterTest < TestBase
       assert_equal 6, dup_id.size
       gid = port(dup_id)
       assert_equal '', gid, kata_id
-    end
-
-    # Idempotent
-    katas_dup_ids.each do |kata_id|
-      (6..10).each do |n|
-        partial_id = kata_id[0..n]
-        gid = port(partial_id)
-        assert_equal ids[kata_id], gid, kata_id
-      end
     end
   end
 =end
@@ -230,7 +223,6 @@ class PorterTest < TestBase
   )
 
   Katas_new_ids = %w(
-    9f8TeZMZAq
     9f67Q9PyZm
     9fcW44ltyz
     9fDYJR3BfG

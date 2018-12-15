@@ -10,7 +10,7 @@ class LargeSampleTest < TestBase
 
   test '915',
   'all of katas from 7E dir port ok' do
-    Katas_7E_ids.each do |id8|
+    Katas_7E_ids[0..limit].each do |id8|
       kata_id = "7E#{id8}"
       assert_now_ported(kata_id)
     end
@@ -20,13 +20,17 @@ class LargeSampleTest < TestBase
 
   test '916',
   'all of katas from 4D dir port ok' do
-    Katas_4D_ids.each do |id8|
+    Katas_4D_ids[0..limit].each do |id8|
       kata_id = "4D#{id8}"
       assert_now_ported(kata_id)
     end
   end
 
   private
+
+  def limit
+    -1
+  end
 
   Katas_7E_ids = %w(
     008106FA  0E07819D  181C942D  28C99316  3A4F041F  4D7ED256  5AFAD6AE  67F75639  76FA23C1  8605DDAD  959F6648  A77B4561  C01B91D8  D419DCD2  E7FA5AD3  F77EC8E1

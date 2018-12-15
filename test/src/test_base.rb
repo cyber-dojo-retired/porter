@@ -23,9 +23,6 @@ class TestBase < HexMiniTest
     now = now_data(gid)
     refute storer.kata_exists?(kata_id), kata_id
     assert_ported(was, now, kata_id)
-    # Idempotent
-    gid2 = port(kata_id)
-    assert_equal gid, gid2, kata_id
     print '.'
     STDOUT.flush
   end
