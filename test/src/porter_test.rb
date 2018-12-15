@@ -46,15 +46,24 @@ class PorterTest < TestBase
   saver has saved the practice-session
   with an id unequal to its original 1st 6 chars
   ) do
-    id1 = '0BA7E1E01B'
-    id2 = '0BA7E16149'
-    assert_equal [id1,id2].sort, storer.katas_completed(id1[0..5]).sort
+    dup = '0BA7E1'
+    id1 = dup+'E01B'
+    id2 = dup+'6149'
+    assert_equal [id1,id2].sort, storer.katas_completed(dup).sort
     assert_ports_with_different_id(id1)
     assert_ports_with_different_id(id2)
 
-    id1 = '7E53732F00'
-    id2 = '7E5373E92E'
-    assert_equal [id1,id2].sort, storer.katas_completed(id1[0..5]).sort
+    dup = '7E5373'
+    id1 = dup+'2F00'
+    id2 = dup+'E92E'
+    assert_equal [id1,id2].sort, storer.katas_completed(dup).sort
+    assert_ports_with_different_id(id1)
+    assert_ports_with_different_id(id2)
+
+    dup = '463748'
+    id1 = dup+'A0E8'
+    id2 = dup+'D943'
+    assert_equal [id1,id2].sort, storer.katas_completed(dup).sort
     assert_ports_with_different_id(id1)
     assert_ports_with_different_id(id2)
   end
@@ -68,43 +77,6 @@ class PorterTest < TestBase
       assert_ports_with_matching_id(id10)
     end
   end
-
-  # - - - - - - - - - - - - - - - - - - - - - - -
-
-=begin
-  test '1E7', %w(
-  after port of id which is unique in 1st 7 chars in storer
-  saver has saved the practice-session with a new id
-  and you cannot access the new practice-sesssion with partial_id's 1st 6 chars
-  ) do
-    ids = {}
-    katas_dup_ids = %w( 463748A0E8
-                        463748D943 )
-    katas_dup_ids.each do |kata_id|
-      assert storer.kata_exists?(kata_id), kata_id
-      partial_id = kata_id[0..6]
-      assert_equal 7, partial_id.size
-      assert_equal [kata_id], storer.katas_completed(partial_id)
-      was = was_data(kata_id)
-
-      gid = port(partial_id)
-
-      assert_equal 6, gid.size
-      id6 = kata_id[0..5]
-      refute_equal id6, gid, kata_id # new-id
-      assert saver.group_exists?(gid), kata_id
-      now = now_data(gid)
-      refute storer.kata_exists?(kata_id)
-      assert_ported(was, now, kata_id)
-      ids[kata_id] = gid
-
-      dup_id = kata_id[0..5]
-      assert_equal 6, dup_id.size
-      gid = port(dup_id)
-      assert_equal '', gid, kata_id
-    end
-  end
-=end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
