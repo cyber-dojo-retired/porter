@@ -35,19 +35,7 @@ class PorterTest < TestBase
   with an id equal to its original 1st 6 chars
   ) do
     Katas_old_ids.each do |id10|
-      assert storer.kata_exists?(id10), id10
-      id6 = id10[0..5]
-      assert_equal [id10], storer.katas_completed(id6) # unique
-      was = was_data(id10)
-      refute saver.group_exists?(id6), id10
-
-      gid = port(id10)
-
-      assert_equal id6, gid, id10
-      assert saver.group_exists?(gid), id10
-      now = now_data(gid)
-      refute storer.kata_exists?(id10), id10
-      assert_ported(was, now, id10)
+      assert_ports_with_matching_id(id10)
     end
   end
 
@@ -60,30 +48,15 @@ class PorterTest < TestBase
   ) do
     id1 = '0BA7E1E01B'
     id2 = '0BA7E16149'
+    assert_equal [id1,id2].sort, storer.katas_completed(id1[0..5]).sort
+    assert_ports_with_different_id(id1)
+    assert_ports_with_different_id(id2)
 
-    assert storer.kata_exists?(id1), id1
-    id6 = id1[0..5]
-    assert_equal [id1,id2].sort, storer.katas_completed(id6).sort # not-unique
-    was = was_data(id1)
-    refute saver.group_exists?(id6), id1
-    gid1 = port(id1)
-    refute_equal id6, gid1, id1
-    assert saver.group_exists?(gid1), id1
-    now = now_data(gid1)
-    refute storer.kata_exists?(id1), id1
-    assert_ported(was, now, id1)
-
-    assert storer.kata_exists?(id2), id2
-    id6 = id2[0..5]
-    assert_equal [id2].sort, storer.katas_completed(id6).sort # now unique in storer
-    was = was_data(id2)
-    refute saver.group_exists?(id6), id2
-    gid2 = port(id2)
-    refute_equal id6, gid2, id2
-    assert saver.group_exists?(gid2), id2
-    now = now_data(gid2)
-    refute storer.kata_exists?(id2), id2
-    assert_ported(was, now, id2)
+    id1 = '7E53732F00'
+    id2 = '7E5373E92E'
+    assert_equal [id1,id2].sort, storer.katas_completed(id1[0..5]).sort
+    assert_ports_with_different_id(id1)
+    assert_ports_with_different_id(id2)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,19 +65,7 @@ class PorterTest < TestBase
   port of newer ids some of which include l (ell, lowercase L)
   ) do
     Katas_new_ids.each do |id10|
-      assert storer.kata_exists?(id10), id10
-      id6 = id10[0..5]
-      assert_equal [id10], storer.katas_completed(id6)
-      was = was_data(id10)
-      refute saver.group_exists?(id6), id10
-
-      gid = port(id10)
-
-      assert_equal id6, gid, id10
-      assert saver.group_exists?(gid), id10
-      now = now_data(gid)
-      refute storer.kata_exists?(id10), id10
-      assert_ported(was, now, id10)
+      assert_ports_with_matching_id(id10)
     end
   end
 
@@ -162,57 +123,41 @@ class PorterTest < TestBase
       '7EA0979D3E', # 'Java, Approval'
       '7E246F2339', # 'C (gcc), Unity'
       '7E12E5A294', # 'C (gcc), Unity'
-      '7E53732F00', # 'Clojure, .test'
     ]
-    kata_ids.each do |kata_id|
-      assert_now_ported(kata_id)
+    kata_ids.each do |id10|
+      assert_ports_with_matching_id(id10)
     end
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1EA', %w(
-  ids from 7E dir that initially failed to port
+  id from 7E dir that initially failed to port
   because in storer 'colour' used to be called 'outcome' ) do
-    kata_ids = %w(
-      7E53666BFE
-    )
-    kata_ids.each do |kata_id|
-      assert_now_ported(kata_id)
-    end
+    assert_ports_with_matching_id('7E53666BFE')
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1EC', %w(
-  ids from 7E dir that initially failed to port
-  because they hold a bunch of now-dead diff/fork related properties
+  id from 7E dir that initially failed to port
+  because it holds a bunch of now-dead diff/fork related properties
   which storer was not deleting
   ) do
-    kata_ids = %w(
-      7EBAEC5207
-    )
-    kata_ids.each do |kata_id|
-      assert_now_ported(kata_id)
-    end
+    assert_ports_with_matching_id('7EBAEC5207')
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1EF', %w(
-  ids from 7E dir that initially failed to port
-  because they are for (modern) custom start-points,
-  whose manifest does do contain an 'image_name'
-  but do not contain a 'runner_choice',
+  id from 7E dir that initially failed to port
+  because it is for (modern) custom start-points,
+  whose manifest does contain an 'image_name'
+  but does not contain a 'runner_choice',
     eg 'Java Countdown, Round 1',
-  and storer failed to cater for this
+  and storer was failing to cater for this
   ) do
-    kata_ids = %w(
-      7EC7A19DF3
-    )
-    kata_ids.each do |kata_id|
-      assert_now_ported(kata_id)
-    end
+    assert_ports_with_matching_id('7EC7A19DF3')
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
@@ -221,7 +166,7 @@ class PorterTest < TestBase
   ids from 4D that initially failed to port
   ) do
     # "display_name"=>"git, bash"
-    assert_now_ported('4D29143FE1')
+    assert_ports_with_matching_id('4D29143FE1')
   end
 
   private

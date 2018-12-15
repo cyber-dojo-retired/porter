@@ -9,20 +9,20 @@ class LargeSampleTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '915',
-  'all of katas from 7E dir port ok' do
+  'all of katas sampled from 7E/ dir port ok' do
     Katas_7E_ids[0..limit].each do |id8|
-      kata_id = "7E#{id8}"
-      assert_now_ported(kata_id)
+      id10 = "7E#{id8}"
+      assert_ports_with_matching_id(id10)
     end
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '916',
-  'all of katas from 4D dir port ok' do
+  'all of katas sampled from 4D/ dir port ok' do
     Katas_4D_ids[0..limit].each do |id8|
-      kata_id = "4D#{id8}"
-      assert_now_ported(kata_id)
+      id10 = "4D#{id8}"
+      assert_ports_with_matching_id(id10)
     end
   end
 

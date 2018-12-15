@@ -15,6 +15,36 @@ class TestBase < HexMiniTest
 
   # - - - - - - - - - - - - - - - - -
 
+  def assert_ports_with_matching_id(id10)
+    id6 = id10[0..5]
+    assert storer.kata_exists?(id10), id10
+    refute saver.group_exists?(id6), id10
+    was = was_data(id10)
+    gid = port(id10)
+    assert_equal id6, gid, id10
+    assert saver.group_exists?(gid), id10
+    now = now_data(gid)
+    refute storer.kata_exists?(id10), id10
+    assert_ported(was, now, id10)
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  def assert_ports_with_different_id(id10)
+    id6 = id10[0..5]
+    assert storer.kata_exists?(id10), id10
+    refute saver.group_exists?(id6), id10
+    was = was_data(id10)
+    gid = port(id10)
+    refute_equal id6, gid, id10
+    assert saver.group_exists?(gid), id10
+    now = now_data(gid)
+    refute storer.kata_exists?(id10), id10
+    assert_ported(was, now, id10)
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
   def assert_now_ported(kata_id)
     assert storer.kata_exists?(kata_id), kata_id
     was = was_data(kata_id)
