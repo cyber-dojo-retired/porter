@@ -26,6 +26,8 @@ class TestBase < HexMiniTest
     now = now_data(gid)
     refute storer.kata_exists?(id10), id10
     assert_ported(was, now, id10)
+    print '.'
+    STDOUT.flush
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -41,23 +43,11 @@ class TestBase < HexMiniTest
     now = now_data(gid)
     refute storer.kata_exists?(id10), id10
     assert_ported(was, now, id10)
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  def assert_now_ported(kata_id)
-    assert storer.kata_exists?(kata_id), kata_id
-    was = was_data(kata_id)
-    gid = port(kata_id) # <<<<<<<
-    assert saver.group_exists?(gid), kata_id
-    now = now_data(gid)
-    refute storer.kata_exists?(kata_id), kata_id
-    assert_ported(was, now, kata_id)
     print '.'
     STDOUT.flush
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - -
+  # - - - - - - - - - - - - - - - - -
 
   def assert_ported(was, now, kata_id)
     # manifest
