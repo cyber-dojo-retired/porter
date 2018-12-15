@@ -34,7 +34,17 @@ class PorterTest < TestBase
   saver has saved the practice-session
   with an id equal to its original 1st 6 chars
   ) do
-    Katas_old_ids.each do |id10|
+    # 421F303E80 has revert_tag entries in its increments
+    kata_ids = %w(
+      1F00C1BFC8
+      5A0F824303
+      420B05BA0A
+      420F2A2979
+      421F303E80
+      420BD5D5BE
+      421AFD7EC5
+    )
+    kata_ids.each do |id10|
       assert_ports_with_matching_id(id10)
     end
   end
@@ -46,23 +56,23 @@ class PorterTest < TestBase
   saver has saved the practice-session
   with an id unequal to its original 1st 6 chars
   ) do
-    dup = '0BA7E1'
-    id1 = dup+'E01B'
-    id2 = dup+'6149'
-    assert_equal [id1,id2].sort, storer.katas_completed(dup).sort
-    assert_ports_with_different_id(id1)
-    assert_ports_with_different_id(id2)
+    assert_matching_pair('0BA7E1'+'E01B',
+                         '0BA7E1'+'6149')
+    assert_matching_pair('7E5373'+'2F00',
+                         '7E5373'+'E92E')
+    assert_matching_pair('463748'+'A0E8',
+                         '463748'+'D943')
+    assert_matching_pair('7E4F34'+'7A86',
+                         '7E4F34'+'AC14')
+    assert_matching_pair('7EC4C9'+'3129',
+                         '7EC4C9'+'E1E2')
+  end
 
-    dup = '7E5373'
-    id1 = dup+'2F00'
-    id2 = dup+'E92E'
-    assert_equal [id1,id2].sort, storer.katas_completed(dup).sort
-    assert_ports_with_different_id(id1)
-    assert_ports_with_different_id(id2)
+  # - - - - - - - - - - - - - - - - - - - - - - -
 
-    dup = '463748'
-    id1 = dup+'A0E8'
-    id2 = dup+'D943'
+  def assert_matching_pair(id1, id2)
+    assert_equal id1[0..5], id2[0..5]
+    dup = id1[0..5]
     assert_equal [id1,id2].sort, storer.katas_completed(dup).sort
     assert_ports_with_different_id(id1)
     assert_ports_with_different_id(id2)
@@ -73,7 +83,17 @@ class PorterTest < TestBase
   test '1E3', %w(
   port of newer ids some of which include l (ell, lowercase L)
   ) do
-    Katas_new_ids.each do |id10|
+    kata_ids = %w(
+      9f67Q9PyZm
+      9fcW44ltyz
+      9fDYJR3BfG
+      9fH6TumFV2
+      9fSqUqMecK
+      9fT2wMW0BM
+      9fUSFm6hmT
+      9fvMuUlKbh
+    )
+    kata_ids.each do |id10|
       assert_ports_with_matching_id(id10)
     end
   end
@@ -137,32 +157,8 @@ class PorterTest < TestBase
   test '120', %w(
   ids from 4D that initially failed to port
   ) do
-    # "display_name"=>"git, bash"
+    # "display_name" => "git, bash"
     assert_ports_with_matching_id('4D29143FE1')
   end
-
-  private
-
-  # 421F303E80 has revert_tag entries in its increments
-  Katas_old_ids = %w(
-    1F00C1BFC8
-    5A0F824303
-    420B05BA0A
-    420F2A2979
-    421F303E80
-    420BD5D5BE
-    421AFD7EC5
-  )
-
-  Katas_new_ids = %w(
-    9f67Q9PyZm
-    9fcW44ltyz
-    9fDYJR3BfG
-    9fH6TumFV2
-    9fSqUqMecK
-    9fT2wMW0BM
-    9fUSFm6hmT
-    9fvMuUlKbh
-  )
 
 end
