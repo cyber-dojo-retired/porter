@@ -8,16 +8,13 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-=begin
   test '1E4', %w(
-  port of id that does not exist returns empty string
-  THIS SHOULD RAISE
+  port of id that does not exist raises
   ) do
-    partial_id = '9k81d4'
-    id = port(partial_id)
-    assert_equal '', id
+    id = '9k81d40123'
+    error = assert_raises { port(id) }
+    assert_equal "malformed:id:#{id} !exist", error.message
   end
-=end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 

@@ -5,7 +5,14 @@ class Porter
     @externals = externals
   end
 
+  def port_all
+  end
+
   def port(id)
+    if !storer.kata_exists?(id)
+      fail "malformed:id:#{id} !exist"
+    end
+
     id6 = id[0..5]
 
     if saver.group_exists?(id6)
