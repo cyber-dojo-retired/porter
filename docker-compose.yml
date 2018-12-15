@@ -28,7 +28,7 @@ services:
     user: porter:porter
     image: cyberdojo/porter
     ports:
-      - "4517:4517"
+      - 4517:4517
     init: true
     container_name: test-porter-server
     read_only: true

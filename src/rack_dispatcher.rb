@@ -39,7 +39,7 @@ class RackDispatcher
     wfa = WellFormedArgs.new(body)
     args = case name
       when /^sha$/  then [image]
-      when /^port$/ then [porter, wfa.partial_id]
+      when /^port$/ then [porter, wfa.id]
       else
         raise ClientError, "#{name}:unknown:"
     end

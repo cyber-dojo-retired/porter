@@ -14,13 +14,13 @@ class WellFormedArgs
 
   # - - - - - - - - - - - - - - - -
 
-  def partial_id
+  def id
     @arg_name = __method__.to_s
     unless Base58.string?(arg)
       malformed('!Base58')
     end
-    unless (6..10).include?(arg.size)
-      malformed("size==#{arg.size}")
+    unless arg.size == 10
+      malformed("size==#{arg.size} !10")
     end
     arg
   end

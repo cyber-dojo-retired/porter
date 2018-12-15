@@ -5,16 +5,16 @@ class Porter
     @externals = externals
   end
 
-  def port(partial_id)
-    id6 = partial_id[0..5]
+  def port(id)
+    id6 = id[0..5]
 
     if saver.group_exists?(id6)
       # unique kata-id, already ported
       return id6
     end
 
-    filenames = Dir.glob("/id-map/#{partial_id}**")
-    kata_ids = storer.katas_completed(partial_id)
+    filenames = Dir.glob("/id-map/#{id}**")
+    kata_ids = storer.katas_completed(id)
 
     if filenames.size + kata_ids.size != 1
       # not-unique
