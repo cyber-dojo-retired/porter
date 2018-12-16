@@ -34,16 +34,15 @@ class PorterTest < TestBase
   saver has saved the practice-session
   with an id equal to its original 1st 6 chars
   ) do
-    # 421F303E80 has revert_tag entries in its increments
     kata_ids = %w(
       1F00C1BFC8
       5A0F824303
       420B05BA0A
       420F2A2979
-      421F303E80
       420BD5D5BE
       421AFD7EC5
     )
+    kata_ids << '421F303E80' # 'revert_tag' in its increments
     kata_ids.each do |id10|
       assert_ports_with_matching_id(id10)
     end
