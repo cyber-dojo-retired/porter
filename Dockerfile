@@ -14,5 +14,6 @@ RUN  chown -R porter ${PORTER_HOME}
 ARG SHA
 RUN echo ${SHA} > ${PORTER_HOME}/sha.txt
 
+EXPOSE 4517
 USER porter
 CMD [ "./up.sh" ]
