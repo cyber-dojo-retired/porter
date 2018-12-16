@@ -6,6 +6,10 @@ class ExternalStorer
     get(__method__, partial_id)
   end
 
+  def katas_completions(outer_id)
+    get(__method__, outer_id)
+  end
+
   def kata_exists?(kata_id)
     get(__method__, kata_id)
   end

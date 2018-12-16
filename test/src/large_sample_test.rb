@@ -10,9 +10,10 @@ class LargeSampleTest < TestBase
 
   test '915',
   'all of katas sampled from 7E/ dir port ok' do
+    all = externals.storer.katas_completions('7E')
+    assert (Katas_7E_ids - all).empty?
     Katas_7E_ids[0..limit].each do |id8|
-      id10 = "7E#{id8}"
-      assert_ports_with_matching_id(id10)
+      assert_ports_with_matching_id("7E#{id8}")
     end
   end
 
@@ -20,9 +21,10 @@ class LargeSampleTest < TestBase
 
   test '916',
   'all of katas sampled from 4D/ dir port ok' do
+    all = externals.storer.katas_completions('4D')
+    assert (Katas_4D_ids - all).empty?
     Katas_4D_ids[0..limit].each do |id8|
-      id10 = "4D#{id8}"
-      assert_ports_with_matching_id(id10)
+      assert_ports_with_matching_id("4D#{id8}")
     end
   end
 
