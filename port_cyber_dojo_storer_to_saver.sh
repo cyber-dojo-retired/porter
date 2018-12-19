@@ -4,12 +4,72 @@ set -e
 readonly ROOT_DIR="$( cd "$( dirname "${0}" )" && cd .. && pwd )"
 readonly MY_NAME=`basename "${0}"`
 
-echo "${MY_NAME} ${1} ... sdfsdf"
+error() { echo "ERROR: ${2}"; exit ${1}; }
 
-# lots of help/use text
-# recommend starting with few id10, then few id2
-# have option to generate id2/id10 inside storer
-# (means it must not be an exception to try and port
+show_use()
+{
+  echo
+  echo "Ports cyber-dojo practice sessions from their old format to their new format."
+  echo "The old format used:"
+  echo "  o) 10-digit ids"
+  echo "  o) the storer service"
+  echo "  o) a docker data-container."
+  echo "The new format uses:"
+  echo "  o) 6-digit ids (with a larger alphabet)"
+  echo "  o) the saver service"
+  echo "  o) a volume-mounted host dir"
+  echo
+  echo "Note that this port is automated and destructive. As each session"
+  echo "is successfully ported to saver it is removed from storer."
+  echo "Consider backup up your server before you start."
+  echo
+  echo "Start by checking saver's host dir existence and permissions."
+  echo "Follow the instructions till this reports success:"
+  echo "  \$ ${MY_NAME} --host-dir"
+  echo
+  echo "Then move on to porting the practice sessions."
+  echo "As each session is ported, a single P/E/M character will be printed:"
+  echo
+  echo "   P - The session ported ok."
+  echo "       This means the new 6-digit id is the 1st 6 chars of the 10-digit id."
+  echo "       For example 9f8TeZMZA2 --> 9f8TeZ"
+  echo
+  echo "   M - The session ported ok but needed an id-map."
+  echo "       This means the new 6-digit is NOT the 1st 6 chars of the 10-digit id."
+  echo "       For example 9f8TeZMZA2 -> uQMecK"
+  echo "       ...EXPLAIN WHERE THIS INFO IS HELD..."
+  echo
+  echo "   E - The session failed to port."
+  echo "       An exception arose and the session is still in the storer."
+  echo "       ...EXPLAIN WHERE THIS INFO IS HELD..."
+  echo
+  echo "First try porting a few single sessions."
+  echo "To show a randomly selected 10-digit id:"
+  echo "  \$ ${MY_NAME} --show10"
+  echo "Then try porting it."
+  echo "For example, if the 10-digit id is 9f8TeZMZA2"
+  echo "  \$ ${MY_NAME} 9f8TeZMZA2"
+  echo
+  echo "If all is well, you can move on to porting all"
+  echo "the sessions with a given 2-digit prefix."
+  echo "To show a randomly selected 2-digit id:"
+  echo "  \$ ${MY_NAME} --show2"
+  echo "Then try porting them."
+  echo "For example, if the 2-digit prefix is 5A"
+  echo "  \$ ${MY_NAME} 5A"
+  echo
+  echo "If all is well, you can move on to porting storer to saver completely:"
+  echo "  \$ ${MY_NAME} port --all"
+  echo ""
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+if [ "${1}" = '--help' ];  then
+  show_use; exit 0
+fi
+
+# (does this mean it must not be an exception to try and port
 # an id that has already been ported)
 
 # check docker installed

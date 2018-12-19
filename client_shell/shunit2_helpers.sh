@@ -1,11 +1,7 @@
 
 assertStdoutEquals() { assertEquals 'stdout' "$1" "`cat ${stdoutF}`"; }
 assertStderrEquals() { assertEquals 'stderr' "$1" "`cat ${stderrF}`"; }
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-assertNoStdout() { assertStdoutEquals ""; }
-assertNoStderr() { assertStderrEquals ""; }
+assertStatusEquals() { assertEquals 'status' "$1" "`cat ${statusF}`"; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -39,7 +35,7 @@ oneTimeSetUp()
   mkdir "${outputDir}"
   stdoutF="${outputDir}/stdout"
   stderrF="${outputDir}/stderr"
-  mkdirCmd='mkdir'  # save command name in variable to make future changes easy
+  statusF="${outputDir}/status"
   testDir="${SHUNIT_TMPDIR}/some_test_dir"
 }
 

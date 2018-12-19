@@ -7,8 +7,8 @@ test_help_message()
 {
   port --help
   assertStdoutIncludes 'sdfsdf'
-  assertNoStderr
-  #assertStatusZero
+  assertStderrEquals ''
+  assertStatusEquals 0
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
