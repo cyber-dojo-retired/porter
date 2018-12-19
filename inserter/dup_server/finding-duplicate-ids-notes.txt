@@ -1,0 +1,41 @@
+
+On storer VM.
+------------
+$ docker exec -it cyber-dojo-storer bash
+
+$ cd 0B
+
+$ ls -1 | cut -c-4 | sort | uniq -d
+46E9
+A7E1
+
+$ ls A7E1*
+A7E16149:
+manifest.json  owl
+A7E1E01B:
+buffalo               manifest.json         started_avatars.json
+f.lock                moose
+
+So duplicate IDs are
+0BA7E16149
+0BA7E1E01B
+
+- - - - - - - - - - - - - - - - - - -
+
+$ cd 46
+$ ls -1 | cut -c-4 | sort | uniq -d
+0D63
+3748
+A04F
+
+$ ls 3748*
+3748A0E8:
+deer                  koala                 started_avatars.json
+f.lock                manifest.json
+hippo                 raccoon
+3748D943:
+manifest.json  salmon
+
+So duplicate IDs are
+463748A0E8
+463748D943

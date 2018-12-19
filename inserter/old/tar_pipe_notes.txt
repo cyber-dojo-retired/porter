@@ -1,0 +1,21 @@
+
+OUT
+---
+Copying the whole katas/ dir out of the container into current dir...
+
+docker exec cyber-dojo-storer tar -c -f - -C /usr/src/cyber-dojo katas
+   | tar -x -f - -C .
+
+Copy just one katas/ sub-dir out of the container into the current dir...
+
+docker exec cyber-dojo-storer tar -c -f - -C /usr/src/cyber-dojo/katas 9F
+   | tar -x -f - -C .
+
+
+IN
+--
+
+Copying the while katas/ dir (off /tmp) into the container...
+
+tar -c -f - -C /tmp katas
+   | docker exec -i cyber-dojo-storer tar -x -f - -C /usr/src/cyber-dojo
