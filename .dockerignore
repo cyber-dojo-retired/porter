@@ -6,6 +6,7 @@
 
 !src
 !test
+!test_data_storer_context
 
 -#-----!Except these files
 
