@@ -15,16 +15,15 @@ show_use()
   echo "Ports cyber-dojo practice sessions from their old format to their new format."
   echo "The old format used:"
   echo "  o) 10-digit ids"
-  echo "  o) the storer service"
+  echo "  o) a service called storer"
   echo "  o) a docker data-container."
   echo "The new format uses:"
   echo "  o) 6-digit ids (with a larger alphabet)"
-  echo "  o) the saver service"
-  echo "  o) a volume-mounted host dir"
+  echo "  o) a service called saver"
+  echo "  o) a volume-mount"
   echo
   echo "Porting is destructive. As each session is successfully"
   echo "ported to saver it is removed from storer."
-  echo "?Back up your server before you start?"
   echo
   echo "As each session is ported, a single P/E/M character is printed:"
   echo
@@ -146,7 +145,11 @@ bring_up_storer_service()
     --detach \
       cyberdojo/storer)
   # TODO: with data-container mounted
+
+  # TODO: wait max 5 seconds for porter to be running ok
   trap remove_storer_service EXIT INT
+  # TODO: get its log
+  # TODO: if not running, show log & exit
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,15 +168,22 @@ bring_up_saver_service()
     --volume /cyber-dojo:/cyber-dojo \
       cyberdojo/saver)
 
+  # TODO: wait max 5 seconds for saver to be running ok
   trap remove_saver_service EXIT INT
+  # TODO: get its log
+  # TODO: if not running, show log & exit
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 remove_porter_service()
 {
-  docker container stop ${porter_cid}       > /dev/null
+  local log=$(docker logs ${porter_cid})
+  docker container stop ${porter_cid} > /dev/null
   docker container rm --force ${porter_cid} > /dev/null
+  if [[ ${log} == ERROR* ]]; then
+    >&2 echo ${log}
+  fi
 }
 
 bring_up_porter_service()
@@ -186,7 +196,10 @@ bring_up_porter_service()
     --volume /porter:/porter \
       cyberdojo/porter)
 
+  # TODO: wait max 5 seconds for porter to be running ok
   trap remove_porter_service EXIT INT
+  # TODO: get its log
+  # TODO: if not running, show log & exit
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
