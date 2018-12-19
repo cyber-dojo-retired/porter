@@ -24,9 +24,11 @@ show_use()
   echo "is successfully ported to saver it is removed from storer."
   echo "Back up your server before you start?"
   echo
-  echo "Start by checking saver's host dir existence and permissions."
+  echo "Start by checking the required preconditions,"
+  echo "for example, saver's host dir existence and permissions."
+  #     this also needs to check storer is NOT running, viz $ cyber-dojo down
   echo "Follow the instructions till this reports success:"
-  echo "  \$ ${MY_NAME} --host-dir"
+  echo "  \$ ${MY_NAME} --pre-check"
   echo
   echo "Then move on to porting the practice sessions."
   echo "As each session is ported, a single P/E/M character will be printed:"
@@ -66,32 +68,81 @@ show_use()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+check_docker_installed()
+{
+  :
+}
+
+check_storer_preconditions()
+{
+  :
+  # check storer service is NOT already up
+  # check data-container exists
+}
+
+check_storer_preconditions()
+{
+  :
+  # check saver service is NOT already up
+  # make sure /cyber-dojo dir exists
+}
+
+check_porter_preconditions()
+{
+  :
+  # make sure /porter exists (??? OR PUT JSON FILES IN /tmp ???)
+}
+
+pull_latest_images()
+{ :
+# docker pull cyberdojo/storer (to get eg kata_delete)
+# docker pull cyberdojo/saver
+# docker pull cyberdojo/porter
+}
+
+bring_up_storer_service()
+{
+  :
+  # with data-container mounted
+  # stop/rm storer container on trap EXIT
+}
+
+bring_up_saver_service()
+{
+  :
+  # with volume-mount /cyber-dojo dir
+  # check saver-uid has write access to /cyber-dojo (with docker exec)
+  #    (if on DockerToolbox with will be on default VM)
+  # stop/rm saver container on trap EXIT
+}
+
+bring_up_porter_service()
+{
+  :
+  # with links to storer and saver
+  # check porter-uid has write access to /id-map (with docker exec)
+  #    (if on DockerToolbox with will be on default VM)
+  # stop/rm porter container on trap EXIT
+}
+
+run_the_port()
+{
+  :
+  # Note: rack-dispatcher API is for proper service which web will use.
+  # docker exec -it porter-container sh -c 'ruby /app/port.rb ${*}'
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 if [ "${1}" = '--help' ];  then
   show_use; exit 0
 fi
-
-# (does this mean it must not be an exception to try and port
-# an id that has already been ported)
-
-# check docker installed
-
-# check data-container exists
-# check storer service is NOT already up
-# docker pull cyberdojo/storer (to get eg kata_delete)
-# bring up storer service
-
-# docker pull cyberdojo/saver
-# make sure /cyber-dojo dir exists
-# bring up saver service and volume-mount /cyber-dojo dir
-# check saver-uid has write access to /cyber-dojo (with docker exec)
-#    (if on DockerToolbox with will be on default VM)
-
-# docker pull cyberdojo/porter
-# make sure /id-map exists (??? OR PUT JSON FILES IN /tmp ???)
-# bring up porter container - needs to link to storer and saver
-# check porter-uid has write access to /id-map (with docker exec)
-#    (if on DockerToolbox with will be on default VM)
-# docker exec -it porter-container sh -c 'ruby /app/port.rb ${*}'
-
-# always remove porter container
-# always remove saver container
+check_docker_installed
+check_storer_preconditions
+check_saver_preconditions
+check_porter_preconditions
+pull_latest_images
+bring_up_storer_service
+bring_up_saver_service
+bring_up_porter_service
+run_the_port
