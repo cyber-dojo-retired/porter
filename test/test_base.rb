@@ -18,7 +18,7 @@ class TestBase < HexMiniTest
   def assert_ports_with_matching_id(id10)
     assert_ports(id10) do |id6,gid|
       assert_equal id6,gid,id10
-      #assert id_map      
+      # TODO: there is no id-map/id10 dir
     end
   end
 
@@ -27,6 +27,7 @@ class TestBase < HexMiniTest
   def assert_ports_with_different_id(id10)
     assert_ports(id10) do |id6,gid|
       refute_equal id6,gid,id10
+      # TODO: there is id-map/id10 dir      
     end
   end
 
