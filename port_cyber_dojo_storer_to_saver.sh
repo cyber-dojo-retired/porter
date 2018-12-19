@@ -22,9 +22,9 @@ show_use()
   echo "  o) the saver service"
   echo "  o) a volume-mounted host dir"
   echo
-  echo "Note that this port is automated and destructive. As each session"
+  echo "Note that porting is automated and destructive. As each session"
   echo "is successfully ported to saver it is removed from storer."
-  echo "Back up your server before you start?"
+  echo "?Back up your server before you start?"
   echo
   echo "As each session is ported, a single P/E/M character will be printed:"
   echo
@@ -104,7 +104,7 @@ check_saver_preconditions()
   if running_container saver ; then
     message+="The saver service is already running!${newline}"
     message+="Please run $ [sudo] cyber-dojo down${newline}"
-    error 3 ${message}
+    error 4 ${message}
   else
     echo 'Confirmed: the saver service is NOT already running'
   fi
@@ -114,7 +114,13 @@ check_saver_preconditions()
 
 check_porter_preconditions()
 {
-  :
+  if running_container porter ; then
+    message+="The porter service is already running!${newline}"
+    message+="Please run $ [sudo] docker rm -f porter${newline}"
+    error 5 ${message}
+  else
+    echo 'Confirmed: the porter service is NOT already running'
+  fi
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,8 +136,8 @@ pull_latest_images()
 
 remove_storer_service()
 {
-  docker stop ${storer_cid}
-  docker rm ${storer_cid}
+  docker container stop ${storer_cid}
+  docker container rm --force ${storer_cid}
 }
 
 bring_up_storer_service()
@@ -148,7 +154,7 @@ bring_up_storer_service()
 remove_saver_service()
 {
   docker stop ${saver_cid}
-  docker rm ${saver_cid}
+  docker container rm --force ${saver_cid}
 }
 
 bring_up_saver_service()
@@ -166,8 +172,8 @@ bring_up_saver_service()
 
 remove_porter_service()
 {
-  docker stop ${porter_cid}
-  docker rm ${porter_cid}
+  docker container stop ${porter_cid}
+  docker container rm --force ${porter_cid}
 }
 
 bring_up_porter_service()
@@ -187,7 +193,7 @@ bring_up_porter_service()
 
 run_the_port()
 {
-  # Note: web will use porter's rack-dispatcher API
+  # Note: web will use porter's rack-dispatcher API, we don't
   docker exec -it \
     ${porter_cid} \
       sh -c "ruby /app/src/port.rb ${*}"
