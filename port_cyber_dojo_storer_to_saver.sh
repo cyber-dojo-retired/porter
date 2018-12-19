@@ -1,18 +1,16 @@
 #!/bin/bash
 set -e
 
-readonly ROOT_DIR="$( cd "$( dirname "${0}" )" && cd .. && pwd )"
 readonly MY_NAME=`basename "${0}"`
 
 declare storer_cid=0
 declare saver_cid=0
 declare porter_cid=0
 
-error() { echo "ERROR: ${2}"; exit ${1}; }
+error() { echo "ERROR:"$'\n'" ${2}"; exit ${1}; }
 
 show_use()
 {
-  # It would be better to have this help inside the porter image...
   echo
   echo "Ports cyber-dojo practice sessions from their old format to their new format."
   echo "The old format used:"
@@ -28,13 +26,6 @@ show_use()
   echo "is successfully ported to saver it is removed from storer."
   echo "Back up your server before you start?"
   echo
-  echo "Start by checking the required preconditions,"
-  echo "for example, saver's host dir existence and permissions."
-  #     this also needs to check storer is NOT running, viz $ cyber-dojo down
-  echo "Follow the instructions till this reports success:"
-  echo "  \$ ${MY_NAME} --pre-check"
-  echo
-  echo "Then move on to porting the practice sessions."
   echo "As each session is ported, a single P/E/M character will be printed:"
   echo
   echo "   P - The session ported ok."
@@ -83,22 +74,37 @@ check_docker_installed()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+running_container()
+{
+  local space='\s'
+  local name=$1
+  local end_of_line='$'
+  docker ps --filter "name=${name}" | grep "${space}${name}${end_of_line}" > /dev/null
+  return $?
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 check_storer_preconditions()
 {
-  if docker ps -a | grep storer > /dev/null ; then
-    error 2 'The storer service is already running. Please run $ [sudo] cyber-dojo down'
+  if running_container storer ; then
+    message+="The storer service is already running!${newline}"
+    message+="Please run $ [sudo] cyber-dojo down${newline}"
+    error 2 ${message}
   else
     echo 'Confirmed: the storer service is NOT already running.'
   fi
-  # TODO: check data-container exists?
+  # TODO: 3. check data-container exists?
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 check_saver_preconditions()
 {
-  if docker ps -a | grep saver > /dev/null ; then
-    error 3 'The saver service is already running! Please run $ [sudo] cyber-dojo down'
+  if running_container saver ; then
+    message+="The saver service is already running!${newline}"
+    message+="Please run $ [sudo] cyber-dojo down${newline}"
+    error 3 ${message}
   else
     echo 'Confirmed: the saver service is NOT already running'
   fi
@@ -106,11 +112,9 @@ check_saver_preconditions()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-check_preconditions()
+check_porter_preconditions()
 {
-  check_docker_installed
-  check_storer_preconditions
-  check_saver_preconditions
+  :
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,19 +155,11 @@ bring_up_saver_service()
 {
   saver_cid=$(docker run \
     --detach \
+    --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
     --volume /cyber-dojo:/cyber-dojo \
       cyberdojo/saver)
 
   trap remove_saver_service EXIT INT
-
-  # TODO: check saver-uid has write access to /cyber-dojo (with docker exec)
-  #
-  #  error 4
-  #  'The saver user (uid=???) in the saver service needs write access to /cyber-dojo
-  #  'Please run $ [sudo] chmod -R ??? /cyber-dojo'
-  #    (if on DockerToolbox with will be on default VM)
-  #  else
-  #  echo 'Confirmed: the saver user in the saver service has write access to /cyber-dojo'
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,21 +174,13 @@ bring_up_porter_service()
 {
   porter_cid=$(docker run \
     --detach \
+    --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
     --link ${storer_cid} \
     --link ${saver_cid} \
     --volume /porter:/porter \
       cyberdojo/porter)
 
   trap remove_porter_service EXIT INT
-
-  # TODO: check porter-uid has write access to /porter (with docker exec)
-  #
-  #  error 4
-  #  'The porter user (uid=???) in the porter service needs write access to /porter
-  #  'Please run $ [sudo] chmod -R ??? /porter'
-  #    (if on DockerToolbox with will be on default VM)
-  #  else
-  #  echo 'Confirmed: the porter user in the porter service has write access to /porter'
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -211,11 +199,10 @@ if [ "${1}" = '--help' ];  then
   show_use; exit 0
 fi
 
-if [ "${1}" = '--pre-check' ]; then
-  check_preconditions; exit 0
-fi
-
-check_preconditions
+check_docker_installed
+check_storer_preconditions
+check_saver_preconditions
+check_porter_preconditions
 #pull_latest_images
 bring_up_storer_service
 bring_up_saver_service
