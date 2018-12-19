@@ -8,6 +8,7 @@ error() { echo "ERROR: ${2}"; exit ${1}; }
 
 show_use()
 {
+  # It would be better to have this help inside the porter image...
   echo
   echo "Ports cyber-dojo practice sessions from their old format to their new format."
   echo "The old format used:"
@@ -21,7 +22,7 @@ show_use()
   echo
   echo "Note that this port is automated and destructive. As each session"
   echo "is successfully ported to saver it is removed from storer."
-  echo "Consider backup up your server before you start."
+  echo "Back up your server before you start?"
   echo
   echo "Start by checking saver's host dir existence and permissions."
   echo "Follow the instructions till this reports success:"
@@ -35,13 +36,13 @@ show_use()
   echo "       For example 9f8TeZMZA2 --> 9f8TeZ"
   echo
   echo "   M - The session ported ok but needed an id-map."
-  echo "       This means the new 6-digit is NOT the 1st 6 chars of the 10-digit id."
+  echo "       This means the new 6-digit id is NOT the 1st 6 chars of the 10-digit id."
   echo "       For example 9f8TeZMZA2 -> uQMecK"
-  echo "       ...EXPLAIN WHERE THIS INFO IS HELD..."
+  echo "       ...EXPLAIN WHERE THIS MAPPING INFO IS HELD..."
   echo
   echo "   E - The session failed to port."
-  echo "       An exception arose and the session is still in the storer."
-  echo "       ...EXPLAIN WHERE THIS INFO IS HELD..."
+  echo "       An exception arose. The session is still in the storer."
+  echo "       ...EXPLAIN WHERE THIS EXCEPTION INFO IS HELD..."
   echo
   echo "First try porting a few single sessions."
   echo "To show a randomly selected 10-digit id:"
