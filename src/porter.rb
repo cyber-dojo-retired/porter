@@ -1,4 +1,7 @@
 
+# The main entry-point, from the dispatcher, for the porter web-service.
+# The main entry-point, from the shell, for port.rb
+
 class Porter
 
   def initialize(externals)
@@ -8,7 +11,10 @@ class Porter
   def port_all
   end
 
-  def port(id)
+  def port_many(id2)
+  end
+
+  def port_one(id)
     if !storer.kata_exists?(id)
       fail "malformed:id:#{id} !exist"
     end

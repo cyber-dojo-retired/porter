@@ -8,4 +8,5 @@ docker run \
    --volume /var/run/docker.sock:/var/run/docker.sock \
    cyberdojo/inserter \
      test-porter-storer \
-       dup old new 7E 4D red
+       dup old new red
+       # 7E 4D

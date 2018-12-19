@@ -3,8 +3,8 @@ require_relative '../src/externals'
 
 class TestBase < HexMiniTest
 
-  def port(kata_id)
-    porter.port(kata_id)
+  def port_one(kata_id)
+    porter.port_one(kata_id)
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -36,7 +36,7 @@ class TestBase < HexMiniTest
     assert storer.kata_exists?(id10), id10
     refute saver.group_exists?(id6), id10
     was = was_data(id10)
-    gid = port(id10)
+    gid = port_one(id10)
     yield id6,gid #refute_equal id6, gid, id10
     assert saver.group_exists?(gid), id10
     now = now_data(gid)

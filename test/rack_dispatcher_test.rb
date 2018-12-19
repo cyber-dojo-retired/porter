@@ -13,7 +13,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   class ThrowingRackDispatcherStub
-    def port(_kata_id)
+    def port_one(_kata_id)
       fail ArgumentError, 'wibble'
     end
   end
@@ -21,7 +21,7 @@ class RackDispatcherTest < TestBase
   test 'F1A',
   'dispatch returns 500 status when implementation raises' do
     @stub = ThrowingRackDispatcherStub.new
-    assert_dispatch_raises('port',
+    assert_dispatch_raises('port_one',
       { id:'12345abcde' }.to_json,
       500,
       'wibble')
@@ -41,7 +41,7 @@ class RackDispatcherTest < TestBase
 
   test 'F1C',
   'dispatch raises when json is malformed' do
-    assert_dispatch_raises('port',
+    assert_dispatch_raises('port_one',
       'xxx',
       400,
       'json:malformed')
@@ -67,7 +67,7 @@ class RackDispatcherTest < TestBase
   'dispatch to port raises when any id is not Base58 string' do
     bad_char = '&'
     id = "abc#{bad_char}def"
-    assert_dispatch_raises('port',
+    assert_dispatch_raises('port_one',
       { partial_id:id }.to_json,
       400,
       'id:malformed:!Base58:'
@@ -78,7 +78,7 @@ class RackDispatcherTest < TestBase
   'dispatch to port raises when id is less than 10 chars long' do
     id = '123456789'
     assert_equal 9, id.size
-    assert_dispatch_raises('port',
+    assert_dispatch_raises('port_one',
       { id:id }.to_json,
       400,
       'id:malformed:size==9 !10:'
@@ -89,7 +89,7 @@ class RackDispatcherTest < TestBase
   'dispatch to port raises when id is more than 10 chars long' do
     id = '12345abcdef'
     assert_equal 11, id.size
-    assert_dispatch_raises('port',
+    assert_dispatch_raises('port_one',
       { id:id }.to_json,
       400,
       'id:malformed:size==11 !10:'
@@ -102,9 +102,9 @@ class RackDispatcherTest < TestBase
   'dispatch to port with id of 10 chars does not raise' do
     id = '12345abcde'
     assert_equal 10, id.size
-    assert_dispatch('port',
+    assert_dispatch('port_one',
       { id:id }.to_json,
-      "hello from #{stub_name}.port"
+      "hello from #{stub_name}.port_one"
     )
   end
 

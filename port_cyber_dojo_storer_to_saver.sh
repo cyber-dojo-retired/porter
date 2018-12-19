@@ -1,6 +1,12 @@
 #!/bin/bash
 
-# checker docker installed
+# lots of help/use text
+# recommend starting with few id10, then few id2
+# have option to generate id2/id10 inside storer
+# (means it must not be an exception to try and port
+# an id that has already been ported)
+
+# check docker installed
 
 # check data-container exists
 # check storer service is NOT already up
