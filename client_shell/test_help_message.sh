@@ -6,7 +6,7 @@ MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
 test_help_message()
 {
   port --help
-  assertStdoutIncludes 'Note that this port is automated and destructive'
+  assertStdoutIncludes 'Porting is destructive.'
   assertStderrEquals ''
   assertStatusEquals 0
 }

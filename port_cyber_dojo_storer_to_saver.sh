@@ -22,11 +22,11 @@ show_use()
   echo "  o) the saver service"
   echo "  o) a volume-mounted host dir"
   echo
-  echo "Note that porting is automated and destructive. As each session"
-  echo "is successfully ported to saver it is removed from storer."
+  echo "Porting is destructive. As each session is successfully"
+  echo "ported to saver it is removed from storer."
   echo "?Back up your server before you start?"
   echo
-  echo "As each session is ported, a single P/E/M character will be printed:"
+  echo "As each session is ported, a single P/E/M character is printed:"
   echo
   echo "   P - The session ported ok."
   echo "       This means the new 6-digit id is the 1st 6 chars of the 10-digit id."
