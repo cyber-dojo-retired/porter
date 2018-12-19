@@ -4,6 +4,10 @@ set -e
 readonly ROOT_DIR="$( cd "$( dirname "${0}" )" && cd .. && pwd )"
 readonly MY_NAME=`basename "${0}"`
 
+declare storer_cid=0
+declare saver_cid=0
+declare porter_cid=0
+
 error() { echo "ERROR: ${2}"; exit ${1}; }
 
 show_use()
@@ -70,66 +74,135 @@ show_use()
 
 check_docker_installed()
 {
-  :
+  if ! hash docker 2> /dev/null; then
+    error 1 'docker needs to be installed!'
+  else
+    echo 'Confirmed: docker is installed.'
+  fi
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 check_storer_preconditions()
 {
-  :
-  # check storer service is NOT already up
-  # check data-container exists
+  if docker ps -a | grep storer > /dev/null ; then
+    error 2 'The storer service is already running. Please run $ [sudo] cyber-dojo down'
+  else
+    echo 'Confirmed: the storer service is NOT already running.'
+  fi
+  # TODO: check data-container exists?
 }
 
-check_storer_preconditions()
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+check_saver_preconditions()
 {
-  :
-  # check saver service is NOT already up
-  # make sure /cyber-dojo dir exists
+  if docker ps -a | grep saver > /dev/null ; then
+    error 3 'The saver service is already running! Please run $ [sudo] cyber-dojo down'
+  else
+    echo 'Confirmed: the saver service is NOT already running'
+  fi
 }
 
-check_porter_preconditions()
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+check_preconditions()
 {
-  :
-  # make sure /porter exists (??? OR PUT JSON FILES IN /tmp ???)
+  check_docker_installed
+  check_storer_preconditions
+  check_saver_preconditions
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 pull_latest_images()
-{ :
-# docker pull cyberdojo/storer (to get eg kata_delete)
-# docker pull cyberdojo/saver
-# docker pull cyberdojo/porter
+{
+  docker pull cyberdojo/storer
+  docker pull cyberdojo/saver
+  docker pull cyberdojo/porter
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+remove_storer_service()
+{
+  docker stop ${storer_cid}
+  docker rm ${storer_cid}
 }
 
 bring_up_storer_service()
 {
-  :
-  # with data-container mounted
-  # stop/rm storer container on trap EXIT
+  storer_cid=$(docker run \
+    --detach \
+      cyberdojo/storer)
+  # TODO: with data-container mounted
+  trap remove_storer_service EXIT INT
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+remove_saver_service()
+{
+  docker stop ${saver_cid}
+  docker rm ${saver_cid}
 }
 
 bring_up_saver_service()
 {
-  :
-  # with volume-mount /cyber-dojo dir
-  # check saver-uid has write access to /cyber-dojo (with docker exec)
+  saver_cid=$(docker run \
+    --detach \
+    --volume /cyber-dojo:/cyber-dojo \
+      cyberdojo/saver)
+
+  trap remove_saver_service EXIT INT
+
+  # TODO: check saver-uid has write access to /cyber-dojo (with docker exec)
+  #
+  #  error 4
+  #  'The saver user (uid=???) in the saver service needs write access to /cyber-dojo
+  #  'Please run $ [sudo] chmod -R ??? /cyber-dojo'
   #    (if on DockerToolbox with will be on default VM)
-  # stop/rm saver container on trap EXIT
+  #  else
+  #  echo 'Confirmed: the saver user in the saver service has write access to /cyber-dojo'
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+remove_porter_service()
+{
+  docker stop ${porter_cid}
+  docker rm ${porter_cid}
 }
 
 bring_up_porter_service()
 {
-  :
-  # with links to storer and saver
-  # check porter-uid has write access to /id-map (with docker exec)
+  porter_cid=$(docker run \
+    --detach \
+    --link ${storer_cid} \
+    --link ${saver_cid} \
+    --volume /porter:/porter \
+      cyberdojo/porter)
+
+  trap remove_porter_service EXIT INT
+
+  # TODO: check porter-uid has write access to /porter (with docker exec)
+  #
+  #  error 4
+  #  'The porter user (uid=???) in the porter service needs write access to /porter
+  #  'Please run $ [sudo] chmod -R ??? /porter'
   #    (if on DockerToolbox with will be on default VM)
-  # stop/rm porter container on trap EXIT
+  #  else
+  #  echo 'Confirmed: the porter user in the porter service has write access to /porter'
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 run_the_port()
 {
-  :
-  # Note: rack-dispatcher API is for proper service which web will use.
-  # docker exec -it porter-container sh -c 'ruby /app/port.rb ${*}'
+  # Note: web will use porter's rack-dispatcher API
+  docker exec -it \
+    ${porter_cid} \
+      sh -c "ruby /app/src/port.rb ${*}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -137,11 +210,13 @@ run_the_port()
 if [ "${1}" = '--help' ];  then
   show_use; exit 0
 fi
-check_docker_installed
-check_storer_preconditions
-check_saver_preconditions
-check_porter_preconditions
-pull_latest_images
+
+if [ "${1}" = '--pre-check' ]; then
+  check_preconditions; exit 0
+fi
+
+check_preconditions
+#pull_latest_images
 bring_up_storer_service
 bring_up_saver_service
 bring_up_porter_service

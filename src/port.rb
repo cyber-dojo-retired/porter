@@ -1,4 +1,6 @@
 
+puts "Hello from port.rb"
+
 # The main entry-point, from the shell
 
 # ruby port.rb id-10 => port_one(id-10)
