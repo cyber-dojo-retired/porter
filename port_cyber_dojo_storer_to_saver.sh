@@ -3,7 +3,7 @@
 readonly ROOT_DIR="$( cd "$( dirname "${0}" )" && cd .. && pwd )"
 readonly MY_NAME=`basename "${0}"`
 
-echo "Hello from ${MY_NAME} ${1}"
+echo "${MY_NAME} ${1} ... Hello"
 
 # lots of help/use text
 # recommend starting with few id10, then few id2
