@@ -1,4 +1,4 @@
-FROM  cyberdojo/rack-base
+FROM cyberdojo/rack-base
 LABEL maintainer=jon@jaggersoft.com
 
 RUN adduser \
@@ -9,7 +9,7 @@ RUN adduser \
 
 ARG                    PORTER_HOME=/app
 COPY .               ${PORTER_HOME}
-RUN  chown -R porter ${PORTER_HOME}
+RUN chown -R porter ${PORTER_HOME}
 
 ARG SHA
 RUN echo ${SHA} > ${PORTER_HOME}/sha.txt

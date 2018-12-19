@@ -18,6 +18,7 @@ class TestBase < HexMiniTest
   def assert_ports_with_matching_id(id10)
     assert_ports(id10) do |id6,gid|
       assert_equal id6,gid,id10
+      #assert id_map      
     end
   end
 

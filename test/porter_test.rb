@@ -54,6 +54,7 @@ class PorterTest < TestBase
   after port of id that has more than one 6-char match in storer
   saver has saved the practice-session
   with an id unequal to its original 1st 6 chars
+  and records the mapping in /porter/id_map.json
   ) do
     assert_matching_pair('0BA7E1'+'E01B',
                          '0BA7E1'+'6149')

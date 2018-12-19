@@ -31,7 +31,7 @@ services:
     container_name: test-porter-server
     read_only: true
     tmpfs:
-      - /id-map:uid=19664,gid=19664
+      - /porter:uid=19664,gid=19664
       - /tmp:uid=19664,gid=19664
     restart: 'no'
     depends_on:
