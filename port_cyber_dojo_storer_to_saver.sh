@@ -213,4 +213,5 @@ check_porter_preconditions
 bring_up_storer_service
 bring_up_saver_service
 bring_up_porter_service
-run_the_port
+
+run_the_port ${*}

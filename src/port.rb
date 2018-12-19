@@ -1,5 +1,5 @@
 
-puts "Hello from port.rb"
+puts "Hello from port.rb #{ARGV[0]}"
 
 # The main entry-point, from the shell
 
