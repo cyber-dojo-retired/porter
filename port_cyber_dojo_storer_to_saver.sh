@@ -1,5 +1,10 @@
 #!/bin/bash
 
+readonly ROOT_DIR="$( cd "$( dirname "${0}" )" && cd .. && pwd )"
+readonly MY_NAME=`basename "${0}"`
+
+echo "Hello from ${MY_NAME} ${1}"
+
 # lots of help/use text
 # recommend starting with few id10, then few id2
 # have option to generate id2/id10 inside storer
