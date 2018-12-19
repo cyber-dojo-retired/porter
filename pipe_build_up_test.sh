@@ -8,7 +8,6 @@ readonly SH_DIR="${ROOT_DIR}/sh"
 "${SH_DIR}/build_docker_images.sh"
 "${SH_DIR}/docker_containers_up.sh"
 "${SH_DIR}/run_tests_from_shell.sh"
-exit 0
 
 "${SH_DIR}/insert_katas_test_data.sh"
 if "${SH_DIR}/run_tests_in_containers.sh" "$@"; then

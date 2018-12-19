@@ -34,11 +34,11 @@ class RackDispatcher
   private # = = = = = = = = = = = = = = = = = = =
 
   def validated_name_args(name, body)
-    image = @externals.image
+    env = @externals.env
     porter = @externals.porter
     wfa = WellFormedArgs.new(body)
     args = case name
-      when /^sha$/      then [image]
+      when /^sha$/      then [env]
       when /^port_one$/ then [porter, wfa.id]
       else
         raise ClientError, "#{name}:unknown:"

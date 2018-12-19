@@ -1,7 +1,7 @@
 require_relative 'external_disk_writer'
 require_relative 'external_saver'
 require_relative 'external_storer'
-require_relative 'image'
+require_relative 'external_env'
 require_relative 'porter'
 
 class Externals
@@ -18,8 +18,8 @@ class Externals
     @storer ||= ExternalStorer.new
   end
 
-  def image
-    @image ||= Image.new(disk)
+  def env
+    @env ||= ExternalEnv.new
   end
 
   def disk

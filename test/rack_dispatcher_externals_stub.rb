@@ -11,7 +11,7 @@ class RackDispatcherExternalsStub
     stub
   end
 
-  def image
+  def env
     stub
   end
 
