@@ -136,8 +136,8 @@ pull_latest_images()
 
 remove_storer_service()
 {
-  docker container stop ${storer_cid}
-  docker container rm --force ${storer_cid}
+  docker container stop ${storer_cid}       > /dev/null
+  docker container rm --force ${storer_cid} > /dev/null
 }
 
 bring_up_storer_service()
@@ -153,8 +153,8 @@ bring_up_storer_service()
 
 remove_saver_service()
 {
-  docker stop ${saver_cid}
-  docker container rm --force ${saver_cid}
+  docker container stop ${saver_cid}       > /dev/null
+  docker container rm --force ${saver_cid} > /dev/null
 }
 
 bring_up_saver_service()
@@ -172,8 +172,8 @@ bring_up_saver_service()
 
 remove_porter_service()
 {
-  docker container stop ${porter_cid}
-  docker container rm --force ${porter_cid}
+  docker container stop ${porter_cid}       > /dev/null
+  docker container rm --force ${porter_cid} > /dev/null
 }
 
 bring_up_porter_service()
