@@ -7,12 +7,11 @@ RUN adduser \
   -u 19664 `# user-id`     \
   porter   `# user-name`
 
-ARG                    PORTER_HOME=/app
-COPY .               ${PORTER_HOME}
-RUN chown -R porter ${PORTER_HOME}
+COPY . /app
+RUN chown -R porter /app
 
 ARG SHA
-RUN echo ${SHA} > ${PORTER_HOME}/sha.txt
+ENV SHA=${SHA}
 
 EXPOSE 4517
 USER porter

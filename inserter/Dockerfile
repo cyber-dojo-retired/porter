@@ -1,7 +1,5 @@
-FROM  docker:latest
+FROM cyberdojo/docker-base
 LABEL maintainer=jon@jaggersoft.com
-
-RUN apk add bash
 
 COPY . /app
 
