@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-# Note that the --host is needed for IPv4 and IPv6 addresses
+if [ ! -d /porter/id-map ]; then
+  mkdir /porter/id-map
+fi
 
 bundle exec rackup \
   --warn \

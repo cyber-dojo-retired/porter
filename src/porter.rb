@@ -1,5 +1,3 @@
-require 'json'
-
 # The main entry-point, from the dispatcher, for the porter web-service.
 # The main entry-point, from the shell, for port.rb
 
@@ -96,7 +94,7 @@ class Porter
   # - - - - - - - - - - - - - - - - - - -
 
   def unique?(id6)
-    ported = Dir.glob("/porter/#{id6}**")
+    ported = Dir.glob("/porter/id-map/#{id6}**")
     ids = storer.katas_completed(id6)
     ported.size + ids.size == 1
   end
@@ -111,7 +109,7 @@ class Porter
 
   def remember_mapping(kata_id, id6)
     if id6 != kata_id[0..5]
-      IO.write("/porter/#{kata_id}", id6)
+      IO.write("/porter/id-map/#{kata_id}", id6)
     end
   end
 
