@@ -6,7 +6,7 @@ class PorterService
     get(__method__)
   end
 
-  def port(id)
+  def port_one(id)
     post(__method__, id)
   end
 
