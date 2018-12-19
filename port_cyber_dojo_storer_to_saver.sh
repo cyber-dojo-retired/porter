@@ -7,7 +7,7 @@ declare storer_cid=0
 declare saver_cid=0
 declare porter_cid=0
 
-error() { echo "ERROR:"$'\n'" ${2}"; exit ${1}; }
+error() { >&2 echo ${2}; exit ${1}; }
 
 show_use()
 {
@@ -65,7 +65,7 @@ show_use()
 check_docker_installed()
 {
   if ! hash docker 2> /dev/null; then
-    error 1 'docker needs to be installed!'
+    error 1 'ERROR: docker needs to be installed!'
   else
     echo 'Confirmed: docker is installed.'
   fi
@@ -87,7 +87,7 @@ running_container()
 check_storer_preconditions()
 {
   if running_container storer ; then
-    message+="The storer service is already running!${newline}"
+    message+="ERROR: The storer service is already running!${newline}"
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 2 ${message}
   else
@@ -101,7 +101,7 @@ check_storer_preconditions()
 check_saver_preconditions()
 {
   if running_container saver ; then
-    message+="The saver service is already running!${newline}"
+    message+="ERROR: The saver service is already running!${newline}"
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 4 ${message}
   else
@@ -114,7 +114,7 @@ check_saver_preconditions()
 check_porter_preconditions()
 {
   if running_container porter ; then
-    message+="The porter service is already running!${newline}"
+    message+="ERROR: The porter service is already running!${newline}"
     message+="Please run $ [sudo] docker rm -f porter${newline}"
     error 5 ${message}
   else
@@ -148,8 +148,10 @@ bring_up_storer_service()
 
   # TODO: wait max 5 seconds for porter to be running ok
   trap remove_storer_service EXIT INT
-  # TODO: get its log
-  # TODO: if not running, show log & exit
+  local log=$(docker logs ${storer_cid})
+  # if not running
+  #   error 6 ${log}
+  # fi
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -170,21 +172,20 @@ bring_up_saver_service()
 
   # TODO: wait max 5 seconds for saver to be running ok
   trap remove_saver_service EXIT INT
-  # TODO: get its log
-  # TODO: if not running, show log & exit
+  local log=$(docker logs ${saver_cid})
+  # TODO: if not running or log==ERROR
+  if [[ ${log} == ERROR* ]]; then
+    # TODO: this loses its newlines??
+    error 7 ${log}
+  fi
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 remove_porter_service()
 {
-  local log=$(docker logs ${porter_cid})
   docker container stop ${porter_cid} > /dev/null
   docker container rm --force ${porter_cid} > /dev/null
-  if [[ ${log} == ERROR* ]]; then
-    # TODO: this loses its newlines??
-    >&2 echo ${log}
-  fi
 }
 
 bring_up_porter_service()
@@ -199,8 +200,12 @@ bring_up_porter_service()
 
   # TODO: wait max 5 seconds for porter to be running ok
   trap remove_porter_service EXIT INT
-  # TODO: get its log
-  # TODO: if not running, show log & exit
+  local log=$(docker logs ${porter_cid})
+  # TODO: if not running or log==ERROR
+  if [[ ${log} == ERROR* ]]; then
+    # TODO: this loses its newlines??
+    error 8 ${log}
+  fi
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -216,7 +221,8 @@ run_the_port()
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 if [ "${1}" = '--help' ];  then
-  show_use; exit 0
+  show_use
+  exit 0
 fi
 
 check_docker_installed
@@ -227,5 +233,4 @@ check_porter_preconditions
 bring_up_storer_service
 bring_up_saver_service
 bring_up_porter_service
-
 run_the_port ${*}
