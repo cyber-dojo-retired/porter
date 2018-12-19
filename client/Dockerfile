@@ -1,9 +1,9 @@
-FROM  cyberdojo/rack-base
+FROM cyberdojo/rack-base
 LABEL maintainer=jon@jaggersoft.com
 
-ARG                            SAVER_HOME=/app
-COPY .                       ${SAVER_HOME}
-RUN  chown -R nobody:nogroup ${SAVER_HOME}
+COPY . /app
+RUN chown -R nobody:nogroup /app
+
 USER nobody
 EXPOSE 4518
 CMD [ "./up.sh" ]
