@@ -3,10 +3,12 @@
 MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
 . ${MY_DIR}/porter_helpers.sh
 
-test_two()
+test_help_message()
 {
-  echo "Hello from test_two"
-  ${PORTS2S} id24
+  port --help
+  assertStdoutIncludes 'sdfsdf'
+  assertNoStderr
+  #assertStatusZero
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

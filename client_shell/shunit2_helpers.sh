@@ -30,3 +30,24 @@ assertStderrIncludes()
     fail "expected stderr to include ${1}"
   fi
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+oneTimeSetUp()
+{
+  outputDir="${SHUNIT_TMPDIR}/output"
+  mkdir "${outputDir}"
+  stdoutF="${outputDir}/stdout"
+  stderrF="${outputDir}/stderr"
+  mkdirCmd='mkdir'  # save command name in variable to make future changes easy
+  testDir="${SHUNIT_TMPDIR}/some_test_dir"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+absPath()
+{
+  #use like this [ local resolved=`abspath ./../a/b/c` ]
+  cd "$(dirname "$1")"
+  printf "%s/%s\n" "$(pwd)" "$(basename "$1")"
+}

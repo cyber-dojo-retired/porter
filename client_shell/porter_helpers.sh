@@ -1,7 +1,13 @@
 
 MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
 
-export PORTS2S=${MY_DIR}/../port_cyber_dojo_storer_to_saver.sh
+readonly PORT_STORER_2_SAVER=${MY_DIR}/../port_cyber_dojo_storer_to_saver.sh
+
+port()
+{
+  echo "port() called..."
+  ${PORT_STORER_2_SAVER} $* >${stdoutF} 2>${stderrF};
+}
 
 assert()
 {
