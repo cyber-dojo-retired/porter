@@ -182,6 +182,7 @@ remove_porter_service()
   docker container stop ${porter_cid} > /dev/null
   docker container rm --force ${porter_cid} > /dev/null
   if [[ ${log} == ERROR* ]]; then
+    # TODO: this loses its newlines??
     >&2 echo ${log}
   fi
 }
