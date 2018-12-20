@@ -220,7 +220,7 @@ wait_till_running()
   cmd+=" > /dev/null 2>&1"
 
   if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
-    cmd="docker-machine ssh default ${cmd}"
+    cmd="docker-machine ssh ${DOCKER_MACHINE_NAME} ${cmd}"
   fi
   while [ $(( max_tries -= 1 )) -ge 0 ] ; do
     echo -n '.'
