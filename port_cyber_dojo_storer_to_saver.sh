@@ -14,24 +14,21 @@ show_help()
     echo "The new format uses:"
     echo "  o) 6-digit ids (with a larger alphabet)"
     echo "  o) a service called saver"
-    echo "  o) a volume-mount"
-    echo
-    echo "Porting is destructive. As each session is successfully"
-    echo "ported to saver it is removed from storer."
+    echo "  o) a volume-mounted directory"
     echo
     echo "As each session is ported, a single P/E/M character is printed:"
     echo
-    echo "   P - The session ported ok."
-    echo "       This means the new 6-digit id is the 1st 6 chars of the 10-digit id."
+    echo "   P - The session has been removed from storer and"
+    echo "       the new 6-digit id is the 1st 6 chars of the old 10-digit id."
     echo "       For example 9f8TeZMZA2 --> 9f8TeZ"
     echo
-    echo "   M - The session ported ok but needed an id-map."
-    echo "       This means the new 6-digit id is NOT the 1st 6 chars of the 10-digit id."
+    echo "   M - The session been removed from storer and"
+    echo "       the new 6-digit id is NOT the 1st 6 chars of the old 10-digit id."
     echo "       For example 9f8TeZMZA2 -> uQMecK"
     echo "       ...EXPLAIN WHERE THIS MAPPING INFO IS HELD..."
     echo
-    echo "   E - The session failed to port."
-    echo "       An exception arose. The session is still in the storer."
+    echo "   E - The session failed to port because an exception arose"
+    echo "       The session is still in the storer."
     echo "       ...EXPLAIN WHERE THIS EXCEPTION INFO IS HELD..."
     echo
     echo "First try porting a few single sessions."
@@ -49,7 +46,7 @@ show_help()
     echo "For example, if the 2-digit prefix is 5A"
     echo "  \$ ${my_name} 5A"
     echo
-    echo "If all is well, you can move on to porting storer to saver completely:"
+    echo "If all is well, port all the sessions:"
     echo "  \$ ${my_name} --all"
     echo ""
     exit 0
