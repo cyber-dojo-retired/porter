@@ -13,7 +13,7 @@ test_help_message()
 
 test_help_message_when_no_arguments()
 {
-  port --help
+  port
   assertStdoutIncludes 'Porting is destructive.'
   assertStderrEquals ''
   assertStatusEquals 0

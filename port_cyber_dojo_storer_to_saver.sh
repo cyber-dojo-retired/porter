@@ -47,7 +47,7 @@ error() { >&2 echo ${2}; exit ${1}; }
 show_help()
 {
   local my_name=`basename "${0}"`
-  if [ "${1}" = "--help" ]; then
+  if [ "${1}" = "--help" ] || [ "${1}" = "" ]; then
     echo
     echo "Ports cyber-dojo practice sessions from their old format to their new format."
     echo "The old format used:"
