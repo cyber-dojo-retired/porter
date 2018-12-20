@@ -79,9 +79,9 @@ fi
 
 info()
 {
-  local msg=${1}
+  local msg="${1}"
   if [ "${verbose}" = "0" ]; then
-    echo ${msg}
+    echo "${msg}"
   fi
 }
 
@@ -119,8 +119,8 @@ trap remove_all_services_and_network EXIT INT
 error()
 {
   local status=${1}
-  local msg=${2}
-  >&2 echo ${msg}
+  local msg="${2}"
+  >&2 echo "${msg}"
   exit ${status}
 }
 
@@ -232,7 +232,8 @@ wait_till_running()
       sleep 0.1
     fi
   done
-  local log=$(docker logs ${cid})
+  echo
+  local log="$(docker logs ${cid})"
   error ${error_code} "${log}"
 }
 
