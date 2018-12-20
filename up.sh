@@ -1,23 +1,22 @@
 #!/bin/bash
 
-readonly name=porter # of the service
+readonly name=porter # name of the service
 readonly dir=porter
 readonly uid=19664
 readonly user_name=porter
 readonly gid=65534
 readonly group_name=nogroup
+readonly vm_target=${DOCKER_MACHINE_NAME:-default}
 
 if [[ ! -d /${dir} ]]; then
   cmd="mkdir /${dir}"
   echo "ERROR"
-  echo "The ${name} service needs to volume-mount /${dir} on the host"
+  echo "The ${name} service needs to volume-mount /${dir}"
   echo "Please run:"
   echo "  \$ [sudo] ${cmd}"
-  if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
-    echo "If you are running on Docker-Toolbox (and it looks like you are)"
-    echo "remember to run this on the target VM. For example:"
-    echo "  \$ docker-machine ssh ${DOCKER_MACHINE_NAME} sudo ${cmd}"
-  fi
+  echo "If you are running on Docker-Toolbox remember"
+  echo "to run this on the target VM. For example:"
+  echo "  \$ docker-machine ssh ${vm_target} sudo ${cmd}"
   exit 1
 fi
 
@@ -31,11 +30,9 @@ if [ $? -ne 0 ] ; then
   echo "gid=${gid} (group=${group_name})"
   echo "Please run:"
   echo "  $ [sudo] chown ${cmd}"
-  if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
-    echo "If you are running on Docker-Toolbox (and it looks like you are)"
-    echo "remember to run this on the target VM. For example:"
-    echo "  \$ docker-machine ssh ${DOCKER_MACHINE_NAME} sudo ${cmd}"
-  fi
+  echo "If you are running on Docker-Toolbox remember"
+  echo "to run this on the target VM. For example:"
+  echo "  \$ docker-machine ssh ${vm_target} sudo ${cmd}"
   exit 2
 else
   rmdir /${dir}/${probe}
