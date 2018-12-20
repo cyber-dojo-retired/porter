@@ -1,31 +1,44 @@
 #!/bin/bash
-set -ex
+set -e
 
-readonly network_name=port_cyber_dojo_storer_to_saver
-
-readonly storer_port=4577
-readonly saver_port=4537
-readonly porter_port=4517
+declare network_name=""
 
 declare storer_cid=""
 declare saver_cid=""
 declare porter_cid=""
 
-remove_one_service()
+readonly storer_port=4577
+readonly saver_port=4537
+readonly porter_port=4517
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+remove_docker_network()
 {
-  local cid=${1}
-  if [ ! -z "${cid}" ]; then
-    docker container stop ${cid}       > /dev/null
-    docker container rm --force ${cid} > /dev/null
+  if [ ! -z ${network_name} ]; then
+    echo "Removing network ${network_name}"
+    docker network rm ${network_name} > /dev/null
   fi
 }
-remove_all_services()
+remove_one_service()
 {
-  remove_one_service ${storer_cid}
-  remove_one_service ${saver_cid}
-  remove_one_service ${porter_cid}
+  local name=${1}
+  local cid=${2}
+  if [ ! -z "${cid}" ]; then
+    echo "Stopping service ${name}"
+    docker container stop --time 1 ${cid} > /dev/null
+    echo "Removing service ${name}"
+    docker container rm --force ${cid}    > /dev/null
+  fi
 }
-trap remove_all_services EXIT INT
+remove_all_services_and_network()
+{
+  remove_one_service storer ${storer_cid}
+  remove_one_service saver  ${saver_cid}
+  remove_one_service porter ${porter_cid}
+  remove_docker_network
+}
+trap remove_all_services_and_network EXIT INT
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -80,7 +93,7 @@ show_help()
     echo "  \$ ${my_name} 5A"
     echo
     echo "If all is well, you can move on to porting storer to saver completely:"
-    echo "  \$ ${my_name} port --all"
+    echo "  \$ ${my_name} --all"
     echo ""
     exit 0
   fi
@@ -88,18 +101,24 @@ show_help()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-exit_unless_docker_installed()
+exit_unless_installed()
 {
-  if ! hash docker 2> /dev/null; then
-    error 1 'ERROR: docker needs to be installed!'
+  local cmd=${1}
+  if ! hash ${cmd} 2> /dev/null; then
+    error 1 "ERROR: ${cmd} needs to be installed!"
   else
-    echo 'Confirmed: docker is installed.'
+    echo "Confirmed: ${cmd} is installed."
   fi
 }
 
-create_porting_network()
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+create_docker_network()
 {
-  docker network create --driver bridge ${network_name}
+  local name=port_cyber_dojo_storer_to_saver
+  docker network create --driver bridge ${name}
+  network_name=${name}
+  echo "Confirmed: ${network_name} has been created."
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,27 +134,6 @@ running_container()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-wait_till_running()
-{
-  local cid=${1}
-  local error_code=${2}
-  local n=10
-  while [ $(( n -= 1 )) -ge 0 ]
-  do
-    # Ugh: sleeping first otherwise you can get
-    # status=running from container about to exit
-    sleep 0.5
-    if docker ps --no-trunc --quiet --filter status=running | grep -q ^${cid}$ ; then
-      return 0 # true
-    fi
-  done
-  local log=$(docker logs ${cid})
-  # TODO: log loses its newlines??
-  error ${error_code} ${log}
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 exit_unless_storer_preconditions_met()
 {
   if running_container storer ; then
@@ -143,7 +141,7 @@ exit_unless_storer_preconditions_met()
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 2 ${message}
   else
-    echo 'Confirmed: the storer service is NOT already running.'
+    echo 'Confirmed: the storer service is not already running.'
   fi
   # TODO: 3. check data-container exists?
 }
@@ -157,7 +155,7 @@ exit_unless_saver_preconditions_met()
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 4 ${message}
   else
-    echo 'Confirmed: the saver service is NOT already running'
+    echo 'Confirmed: the saver service is not already running'
   fi
 }
 
@@ -170,7 +168,7 @@ exit_unless_porter_preconditions_met()
     message+="Please run $ [sudo] docker rm -f porter${newline}"
     error 5 ${message}
   else
-    echo 'Confirmed: the porter service is NOT already running'
+    echo 'Confirmed: the porter service is not already running'
   fi
 }
 
@@ -185,18 +183,50 @@ pull_latest_images()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+wait_till_running()
+{
+  local name=${1}
+  local port=${2}
+  local cid=${3}
+  local error_code=${4}
+  local max_tries=20
+
+  local cmd="curl --fail -d '{}' -X GET http://localhost:${port}/sha"
+  if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
+    cmd="docker-machine ssh default ${cmd}"
+  fi
+  while [ $(( max_tries -= 1 )) -ge 0 ]
+  do
+    # TODO: in curl, pipe stdout/stderr to /dev/null
+    #echo "cmd==:${cmd}:"
+    if eval ${cmd} ; then
+      echo "Confirmed: the ${name} service is running."
+      return 0 # true
+    else
+      echo -n '.'
+      sleep 0.1
+    fi
+  done
+  local log=$(docker logs ${cid})
+  # TODO: log loses its newlines??
+  error ${error_code} ${log}
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 run_storer_service()
 {
   storer_cid=$(docker run \
     --detach \
     --interactive \
+    --name storer \
     --network ${network_name} \
     --publish ${storer_port}:${storer_port} \
     --tty \
       cyberdojo/storer)
   # TODO: with data-container mounted
 
-  wait_till_running ${storer_cid} 6
+  wait_till_running storer ${storer_port} ${storer_cid} 6
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -207,13 +237,14 @@ run_saver_service()
     --detach \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
     --interactive \
+    --name saver \
     --network ${network_name} \
     --publish ${saver_port}:${saver_port} \
     --tty \
     --volume /cyber-dojo:/cyber-dojo \
       cyberdojo/saver)
 
-  wait_till_running ${saver_cid} 7
+  wait_till_running saver ${saver_port} ${saver_cid} 7
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -224,13 +255,14 @@ run_porter_service()
     --detach \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
     --interactive \
+    --name porter \
     --network ${network_name} \
     --publish ${porter_port}:${porter_port} \
     --tty \
     --volume /porter:/porter \
       cyberdojo/porter)
 
-  wait_till_running ${porter_cid} 8
+  wait_till_running porter ${porter_port} ${porter_cid} 8
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -246,16 +278,19 @@ run_port_exec()
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 show_help ${*}
-exit_unless_docker_installed
-#TODO: exit_unless_curl_installed
+
+exit_unless_installed docker
+exit_unless_installed curl
+
 exit_unless_storer_preconditions_met
 exit_unless_saver_preconditions_met
 exit_unless_porter_preconditions_met
 
-create_porting_network
+create_docker_network
 #TODO: restore this
 #pull_latest_images
 run_storer_service
 run_saver_service
 run_porter_service
+
 run_port_exec ${*}
