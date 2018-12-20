@@ -1,4 +1,3 @@
-require_relative 'external_disk_writer'
 require_relative 'external_saver'
 require_relative 'external_storer'
 require_relative 'external_env'
@@ -20,10 +19,6 @@ class Externals
 
   def env
     @env ||= ExternalEnv.new
-  end
-
-  def disk
-    @disk ||= ExternalDiskWriter.new
   end
 
 end

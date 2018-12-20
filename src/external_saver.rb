@@ -2,6 +2,10 @@ require_relative 'http_json_service'
 
 class ExternalSaver
 
+  def sha
+    get(__method__)
+  end
+
   def group_exists?(id)
     get(__method__, id)
   end

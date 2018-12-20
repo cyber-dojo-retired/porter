@@ -1,5 +1,8 @@
+require_relative 'externals'
 
 puts "Hello from port.rb #{ARGV[0]}"
+puts "storer.sha==#{Externals.new.storer.sha}"
+puts "saver.sha==#{Externals.new.saver.sha}"
 
 # The main entry-point, from the shell
 

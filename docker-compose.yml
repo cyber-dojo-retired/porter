@@ -53,7 +53,7 @@ services:
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   saver:
-    user: saver:saver
+    user: saver
     image: cyberdojo/saver
     init: true
     container_name: test-porter-saver
