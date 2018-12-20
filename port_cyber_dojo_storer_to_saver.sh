@@ -1,49 +1,6 @@
 #!/bin/bash
 set -e
 
-declare network_name=""
-
-declare storer_cid=""
-declare saver_cid=""
-declare porter_cid=""
-
-readonly storer_port=4577
-readonly saver_port=4537
-readonly porter_port=4517
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-remove_docker_network()
-{
-  if [ ! -z ${network_name} ]; then
-    echo "Removing network ${network_name}"
-    docker network rm ${network_name} > /dev/null
-  fi
-}
-remove_one_service()
-{
-  local name=${1}
-  local cid=${2}
-  if [ ! -z "${cid}" ]; then
-    echo "Stopping service ${name}"
-    docker container stop --time 1 ${cid} > /dev/null
-    echo "Removing service ${name}"
-    docker container rm --force ${cid}    > /dev/null
-  fi
-}
-remove_all_services_and_network()
-{
-  remove_one_service storer ${storer_cid}
-  remove_one_service saver  ${saver_cid}
-  remove_one_service porter ${porter_cid}
-  remove_docker_network
-}
-trap remove_all_services_and_network EXIT INT
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-error() { >&2 echo ${2}; exit ${1}; }
-
 show_help()
 {
   local my_name=`basename "${0}"`
@@ -101,13 +58,72 @@ show_help()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+declare network_name=""
+
+declare storer_cid=""
+declare saver_cid=""
+declare porter_cid=""
+
+readonly storer_port=4577
+readonly saver_port=4537
+readonly porter_port=4517
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+info()
+{
+  local msg=${1}
+  echo ${msg}
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+remove_docker_network()
+{
+  if [ ! -z ${network_name} ]; then
+    info "Removing network ${network_name}"
+    docker network rm ${network_name} > /dev/null
+  fi
+}
+remove_one_service()
+{
+  local name=${1}
+  local cid=${2}
+  if [ ! -z "${cid}" ]; then
+    info "Stopping service ${name}"
+    docker container stop --time 1 ${cid} > /dev/null
+    info "Removing service ${name}"
+    docker container rm --force ${cid}    > /dev/null
+  fi
+}
+remove_all_services_and_network()
+{
+  remove_one_service storer ${storer_cid}
+  remove_one_service saver  ${saver_cid}
+  remove_one_service porter ${porter_cid}
+  remove_docker_network
+}
+trap remove_all_services_and_network EXIT INT
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+error()
+{
+  local status=${1}
+  local msg=${2}
+  >&2 echo ${msg}
+  exit ${status}
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 exit_unless_installed()
 {
   local cmd=${1}
   if ! hash ${cmd} 2> /dev/null; then
     error 1 "ERROR: ${cmd} needs to be installed!"
   else
-    echo "Confirmed: ${cmd} is installed."
+    info "Confirmed: ${cmd} is installed."
   fi
 }
 
@@ -118,7 +134,7 @@ create_docker_network()
   local name=port_cyber_dojo_storer_to_saver
   docker network create --driver bridge ${name} > /dev/null
   network_name=${name}
-  echo "Confirmed: network ${network_name} has been created."
+  info "Confirmed: network ${network_name} has been created."
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -141,7 +157,7 @@ exit_unless_storer_preconditions_met()
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 2 ${message}
   else
-    echo 'Confirmed: the storer service is not already running.'
+    info 'Confirmed: the storer service is not already running.'
   fi
   # TODO: 3. check data-container exists?
 }
@@ -155,7 +171,7 @@ exit_unless_saver_preconditions_met()
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 4 ${message}
   else
-    echo 'Confirmed: the saver service is not already running'
+    info 'Confirmed: the saver service is not already running'
   fi
 }
 
@@ -168,7 +184,7 @@ exit_unless_porter_preconditions_met()
     message+="Please run $ [sudo] docker rm -f porter${newline}"
     error 5 ${message}
   else
-    echo 'Confirmed: the porter service is not already running'
+    info 'Confirmed: the porter service is not already running'
   fi
 }
 
@@ -202,7 +218,7 @@ wait_till_running()
     echo -n '.'
     if eval ${cmd} ; then
       echo
-      echo "Confirmed: the ${name} service is running."
+      info "Confirmed: the ${name} service is running."
       return 0 # true
     else
       sleep 0.1
