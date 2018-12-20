@@ -4,7 +4,7 @@ readonly name=porter # name of the service
 readonly dir=porter
 readonly uid=19664
 readonly username=porter
-readonly gid=65534
+readonly gid=65533
 readonly group=nogroup
 readonly vm_target=${DOCKER_MACHINE_NAME:-default}
 
