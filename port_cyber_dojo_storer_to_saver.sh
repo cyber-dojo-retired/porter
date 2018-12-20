@@ -22,7 +22,7 @@ show_help()
     echo "       the new 6-digit id is the 1st 6 chars of the old 10-digit id."
     echo "       For example 9f8TeZMZA2 --> 9f8TeZ"
     echo
-    echo "   M - The session been removed from storer and"
+    echo "   M - The session has been removed from storer and"
     echo "       the new 6-digit id is NOT the 1st 6 chars of the old 10-digit id."
     echo "       For example 9f8TeZMZA2 -> uQMecK"
     echo "       ...EXPLAIN WHERE THIS MAPPING INFO IS HELD..."
