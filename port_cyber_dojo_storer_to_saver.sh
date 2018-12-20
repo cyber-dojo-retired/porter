@@ -68,12 +68,21 @@ readonly storer_port=4577
 readonly saver_port=4537
 readonly porter_port=4517
 
+declare verbose=1
+if [ "${1}" = "--verbose" ]; then
+  shift
+  verbose=0
+  set -x
+fi
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 info()
 {
   local msg=${1}
-  echo ${msg}
+  if [ "${verbose}" = "0" ]; then
+    echo ${msg}
+  fi
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,7 +129,7 @@ error()
 exit_unless_installed()
 {
   local cmd=${1}
-  if ! hash ${cmd} 2> /dev/null; then
+  if ! hash ${cmd} 2> /dev/null ; then
     error 1 "ERROR: ${cmd} needs to be installed!"
   else
     info "Confirmed: ${cmd} is installed."
@@ -208,13 +217,12 @@ wait_till_running()
   local max_tries=10
 
   local cmd="curl --silent --fail -d '{}' -X GET http://localhost:${port}/sha"
-  cmd+=" > /dev/null 2>&1 "
+  cmd+=" > /dev/null 2>&1"
 
   if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
     cmd="docker-machine ssh default ${cmd}"
   fi
-  while [ $(( max_tries -= 1 )) -ge 0 ]
-  do
+  while [ $(( max_tries -= 1 )) -ge 0 ] ; do
     echo -n '.'
     if eval ${cmd} ; then
       echo
