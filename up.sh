@@ -3,9 +3,9 @@
 readonly name=porter # name of the service
 readonly dir=porter
 readonly uid=19664
-readonly user_name=porter
+readonly username=porter
 readonly gid=65534
-readonly group_name=nogroup
+readonly group=nogroup
 readonly vm_target=${DOCKER_MACHINE_NAME:-default}
 
 if [[ ! -d /${dir} ]]; then
@@ -26,8 +26,8 @@ if [ $? -ne 0 ] ; then
   cmd="chown ${uid}:${gid} /${dir}"
   echo "ERROR"
   echo "The ${name} service needs write access to /${dir}"
-  echo "uid=${uid} (username=${user_name})"
-  echo "gid=${gid} (group=${group_name})"
+  echo "username=${username} (uid=${uid})"
+  echo "group=${group} (gid=${gid})"
   echo "Please run:"
   echo "  $ [sudo] chown ${cmd}"
   echo "If you are running on Docker-Toolbox remember"
