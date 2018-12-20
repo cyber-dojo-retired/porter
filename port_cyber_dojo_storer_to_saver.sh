@@ -116,9 +116,9 @@ exit_unless_installed()
 create_docker_network()
 {
   local name=port_cyber_dojo_storer_to_saver
-  docker network create --driver bridge ${name}
+  docker network create --driver bridge ${name} > /dev/null
   network_name=${name}
-  echo "Confirmed: ${network_name} has been created."
+  echo "Confirmed: network ${network_name} has been created."
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -189,33 +189,34 @@ wait_till_running()
   local port=${2}
   local cid=${3}
   local error_code=${4}
-  local max_tries=20
+  local max_tries=10
 
-  local cmd="curl --fail -d '{}' -X GET http://localhost:${port}/sha"
+  local cmd="curl --silent --fail -d '{}' -X GET http://localhost:${port}/sha"
+  cmd+=" > /dev/null 2>&1 "
+
   if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
     cmd="docker-machine ssh default ${cmd}"
   fi
   while [ $(( max_tries -= 1 )) -ge 0 ]
   do
-    # TODO: in curl, pipe stdout/stderr to /dev/null
-    #echo "cmd==:${cmd}:"
+    echo -n '.'
     if eval ${cmd} ; then
+      echo
       echo "Confirmed: the ${name} service is running."
       return 0 # true
     else
-      echo -n '.'
       sleep 0.1
     fi
   done
   local log=$(docker logs ${cid})
-  # TODO: log loses its newlines??
-  error ${error_code} ${log}
+  error ${error_code} "${log}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 run_storer_service()
 {
+  echo -n "Starting the storer service"
   storer_cid=$(docker run \
     --detach \
     --interactive \
@@ -225,7 +226,6 @@ run_storer_service()
     --tty \
       cyberdojo/storer)
   # TODO: with data-container mounted
-
   wait_till_running storer ${storer_port} ${storer_cid} 6
 }
 
@@ -233,6 +233,7 @@ run_storer_service()
 
 run_saver_service()
 {
+  echo -n "Starting the saver service"
   saver_cid=$(docker run \
     --detach \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
@@ -251,6 +252,7 @@ run_saver_service()
 
 run_porter_service()
 {
+  echo -n "Starting the porter service"
   porter_cid=$(docker run \
     --detach \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
