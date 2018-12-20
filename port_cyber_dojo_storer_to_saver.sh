@@ -297,7 +297,10 @@ run_porter_service()
 run_port_exec()
 {
   # Note: web will use porter's rack-dispatcher API, we don't
-  docker exec -it \
+  docker exec     \
+    --interactive \
+    --tty         \
+    --user porter \
     ${porter_cid} \
       sh -c "ruby /app/src/port.rb ${*}"
 }
