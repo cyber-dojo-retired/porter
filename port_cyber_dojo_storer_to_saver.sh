@@ -216,7 +216,7 @@ wait_till_running()
   local error_code=${4}
   local max_tries=10
 
-  local cmd="curl --silent --fail -d '{}' -X GET http://localhost:${port}/sha"
+  local cmd="curl --silent --fail --data '{}' -X GET http://localhost:${port}/sha"
   cmd+=" > /dev/null 2>&1"
 
   if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
