@@ -18,18 +18,18 @@ show_help()
     echo
     echo "As each session is ported, a single P/E/M character is printed:"
     echo
-    echo "   P - The session has been removed from storer and"
-    echo "       the new 6-digit id is the 1st 6 chars of the old 10-digit id."
-    echo "       For example 9f8TeZMZA2 --> 9f8TeZ"
+    echo "  P - The session has been removed from storer and"
+    echo "      the new 6-digit id is the 1st 6 chars of the old 10-digit id."
+    echo "      For example 9f8TeZMZA2 --> 9f8TeZ"
     echo
-    echo "   M - The session has been removed from storer and"
-    echo "       the new 6-digit id is NOT the 1st 6 chars of the old 10-digit id."
-    echo "       For example 9f8TeZMZA2 -> uQMecK"
-    echo "       ...EXPLAIN WHERE THIS MAPPING INFO IS HELD..."
+    echo "  M - The session has been removed from storer and"
+    echo "      the new 6-digit id is NOT the 1st 6 chars of the old 10-digit id."
+    echo "      For example 9f8TeZMZA2 -> uQMecK"
+    echo "      ...EXPLAIN WHERE THIS MAPPING INFO IS HELD..."
     echo
-    echo "   E - The session failed to port because an exception arose"
-    echo "       The session is still in the storer."
-    echo "       ...EXPLAIN WHERE THIS EXCEPTION INFO IS HELD..."
+    echo "  E - The session failed to port because an exception arose"
+    echo "      The session is still in the storer."
+    echo "      ...EXPLAIN WHERE THIS EXCEPTION INFO IS HELD..."
     echo
     echo "First try porting a few single sessions."
     echo "To show a randomly selected 10-digit id:"
