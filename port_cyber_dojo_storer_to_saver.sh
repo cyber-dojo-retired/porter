@@ -1,6 +1,12 @@
 #!/bin/bash
 set -ex
 
+readonly network_name=port_cyber_dojo_storer_to_saver
+
+readonly storer_port=4577
+readonly saver_port=4537
+readonly porter_port=4517
+
 declare storer_cid=""
 declare saver_cid=""
 declare porter_cid=""
@@ -91,6 +97,11 @@ exit_unless_docker_installed()
   fi
 }
 
+create_porting_network()
+{
+  docker network create --driver bridge ${network_name}
+}
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 running_container()
@@ -179,6 +190,8 @@ run_storer_service()
   storer_cid=$(docker run \
     --detach \
     --interactive \
+    --network ${network_name} \
+    --publish ${storer_port}:${storer_port} \
     --tty \
       cyberdojo/storer)
   # TODO: with data-container mounted
@@ -192,9 +205,11 @@ run_saver_service()
 {
   saver_cid=$(docker run \
     --detach \
-    --interactive \
-    --tty \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
+    --interactive \
+    --network ${network_name} \
+    --publish ${saver_port}:${saver_port} \
+    --tty \
     --volume /cyber-dojo:/cyber-dojo \
       cyberdojo/saver)
 
@@ -207,11 +222,11 @@ run_porter_service()
 {
   porter_cid=$(docker run \
     --detach \
-    --interactive \
-    --tty \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
-    --link ${storer_cid} \
-    --link ${saver_cid} \
+    --interactive \
+    --network ${network_name} \
+    --publish ${porter_port}:${porter_port} \
+    --tty \
     --volume /porter:/porter \
       cyberdojo/porter)
 
@@ -232,9 +247,12 @@ run_port_exec()
 
 show_help ${*}
 exit_unless_docker_installed
+#TODO: exit_unless_curl_installed
 exit_unless_storer_preconditions_met
 exit_unless_saver_preconditions_met
 exit_unless_porter_preconditions_met
+
+create_porting_network
 #TODO: restore this
 #pull_latest_images
 run_storer_service
