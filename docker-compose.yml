@@ -25,7 +25,7 @@ services:
       context: .
       args:
         - SHA
-    user: porter:porter
+    user: porter
     image: cyberdojo/porter
     init: true
     container_name: test-porter-server

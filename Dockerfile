@@ -5,6 +5,7 @@ RUN adduser \
   -D       `# no password` \
   -H       `# no home dir` \
   -u 19664 `# user-id`     \
+  -G nogroup `# group`     \  
   porter   `# user-name`
 
 COPY . /app
