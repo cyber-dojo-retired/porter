@@ -237,7 +237,7 @@ wait_till_running()
       info "Confirmed: the ${name} service is running."
       return 0 # true
     else
-      sleep 0.1
+      sleep 0.05
     fi
   done
   echo
