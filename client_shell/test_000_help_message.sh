@@ -6,7 +6,7 @@ MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
 
 readonly help_line="As each session is ported, a single P/E/M character is printed:"
 
-test_help_message()
+test_000_help_message()
 {
   port --help
   assert_stdout_includes ${help_line}
@@ -14,7 +14,7 @@ test_help_message()
   assert_status_equals 0
 }
 
-test_help_message_when_no_arguments()
+test_001_help_message_when_no_arguments()
 {
   port
   assert_stdout_includes ${help_line}

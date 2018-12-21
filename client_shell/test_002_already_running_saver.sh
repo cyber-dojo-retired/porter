@@ -4,21 +4,20 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_slice()
+test_002_already_running_saver()
 {
-  local name=${FUNCNAME[0]}
+  local name=002
   create_stub_storer_data_container ${name}
   create_root_dir_for_saver_volume_mount ${name}
-  create_root_dir_for_porter_volume_mount ${name}
+  docker run --detach --name "${name}-saver" alpine > /dev/null
 
   port --sample10
-  assert_stdout_includes 'Hello from port.rb --sample10'
-  assert_stdout_includes 'porter.sha=='
-  assert_stdout_includes 'storer.sha=='
-  assert_stdout_includes 'saver.sha=='
-  assert_stderr_equals ''
-  assert_status_equals 0
 
+  docker rm --force "${name}-saver" > /dev/null
+  assert_stdout_equals ''
+  assert_stderr_includes "ERROR: The saver service is already running"
+  assert_stderr_includes "Please run $ [sudo] cyber-dojo down"
+  assert_status_equals 4
   cleanup ${name}
 }
 

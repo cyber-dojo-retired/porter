@@ -4,22 +4,19 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_already_running_storer()
+test_001_already_running_storer()
 {
-  local name=${FUNCNAME[0]}
-  docker run --detach --name "${name}" alpine > /dev/null
+  local name=001
+  docker run --detach --name "${name}-storer" alpine > /dev/null
 
   port --sample10
-  docker rm --force "${name}"
-  #dump_sss
 
+  docker rm --force "${name}-storer" > /dev/null
   assert_stdout_equals ''
-
   assert_stderr_includes "ERROR: The storer service is already running"
   assert_stderr_includes "Please run $ [sudo] cyber-dojo down"
-
   assert_status_equals 2
-  #TODO: needs cleanup
+  cleanup ${name}
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

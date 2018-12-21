@@ -4,7 +4,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_no_data_container()
+test_004_no_data_container()
 {
   port --sample10
 

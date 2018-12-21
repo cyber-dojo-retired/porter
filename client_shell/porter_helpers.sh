@@ -14,7 +14,7 @@ port()
 get_image_name()
 {
   local name=${1}
-  echo "cyber-dojo-porter-client-shell-${name}"
+  echo "cyber-dojo-shell-${name}"
 }
 
 get_data_container_name()
@@ -73,8 +73,8 @@ cleanup()
   local image_name=$(get_image_name "${name}")
   local dc_name=$(get_data_container_name "${name}")
   # TODO: call in trap
-  $(${dm_ssh} sudo rm -rf ${SAVER_HOST_ROOT_DIR})
-  $(${dm_ssh} sudo rm -rf ${PORTER_HOST_ROOT_DIR})
-  docker container rm --force --volumes ${dc_name} > /dev/null
-  docker image rm --force ${image_name} > /dev/null
+  $(${dm_ssh} sudo rm -rf ${SAVER_HOST_ROOT_DIR})  > /dev/null 2>&1 || true
+  $(${dm_ssh} sudo rm -rf ${PORTER_HOST_ROOT_DIR}) > /dev/null 2>&1 || true
+  docker container rm --force --volumes ${dc_name} > /dev/null 2>&1 || true
+  docker image rm --force ${image_name}            > /dev/null 2>&1 || true
 }
