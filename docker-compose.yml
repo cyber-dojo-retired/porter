@@ -61,3 +61,17 @@ services:
     tmpfs:
       - /cyber-dojo:uid=19663,gid=65533
       - /tmp:uid=19663,gid=65533
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  inserter:
+    build:
+      context: inserter
+    image: cyberdojo/inserter
+    init: true
+    container_name: test-porter-inserter
+    read_only: true
+    tmpfs: /tmp
+    restart: 'no'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

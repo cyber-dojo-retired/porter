@@ -5,7 +5,7 @@ docker run \
    --rm \
    -it \
    --volume /var/run/docker.sock:/var/run/docker.sock \
-   cyberdojo/storer-inserter \
+   cyberdojo/inserter \
      test-porter-storer \
        dup_server old new red
        # 7E 4D

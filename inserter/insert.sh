@@ -20,7 +20,7 @@ docker exec \
     sh -c "mkdir -p ${KATAS_ROOT}"
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
-# tar pipe test specified data into storer-container
+# tar pipe specified test-data into storer-container
 
 for arg in $@
 do
