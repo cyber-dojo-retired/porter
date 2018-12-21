@@ -4,20 +4,21 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_002_already_running_saver()
+test_003_porter_already_exists()
 {
-  local name=002
+  local name=003
   create_stub_storer_data_container ${name}
   create_root_dir_for_saver_volume_mount ${name}
-  docker run --detach --name "${name}-saver" alpine > /dev/null
+  create_root_dir_for_porter_volume_mount ${name}
+  docker run --detach --name "${name}-porter" alpine > /dev/null
 
   port --sample10
 
-  docker rm --force "${name}-saver" > /dev/null
+  docker rm --force "${name}-porter" > /dev/null
   assert_stdout_equals ''
-  assert_stderr_includes "ERROR: The saver service is already running"
-  assert_stderr_includes "Please run $ [sudo] cyber-dojo down"
-  assert_status_equals 4
+  assert_stderr_includes "ERROR: A porter service already exists"
+  assert_stderr_includes "Please run $ [sudo] docker rm -f porter"
+  assert_status_equals 5
   cleanup ${name}
 }
 

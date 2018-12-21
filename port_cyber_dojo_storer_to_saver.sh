@@ -151,7 +151,7 @@ exit_unless_installed()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-running_container()
+exists_container()
 {
   local name=${1}
   if docker ps --all --format '{{.Names}}' | grep "${name}" > /dev/null ; then
@@ -165,8 +165,8 @@ running_container()
 
 exit_unless_storer_preconditions_met()
 {
-  if running_container storer ; then
-    message+="ERROR: The storer service is already running${newline}"
+  if exists_container storer ; then
+    message+="ERROR: A storer service already exists${newline}"
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 2 "${message}"
   else
@@ -183,8 +183,8 @@ exit_unless_storer_preconditions_met()
 
 exit_unless_saver_preconditions_met()
 {
-  if running_container saver ; then
-    message+="ERROR: The saver service is already running!${newline}"
+  if exists_container saver ; then
+    message+="ERROR: A saver service already exists${newline}"
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 4 "${message}"
   else
@@ -196,8 +196,8 @@ exit_unless_saver_preconditions_met()
 
 exit_unless_porter_preconditions_met()
 {
-  if running_container porter ; then
-    message+="ERROR: The porter service is already running!${newline}"
+  if exists_container porter ; then
+    message+="ERROR: A porter service already exists${newline}"
     message+="Please run $ [sudo] docker rm -f porter${newline}"
     error 5 "${message}"
   else
