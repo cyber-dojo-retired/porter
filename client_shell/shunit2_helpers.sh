@@ -1,11 +1,24 @@
 
-assertStdoutEquals() { assertEquals 'stdout' "$1" "`cat ${stdoutF}`"; }
-assertStderrEquals() { assertEquals 'stderr' "$1" "`cat ${stderrF}`"; }
-assertStatusEquals() { assertEquals 'status' "$1" "`cat ${statusF}`"; }
+assert_stdout_equals() { assertEquals 'stdout' "$1" "`cat ${stdoutF}`"; }
+assert_stderr_equals() { assertEquals 'stderr' "$1" "`cat ${stderrF}`"; }
+assert_status_equals() { assertEquals 'status' "$1" "`cat ${statusF}`"; }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-assertStdoutIncludes()
+dump_sss()
+{
+    echo '<stdout>'
+    cat "${stdoutF}"
+    echo '</stdout>'
+    echo '<stderr>'
+    cat "${stderrF}"
+    echo '</stderr>'
+    echo '<status>'
+    cat "${statusF}"
+    echo '</status>'
+}
+
+assert_stdout_includes()
 {
   local stdout="`cat ${stdoutF}`"
   if [[ "${stdout}" != *"${1}"* ]]; then
@@ -16,7 +29,7 @@ assertStdoutIncludes()
   fi
 }
 
-assertStderrIncludes()
+assert_stderr_includes()
 {
   local stderr="`cat ${stderrF}`"
   if [[ "${stderr}" != *"${1}"* ]]; then

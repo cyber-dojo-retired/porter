@@ -43,16 +43,16 @@ show_help()
     echo "      ...EXPLAIN WHERE THIS EXCEPTION INFO IS HELD..."
     echo
     echo "First try porting a few single sessions."
-    echo "To show a randomly selected 10-digit id:"
-    echo "  \$ ${my_name} --show10"
+    echo "To show a randomly sampled 10-digit id:"
+    echo "  \$ ${my_name} --sample10"
     echo "Then try porting it."
     echo "For example, if the 10-digit id is 9f8TeZMZA2"
     echo "  \$ ${my_name} 9f8TeZMZA2"
     echo
     echo "If all is well, you can move on to porting all"
     echo "the sessions with a given 2-digit prefix."
-    echo "To show a randomly selected 2-digit id:"
-    echo "  \$ ${my_name} --show2"
+    echo "To show a randomly sampled 2-digit id:"
+    echo "  \$ ${my_name} --sample2"
     echo "Then try porting them."
     echo "For example, if the 2-digit prefix is 5A"
     echo "  \$ ${my_name} 5A"
@@ -74,6 +74,10 @@ readonly saver_port=4537
 
 declare porter_cid=""
 readonly porter_port=4517
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+readonly newline=$'\n'
 
 declare verbose=1
 if [ "${1}" = "--verbose" ]; then

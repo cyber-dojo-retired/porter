@@ -8,17 +8,17 @@ readonly help_line="As each session is ported, a single P/E/M character is print
 test_help_message()
 {
   port --help
-  assertStdoutIncludes ${help_line}
-  assertStderrEquals ''
-  assertStatusEquals 0
+  assert_stdout_includes ${help_line}
+  assert_stderr_equals ''
+  assert_status_equals 0
 }
 
 test_help_message_when_no_arguments()
 {
   port
-  assertStdoutIncludes ${help_line}
-  assertStderrEquals ''
-  assertStatusEquals 0
+  assert_stdout_includes ${help_line}
+  assert_stderr_equals ''
+  assert_status_equals 0
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
