@@ -152,6 +152,7 @@ running_container()
   local space='\s'
   local name=$1
   local end_of_line='$'
+  #TODO: this wont work with set -e
   docker ps --filter "name=${name}" | grep "${space}${name}${end_of_line}" > /dev/null
   return $?
 }
