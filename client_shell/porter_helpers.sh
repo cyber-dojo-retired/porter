@@ -1,6 +1,5 @@
 
 MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
-readonly sh_dir="${MY_DIR}/sh"
 
 readonly PORT_STORER_2_SAVER=${MY_DIR}/../port_cyber_dojo_storer_to_saver.sh
 readonly dm_ssh="docker-machine ssh ${DOCKER_MACHINE_NAME}"
@@ -30,9 +29,21 @@ create_stub_storer_data_container()
   local name=${1}
   local image_name=$(get_image_name "${name}")
   local dc_name=$(get_data_container_name "${name}")
-  ${sh_dir}/docker_build_volumed_image.sh ${image_name}
+
+  cd ${MY_DIR} && \
+    docker build \
+      --tag=${image_name} \
+      --file=./Dockerfile.storer-data-container \
+      . \
+      > /dev/null
+
   docker rm --force --volumes ${dc_name} > /dev/null 2>&1 || true
-  ${sh_dir}/docker_create_data_container.sh ${image_name} ${dc_name}
+
+  docker create \
+    --name ${dc_name} \
+    ${image_name} \
+    > /dev/null
+
   export STORER_DATA_CONTAINER_NAME=${dc_name}
 }
 
