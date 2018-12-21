@@ -4,13 +4,13 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_storer_already_running()
+test_already_running_storer()
 {
   local name=${FUNCNAME[0]}
-  docker run --detach --name "${name}-storer" alpine > /dev/null
+  docker run --detach --name "${name}" alpine > /dev/null
 
   port --sample10
-  docker rm --force "${name}-storer"
+  docker rm --force "${name}"
   #dump_sss
 
   assert_stdout_equals ''

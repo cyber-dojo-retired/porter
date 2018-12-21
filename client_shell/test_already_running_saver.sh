@@ -4,14 +4,15 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_saver_already_running()
+test_already_running_saver()
 {
   local name=${FUNCNAME[0]}
-  create_stub_storer_data_container ${name}  
-  docker run --detach --name "${name}-saver" alpine > /dev/null
+  create_stub_storer_data_container ${name}
+  create_root_dir_for_saver_volume_mount ${name}
+  docker run --detach --name "${name}" alpine > /dev/null
 
   port --sample10
-  docker rm --force "${name}-saver"
+  docker rm --force "${name}"
   #dump_sss
 
   assert_stdout_equals ''
