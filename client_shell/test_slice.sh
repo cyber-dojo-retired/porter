@@ -15,7 +15,7 @@ test_415_slice()
 
   # create image +data-container
   ${sh_dir}/docker_build_volumed_image.sh ${image_name}
-  docker rm --force --volumes ${dc_name} || true
+  docker rm --force --volumes ${dc_name} > /dev/null 2>&1 || true
   ${sh_dir}/docker_create_data_container.sh ${image_name} ${dc_name}
   export STORER_DATA_CONTAINER_NAME=${dc_name}
 
@@ -37,10 +37,11 @@ test_415_slice()
   assertStderrEquals ''
   assertStatusEquals 0
 
+  # cleanup TODO: put in trap
   $(${dmc} sudo rm -rf ${SAVER_HOST_ROOT_DIR})
   $(${dmc} sudo rm -rf ${PORTER_HOST_ROOT_DIR})
-  docker container rm --force --volume ${dc_name}
-  docker image rm --force ${image_name}
+  docker container rm --force --volumes ${dc_name} > /dev/null
+  docker image rm --force ${image_name} > /dev/null
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
