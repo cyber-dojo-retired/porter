@@ -58,11 +58,13 @@ show_help()
 declare network_name=""
 
 declare storer_cid=""
-declare saver_cid=""
-declare porter_cid=""
-
 readonly storer_port=4577
+readonly storer_data_container_name="cyber-dojo-katas-DATA-CONTAINER"
+
+declare saver_cid=""
 readonly saver_port=4537
+
+declare porter_cid=""
 readonly porter_port=4517
 
 declare verbose=1
@@ -165,7 +167,11 @@ exit_unless_storer_preconditions_met()
   else
     info 'Confirmed: the storer service is not already running.'
   fi
-  # TODO: 3. check data-container exists?
+  if ! docker ps --all | grep -s ${katas_data_container} ; then
+    error 3 "ERROR: Cannot find storer's data-container!"
+  else
+    info 'Confirmed: found the storer data-container.'
+  fi
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
