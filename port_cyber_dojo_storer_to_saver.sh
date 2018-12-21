@@ -167,7 +167,7 @@ exit_unless_storer_preconditions_met()
   else
     info 'Confirmed: the storer service is not already running.'
   fi
-  if ! docker ps --all | grep -s ${katas_data_container} ; then
+  if ! docker ps --all | grep ${storer_data_container_name} > /dev/null ; then
     error 3 "ERROR: Cannot find storer's data-container!"
   else
     info 'Confirmed: found the storer data-container.'
