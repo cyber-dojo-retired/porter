@@ -6,4 +6,5 @@ readonly DATA_CONTAINER_NAME=${2}
 
 docker create \
   --name ${DATA_CONTAINER_NAME} \
-  ${IMAGE_NAME}
+  ${IMAGE_NAME} \
+  > /dev/null

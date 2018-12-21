@@ -1,6 +1,17 @@
 #!/bin/bash
 set -e
 
+# ensure porter service can see storer/saver services
+readonly network_name="port_cyber_dojo_storer_to_saver"
+# allow tests to specify where saver will save to
+readonly saver_host_root_dir="${SAVER_HOST_ROOT_DIR:-/}"
+# allow tests to specify where porter will save to
+readonly porter_host_root_dir="${PORTER_HOST_ROOT_DIR:-/}"
+# allow tests to specify storer's data-container
+readonly storer_data_container_name="${STORER_DATA_CONTAINER_NAME:-cyber-dojo-katas-DATA-CONTAINER}"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 show_help()
 {
   local my_name=`basename "${0}"`
@@ -52,15 +63,6 @@ show_help()
     exit 0
   fi
 }
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# ensure porter service can see storer/saver services
-readonly network_name="port_cyber_dojo_storer_to_saver"
-# allow tests to specify where saver/porter will save to
-readonly host_root_dir="${HOST_ROOT_DIR:-/}"
-# allow tests to specify storer's data-container
-readonly storer_data_container_name="${STORER_DATA_CONTAINER_NAME:-cyber-dojo-katas-DATA-CONTAINER}"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -137,7 +139,7 @@ exit_unless_installed()
 {
   local cmd=${1}
   if ! hash ${cmd} 2> /dev/null ; then
-    error 1 "ERROR: ${cmd} needs to be installed!"
+    error 1 "ERROR: ${cmd} needs to be installed"
   else
     info "Confirmed: ${cmd} is installed."
   fi
@@ -162,14 +164,14 @@ running_container()
 exit_unless_storer_preconditions_met()
 {
   if running_container storer ; then
-    message+="ERROR: The storer service is already running!${newline}"
+    message+="ERROR: The storer service is already running${newline}"
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 2 "${message}"
   else
     info 'Confirmed: the storer service is not already running.'
   fi
   if ! docker ps --all | grep ${storer_data_container_name} > /dev/null ; then
-    error 3 "ERROR: Cannot find storer's data-container!"
+    error 3 "ERROR: Cannot find storer's data-container ${storer_data_container_name}"
   else
     info 'Confirmed: found the storer data-container.'
   fi
@@ -271,7 +273,7 @@ run_saver_service()
     --network ${network_name} \
     --publish ${saver_port}:${saver_port} \
     --tty \
-    --volume ${host_root_dir}/cyber-dojo:/cyber-dojo \
+    --volume ${saver_host_root_dir}/cyber-dojo:/cyber-dojo \
       cyberdojo/saver)
 
   wait_till_running saver ${saver_port} ${saver_cid} 7
@@ -290,7 +292,7 @@ run_porter_service()
     --network ${network_name} \
     --publish ${porter_port}:${porter_port} \
     --tty \
-    --volume ${host_root_dir}/porter:/porter \
+    --volume ${porter_host_root_dir}/porter:/porter \
       cyberdojo/porter)
 
   wait_till_running porter ${porter_port} ${porter_cid} 8
