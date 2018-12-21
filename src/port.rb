@@ -1,24 +1,45 @@
 require_relative 'externals'
 
-puts "Hello from port.rb #{ARGV[0]}"
-puts "storer.sha==#{Externals.new.storer.sha}"
-puts "saver.sha==#{Externals.new.saver.sha}"
-
-# The main entry-point, from the shell
-
-# ruby port.rb id-10 => port_one(id-10)
-
-# ruby port.rb id-2 => port_many(id-2)
-#    use kata_completions(id-2)
-
-# ruby port.rb      => port_all
-#    use all 58x58 generated id-2's
-
 # - - - - - - - - - - - - - - - - - - - - -
-# port and individual id
-# if ok
-#    print P
-# if an exeption
-#    print E and add id info to json? file (named from date+time)
-# if id-mapped
-#    print M and add id info to json? file (named from date+time)
+# if E(exeption) or M(id-mapped)
+#    porter.rb (not this) will add id info to json? file (named from date+time?)
+
+def externals
+  Externals.new
+end
+
+def porter
+  externals.porter
+end
+
+def storer
+  externals.storer
+end
+
+def saver
+  externals.saver
+end
+
+def arg
+  ARGV[0]
+end
+
+puts "Hello from port.rb #{arg}"
+puts "porter.sha==#{externals.env.sha}"
+puts "storer.sha==#{storer.sha}"
+puts "saver.sha==#{saver.sha}"
+
+def port_one # arg{id-10}
+#    porter.port_one(id-10)
+#    print P/E/M
+end
+
+def port_many # arg{id-2}
+#    kata_completions(id-2).each
+#      port_one()
+end
+
+def port_all # arg(all)
+#    use all 58x58 generated id-2's.each
+#      port_many()
+end

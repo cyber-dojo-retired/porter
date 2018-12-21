@@ -7,6 +7,7 @@ test_slice()
 {
   port id42
   assertStdoutIncludes 'Hello from port.rb id42'
+  assertStdoutIncludes 'porter.sha=='
   assertStdoutIncludes 'storer.sha=='
   assertStdoutIncludes 'saver.sha=='
   assertStderrEquals ''
