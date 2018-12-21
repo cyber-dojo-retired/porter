@@ -1,0 +1,66 @@
+
+1. check if the container already exists...
+-------------------------------------------
+
+katas_data_container = 'cyber-dojo-katas-DATA-CONTAINER'
+docker ps --all | grep -s #{katas_data_container}
+
+2. mount it
+-----------
+commander's docker-compose.yml had this
+
+storer:
+  volumes_from:
+    - container:${CYBER_DOJO_KATAS_DATA_CONTAINER}:rw
+
+Reminder...
+--volume         Bind mount a volume
+--volumes-from   Mount volumes from the specified container(s)
+
+So its
+  --volumes-from cyber-dojo-katas-DATA-CONTAINER
+
+3. For testing... create the data-container
+-------------------------------------------
+
+I have to use --volumes-from to work with true data-container
+That only allows name of data-container, no dir-map
+So sadly I need to replicate the 3 steps below
+The CYBER_DOJO_KATAS_ROOT will still be the same of course.
+But the [docker build] and [docker create] steps will
+need to use a specific name, one name for each test.
+
+
+Dockerfile.katas is
+
+  FROM  alpine:latest
+  LABEL maintainer=jon@jaggersoft.com
+  RUN adduser -D -H -u 19661 cyber-dojo
+  ARG CYBER_DOJO_KATAS_ROOT
+  USER root
+  RUN  mkdir -p ${CYBER_DOJO_KATAS_ROOT}
+  RUN  chown -R cyber-dojo ${CYBER_DOJO_KATAS_ROOT}
+  VOLUME [ "${CYBER_DOJO_KATAS_ROOT}" ]
+  CMD [ "katas-data-container" ]
+
+command to create the image from this is...
+
+  docker build
+    --build-arg=CYBER_DOJO_KATAS_ROOT=/usr/src/cyber-dojo/katas
+    --tag=cyberdojo/katas
+    --file=Dockerfile.katas
+    #{context_dir}
+
+command to create container from this is...
+
+  docker create
+    --name cyber-dojo-katas-DATA-CONTAINER
+    cyberdojo/katas
+    "echo 'cdfKatasDC' > /dev/null
+
+
+
+
+
+...the VOLUME directive creates a new nameless (with randomly generated id)
+volume every time you launch a new container
