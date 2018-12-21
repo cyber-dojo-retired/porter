@@ -55,11 +55,17 @@ show_help()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-declare network_name=""
+# ensure porter service can see storer/saver services
+readonly network_name="port_cyber_dojo_storer_to_saver"
+# allow tests to specify where saver/porter will save to
+readonly host_root_dir="${HOST_ROOT_DIR:-/}"
+# allow tests to specify storer's data-container
+readonly storer_data_container_name="${STORER_DATA_CONTAINER_NAME:-cyber-dojo-katas-DATA-CONTAINER}"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 declare storer_cid=""
 readonly storer_port=4577
-readonly storer_data_container_name="${STORER_DATA_CONTAINER_NAME:-cyber-dojo-katas-DATA-CONTAINER}"
 
 declare saver_cid=""
 readonly saver_port=4537
@@ -270,7 +276,7 @@ run_saver_service()
     --network ${network_name} \
     --publish ${saver_port}:${saver_port} \
     --tty \
-    --volume /cyber-dojo:/cyber-dojo \
+    --volume ${host_root_dir}/cyber-dojo:/cyber-dojo \
       cyberdojo/saver)
 
   wait_till_running saver ${saver_port} ${saver_cid} 7
@@ -289,7 +295,7 @@ run_porter_service()
     --network ${network_name} \
     --publish ${porter_port}:${porter_port} \
     --tty \
-    --volume /porter:/porter \
+    --volume ${host_root_dir}/porter:/porter \
       cyberdojo/porter)
 
   wait_till_running porter ${porter_port} ${porter_cid} 8
