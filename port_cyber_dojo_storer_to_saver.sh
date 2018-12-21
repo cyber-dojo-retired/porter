@@ -59,7 +59,7 @@ declare network_name=""
 
 declare storer_cid=""
 readonly storer_port=4577
-readonly storer_data_container_name="cyber-dojo-katas-DATA-CONTAINER"
+readonly storer_data_container_name="${STORER_DATA_CONTAINER_NAME:-cyber-dojo-katas-DATA-CONTAINER}"
 
 declare saver_cid=""
 readonly saver_port=4537
