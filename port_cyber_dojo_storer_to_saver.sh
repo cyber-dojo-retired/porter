@@ -112,6 +112,13 @@ remove_all_services_and_network()
   remove_docker_network
 }
 trap remove_all_services_and_network EXIT INT
+create_docker_network()
+{
+  local name=port_cyber_dojo_storer_to_saver
+  docker network create --driver bridge ${name} > /dev/null
+  network_name=${name}
+  info "Confirmed: network ${network_name} has been created."
+}
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -133,16 +140,6 @@ exit_unless_installed()
   else
     info "Confirmed: ${cmd} is installed."
   fi
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-create_docker_network()
-{
-  local name=port_cyber_dojo_storer_to_saver
-  docker network create --driver bridge ${name} > /dev/null
-  network_name=${name}
-  info "Confirmed: network ${network_name} has been created."
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
