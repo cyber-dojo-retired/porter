@@ -6,5 +6,4 @@ readonly DATA_CONTAINER_NAME=${2}
 
 docker create \
   --name ${DATA_CONTAINER_NAME} \
-  ${IMAGE_NAME} \
-  "echo 'cdfKatasDC' > /dev/null"
+  ${IMAGE_NAME}
