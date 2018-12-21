@@ -94,10 +94,8 @@ info()
 
 remove_docker_network()
 {
-  if [ ! -z ${network_name} ]; then
-    info "Removing network ${network_name}"
-    docker network rm ${network_name} > /dev/null
-  fi
+  info "Removing network ${network_name}"
+  docker network rm ${network_name} > /dev/null
 }
 remove_one_service()
 {
@@ -117,12 +115,9 @@ remove_all_services_and_network()
   remove_one_service porter ${porter_cid}
   remove_docker_network
 }
-trap remove_all_services_and_network EXIT INT
 create_docker_network()
 {
-  local name=port_cyber_dojo_storer_to_saver
-  docker network create --driver bridge ${name} > /dev/null
-  network_name=${name}
+  docker network create --driver bridge ${network_name} > /dev/null
   info "Confirmed: network ${network_name} has been created."
 }
 
@@ -326,6 +321,8 @@ exit_unless_saver_preconditions_met
 exit_unless_porter_preconditions_met
 
 create_docker_network
+trap remove_all_services_and_network EXIT INT
+
 #TODO: restore this
 #pull_latest_images
 run_storer_service
