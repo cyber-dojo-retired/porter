@@ -153,10 +153,8 @@ exit_unless_installed()
 
 running_container()
 {
-  local space='\s'
   local name=${1}
-  local end_of_line='$'
-  if docker ps --filter "name=${name}" | grep "${space}${name}${end_of_line}" > /dev/null ; then
+  if docker ps --all --format '{{.Names}}' | grep "${name}" > /dev/null ; then
     true
   else
     false
