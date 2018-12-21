@@ -80,18 +80,29 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '1E3', %w(
-  port of newer ids some of which include l (ell, lowercase L)
-  ) do
+  test '1E1',
+  'port of a big session' do
+    assert_ports_with_matching_id('9fH6TumFV2')
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '1E7',
+  'port of newer sessions whose id includes l (ell, lowercase L)' do
+    assert_ports_with_matching_id('9fcW44ltyz')
+    assert_ports_with_matching_id('9fvMuUlKbh')
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '1E3',
+  'port of newer ids' do
     kata_ids = %w(
       9f67Q9PyZm
-      9fcW44ltyz
       9fDYJR3BfG
-      9fH6TumFV2
       9fSqUqMecK
       9fT2wMW0BM
       9fUSFm6hmT
-      9fvMuUlKbh
     )
     kata_ids.each do |id10|
       assert_ports_with_matching_id(id10)
