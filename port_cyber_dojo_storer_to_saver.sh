@@ -253,8 +253,8 @@ run_storer_service()
     --network ${network_name} \
     --publish ${storer_port}:${storer_port} \
     --tty \
+    --volumes-from ${storer_data_container_name} \
       cyberdojo/storer)
-  # TODO: with data-container mounted
   wait_till_running storer ${storer_port} ${storer_cid} 6
 }
 
