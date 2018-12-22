@@ -4,7 +4,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_001_storer_already_exists()
+test_002_storer_already_exists()
 {
   local name=001
   docker run --detach --name "${name}-storer" alpine > /dev/null

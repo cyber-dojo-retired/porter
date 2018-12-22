@@ -1,14 +1,9 @@
 #!/bin/bash
+set -e
 
 readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 readonly test_files="${1:-test_*.sh}"
 
-failed=0
-for file in ${my_dir}/${test_files}; do
-  ${file}
-  if [ $? != 0 ]; then
-    failed=1
-  fi
+for test_file in ${my_dir}/${test_files}; do
+  ${test_file}
 done
-
-exit ${failed}

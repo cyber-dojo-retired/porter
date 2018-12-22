@@ -4,7 +4,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_002_saver_already_exists()
+test_003_saver_already_exists()
 {
   local name=002
   create_stub_storer_data_container ${name}
