@@ -52,12 +52,15 @@ create_stub_storer_data_container()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-readonly dm_ssh="docker-machine ssh ${DOCKER_MACHINE_NAME}"
-
 on_host()
 {
   local cmd="${1}"
-  $(${dm_ssh} sudo ${cmd}) || true
+  local dm_ssh="docker-machine ssh ${DOCKER_MACHINE_NAME}"
+  if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
+    $(${dm_ssh} sudo ${cmd}) || true
+  else
+    $(cmd) || true
+  fi
 }
 
 create_root_dir_for_saver_volume_mount()
