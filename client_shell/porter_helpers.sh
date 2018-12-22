@@ -59,7 +59,7 @@ on_host_cmd()
   if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
     echo "${dm_ssh} sudo ${cmd}"
   else
-    echo "${cmd}"
+    echo "sudo ${cmd}"
   fi
 }
 
