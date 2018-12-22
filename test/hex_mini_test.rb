@@ -90,6 +90,7 @@ class HexMiniTest < MiniTest::Test
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
+  # :nocov:
   ObjectSpace.define_finalizer(self, proc {
     slow = @@timings.select{ |_name,secs| secs > 0.000 }
     sorted = slow.sort_by{ |name,secs| -secs }.to_h
@@ -100,5 +101,6 @@ class HexMiniTest < MiniTest::Test
       break if index == size
     }
   })
+  # :nocov:
 
 end
