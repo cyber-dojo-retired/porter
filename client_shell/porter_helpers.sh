@@ -52,11 +52,10 @@ create_stub_storer_data_container()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-readonly dm_ssh="docker-machine ssh ${DOCKER_MACHINE_NAME}"
-
 on_host_cmd()
 {
   local cmd="${1}"
+  local dm_ssh="docker-machine ssh ${DOCKER_MACHINE_NAME}"
   if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
     echo "${dm_ssh} sudo ${cmd}"
   else
@@ -66,12 +65,8 @@ on_host_cmd()
 
 on_host()
 {
-  local cmd="${1}"
-  if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
-    $(${dm_ssh} sudo ${cmd}) || true
-  else
-    $(${cmd}) || true
-  fi
+  local cmd=$(on_host_cmd "${1}")
+  $(${cmd})
 }
 
 create_stub_saver_volume_mount_root_dir()
@@ -106,6 +101,6 @@ cleanup_stubs()
   # TODO: call in trap?
   on_host "rm -rf ${SAVER_HOST_ROOT_DIR}"
   on_host "rm -rf ${PORTER_HOST_ROOT_DIR}"
-  docker container rm --force --volumes ${dc_name} > /dev/null 2>&1 || true
-  docker image rm --force ${image_name}            > /dev/null 2>&1 || true
+  docker container rm --force --volumes ${dc_name} > /dev/null 2>&1
+  docker image rm --force ${image_name}            > /dev/null 2>&1
 }
