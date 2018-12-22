@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# These tests run with fake volume-mounts setup in docker-compose.yml
+
 declare server_status=0
 declare client_status=0
 
