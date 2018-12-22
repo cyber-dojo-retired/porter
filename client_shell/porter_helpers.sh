@@ -52,18 +52,19 @@ create_stub_storer_data_container()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
+readonly dm_ssh="docker-machine ssh ${DOCKER_MACHINE_NAME}"
+
 on_host()
 {
   local cmd="${1}"
-  local dm_ssh="docker-machine ssh ${DOCKER_MACHINE_NAME}"
   if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
     $(${dm_ssh} sudo ${cmd}) || true
   else
-    $(cmd) || true
+    $(${cmd}) || true
   fi
 }
 
-create_root_dir_for_saver_volume_mount()
+create_stub_saver_volume_mount_root_dir()
 {
   local name=${1}
   local image_name=$(get_image_name "${name}")
@@ -73,7 +74,7 @@ create_root_dir_for_saver_volume_mount()
   on_host "chown -R 19663:65533 ${SAVER_HOST_ROOT_DIR}"
 }
 
-create_root_dir_for_porter_volume_mount()
+create_stub_porter_volume_mount_root_dir()
 {
   local name=${1}
   local image_name=$(get_image_name "${name}")
@@ -85,7 +86,7 @@ create_root_dir_for_porter_volume_mount()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-cleanup_stub_data_container_and_stub_volumes()
+cleanup_stubs()
 {
   local name=${1}
   local image_name=$(get_image_name "${name}")

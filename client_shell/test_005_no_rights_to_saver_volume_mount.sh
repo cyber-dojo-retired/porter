@@ -10,7 +10,7 @@ test_005_no_rights_to_saver_volume_mount()
   create_stub_storer_data_container ${name}
 
   port --sample10
-  cleanup_stub_data_container_and_stub_volumes ${name}
+  cleanup_stubs ${name}
 
   assert_stdout_includes 'Starting the storer service'
   assert_stdout_includes 'Starting the saver service'

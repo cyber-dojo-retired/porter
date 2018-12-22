@@ -12,7 +12,7 @@ test_099_slice()
   create_root_dir_for_porter_volume_mount ${name}
 
   port --sample10
-  cleanup_stub_data_container_and_stub_volumes ${name}
+  cleanup_stubs ${name}
 
   assert_stdout_includes 'Hello from port.rb --sample10'
   assert_stdout_includes 'porter.sha=='
