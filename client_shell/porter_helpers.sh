@@ -54,6 +54,16 @@ create_stub_storer_data_container()
 
 readonly dm_ssh="docker-machine ssh ${DOCKER_MACHINE_NAME}"
 
+on_host_cmd()
+{
+  local cmd="${1}"
+  if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
+    echo "${dm_ssh} sudo ${cmd}"
+  else
+    echo "${cmd}"
+  fi
+}
+
 on_host()
 {
   local cmd="${1}"
@@ -69,7 +79,8 @@ create_stub_saver_volume_mount_root_dir()
   local name=${1}
   local image_name=$(get_image_name "${name}")
   local dc_name=$(get_data_container_name "${name}")
-  export SAVER_HOST_ROOT_DIR=$(${dm_ssh} sudo mktemp -d /tmp/${dc_name}-saver.XXXXXX)
+  local cmd=$(on_host_cmd "mktemp -d /tmp/${dc_name}-saver.XXXXXX")
+  export SAVER_HOST_ROOT_DIR=$(${cmd})
   on_host "mkdir ${SAVER_HOST_ROOT_DIR}/cyber-dojo"
   on_host "chown -R 19663:65533 ${SAVER_HOST_ROOT_DIR}"
 }
@@ -79,7 +90,8 @@ create_stub_porter_volume_mount_root_dir()
   local name=${1}
   local image_name=$(get_image_name "${name}")
   local dc_name=$(get_data_container_name "${name}")
-  export PORTER_HOST_ROOT_DIR=$(${dm_ssh} sudo mktemp -d /tmp/${dc_name}-porter.XXXXXX)
+  local cmd=$(on_host_cmd "mktemp -d /tmp/${dc_name}-porter.XXXXXX")
+  export PORTER_HOST_ROOT_DIR=$(${cmd})
   on_host "mkdir ${PORTER_HOST_ROOT_DIR}/porter"
   on_host "chown -R 19664:65533 ${PORTER_HOST_ROOT_DIR}"
 }
