@@ -11,6 +11,7 @@ test_006_no_rights_to_porter_volume_mount()
   create_root_dir_for_saver_volume_mount ${name}
 
   port --sample10
+  cleanup_stub_data_container_and_stub_volumes ${name}
 
   assert_stdout_includes 'Starting the storer service'
   assert_stdout_includes 'Starting the saver service'
@@ -22,7 +23,6 @@ test_006_no_rights_to_porter_volume_mount()
   assert_stderr_includes "Please run:"
   assert_stderr_includes "  \$ [sudo] chown 19664:65533 /porter"
   assert_status_equals 8
-  cleanup ${name}
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

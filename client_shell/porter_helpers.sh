@@ -57,7 +57,7 @@ readonly dm_ssh="docker-machine ssh ${DOCKER_MACHINE_NAME}"
 on_host()
 {
   local cmd="${1}"
-  $(${dm_ssh} sudo ${cmd})
+  $(${dm_ssh} sudo ${cmd}) || true
 }
 
 create_root_dir_for_saver_volume_mount()
@@ -82,14 +82,14 @@ create_root_dir_for_porter_volume_mount()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-cleanup()
+cleanup_stub_data_container_and_stub_volumes()
 {
   local name=${1}
   local image_name=$(get_image_name "${name}")
   local dc_name=$(get_data_container_name "${name}")
-  # TODO: call in trap
-  on_host "rm -rf ${SAVER_HOST_ROOT_DIR}  > /dev/null 2>&1 || true"
-  on_host "rm -rf ${PORTER_HOST_ROOT_DIR} > /dev/null 2>&1 || true"
+  # TODO: call in trap?
+  on_host "rm -rf ${SAVER_HOST_ROOT_DIR}"
+  on_host "rm -rf ${PORTER_HOST_ROOT_DIR}"
   docker container rm --force --volumes ${dc_name} > /dev/null 2>&1 || true
   docker image rm --force ${image_name}            > /dev/null 2>&1 || true
 }

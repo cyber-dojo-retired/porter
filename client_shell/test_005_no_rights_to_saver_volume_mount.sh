@@ -10,6 +10,7 @@ test_005_no_rights_to_saver_volume_mount()
   create_stub_storer_data_container ${name}
 
   port --sample10
+  cleanup_stub_data_container_and_stub_volumes ${name}
 
   assert_stdout_includes 'Starting the storer service'
   assert_stdout_includes 'Starting the saver service'
@@ -20,7 +21,6 @@ test_005_no_rights_to_saver_volume_mount()
   assert_stderr_includes "Please run:"
   assert_stderr_includes "  \$ [sudo] chown 19663:65533 /cyber-dojo"
   assert_status_equals 7
-  cleanup ${name}
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

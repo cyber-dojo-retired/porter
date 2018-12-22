@@ -3,7 +3,7 @@
 MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
 . ${MY_DIR}/porter_helpers.sh
 
-test_two()
+x_test_two()
 {
   # For each test...
   # insert appropriate data into storer using insert_katas_test_data.sh
