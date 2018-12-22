@@ -8,8 +8,8 @@ test_099_slice()
 {
   local name=099
   create_stub_storer_data_container ${name}
-  create_root_dir_for_saver_volume_mount ${name}
-  create_root_dir_for_porter_volume_mount ${name}
+  create_stub_saver_volume_mount_root_dir ${name}
+  create_stub_porter_volume_mount_root_dir ${name}
 
   port --sample10
   cleanup_stubs ${name}
