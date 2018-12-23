@@ -12,7 +12,7 @@ test_002_storer_already_exists()
   create_stub_porter_volume_mount_root_dir ${name}
 
   docker run --detach --name "${name}-storer" alpine > /dev/null
-  port --sample10
+  port --nolog --10
   docker rm --force "${name}-storer" > /dev/null
   cleanup_stubs ${name}
 

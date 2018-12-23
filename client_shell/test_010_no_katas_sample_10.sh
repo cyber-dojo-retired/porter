@@ -11,11 +11,10 @@ test_010_no_katas_sample_10()
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}
 
-  port --10
+  port --nolog --10
   cleanup_stubs ${name}
 
   assert_stdout_equals ''
-  #assert_stdlog_equals 'sdsd'
   assert_stderr_equals 'ERROR: storer is empty!'
   assert_status_equals 11
 }

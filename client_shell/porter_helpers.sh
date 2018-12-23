@@ -5,7 +5,7 @@ readonly PORT_STORER_2_SAVER=${MY_DIR}/../port_cyber_dojo_storer_to_saver.sh
 
 port()
 {
-  ${PORT_STORER_2_SAVER} ${*} >${stdoutF} 2>${stderrF} 3>${stdlogF}
+  ${PORT_STORER_2_SAVER} ${*} >${stdoutF} 2>${stderrF}
   status=$?
   echo ${status} >${statusF}
 }
@@ -77,7 +77,9 @@ create_stub_saver_volume_mount_root_dir()
   local cmd=$(on_host_cmd "mktemp -d /tmp/${dc_name}-saver.XXXXXX")
   export SAVER_HOST_ROOT_DIR=$(${cmd})
   on_host "mkdir ${SAVER_HOST_ROOT_DIR}/cyber-dojo"
-  on_host "chown -R 19663:65533 ${SAVER_HOST_ROOT_DIR}"
+  if [ ! "${2}" = "no-chown" ]; then
+    on_host "chown -R 19663:65533 ${SAVER_HOST_ROOT_DIR}"
+  fi
 }
 
 create_stub_porter_volume_mount_root_dir()
@@ -88,7 +90,9 @@ create_stub_porter_volume_mount_root_dir()
   local cmd=$(on_host_cmd "mktemp -d /tmp/${dc_name}-porter.XXXXXX")
   export PORTER_HOST_ROOT_DIR=$(${cmd})
   on_host "mkdir ${PORTER_HOST_ROOT_DIR}/porter"
-  on_host "chown -R 19664:65533 ${PORTER_HOST_ROOT_DIR}"
+  if [ ! "${2}" = "no-chown" ]; then
+    on_host "chown -R 19664:65533 ${PORTER_HOST_ROOT_DIR}"
+  fi
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -

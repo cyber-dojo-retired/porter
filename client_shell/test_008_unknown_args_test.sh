@@ -11,10 +11,10 @@ test_008_unknown_args()
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}
 
-  port alpha beta
+  port --nolog alpha beta
   cleanup_stubs ${name}
 
-  #assert_stdout_equals ''
+  assert_stdout_equals ''
   assert_stderr_includes 'ERROR: unknown arg <alpha>'
   assert_stderr_includes 'ERROR: unknown arg <beta>'
   assert_status_equals 10

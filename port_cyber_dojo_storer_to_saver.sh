@@ -83,16 +83,20 @@ readonly porter_port=4517
 
 readonly newline=$'\n'
 
-if [ "${1}" = "--verbose" ]; then
+declare show_log="true"
+
+if [ "${1}" = "--nolog" ]; then
   shift
-  set -x
+  show_log="false"
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 log()
 {
-  >&3 echo "${1}" "${2}"
+  if [ "${show_log}" = "true" ]; then
+    echo "${1}" "${2}"
+  fi
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

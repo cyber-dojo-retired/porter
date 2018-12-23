@@ -8,12 +8,14 @@ test_005_no_rights_to_saver_volume_mount()
 {
   local name=005
   create_stub_storer_data_container ${name}
+  create_stub_saver_volume_mount_root_dir ${name} no-chown
 
-  port --sample10
+  port --nolog --10
   cleanup_stubs ${name}
 
-  assert_stdout_includes 'Starting the storer service'
-  assert_stdout_includes 'Starting the saver service'
+  #assert_stdout_includes 'Starting the storer service'
+  #assert_stdout_includes 'Starting the saver service'
+  assert_stdout_equals ''
   assert_stderr_includes 'ERROR'
   assert_stderr_includes "The saver service needs write access to /cyber-dojo"
   assert_stderr_includes "username=saver (uid=19663)"

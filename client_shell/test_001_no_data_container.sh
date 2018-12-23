@@ -6,7 +6,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 test_001_no_data_container()
 {
-  port --sample10
+  port --nolog --10
 
   assert_stdout_equals ''
   assert_stderr_includes "ERROR: Cannot find storer's data-container cyber-dojo-katas-DATA-CONTAINER"
