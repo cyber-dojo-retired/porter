@@ -256,11 +256,9 @@ run_storer_service()
   echo -n "Starting the storer service"
   storer_cid=$(docker run \
     --detach \
-    --interactive \
     --name storer \
     --network ${network_name} \
     --publish ${storer_port}:${storer_port} \
-    --tty \
     --volumes-from ${storer_data_container_name} \
       cyberdojo/storer)
   wait_till_running storer ${storer_port} ${storer_cid} 6
@@ -274,11 +272,9 @@ run_saver_service()
   saver_cid=$(docker run \
     --detach \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
-    --interactive \
     --name saver \
     --network ${network_name} \
     --publish ${saver_port}:${saver_port} \
-    --tty \
     --volume ${saver_host_root_dir}/cyber-dojo:/cyber-dojo \
       cyberdojo/saver)
 
@@ -297,7 +293,6 @@ run_porter_service()
     --name porter \
     --network ${network_name} \
     --publish ${porter_port}:${porter_port} \
-    --tty \
     --volume ${porter_host_root_dir}/porter:/porter \
       cyberdojo/porter)
 
@@ -311,7 +306,6 @@ run_port_exec()
   # Note: web will use porter's rack-dispatcher API, we don't
   docker exec     \
     --interactive \
-    --tty         \
     --user porter \
     ${porter_cid} \
       sh -c "ruby /app/src/port.rb ${*}"
