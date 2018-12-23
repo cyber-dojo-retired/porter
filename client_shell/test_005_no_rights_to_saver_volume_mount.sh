@@ -10,7 +10,7 @@ test_005_no_rights_to_saver_volume_mount()
   create_stub_storer_data_container ${name}
   create_stub_saver_volume_mount_root_dir ${name} no-chown
 
-  port --nolog --10
+  port --nolog --id10
   cleanup_stubs ${name}
 
   assert_stdout_equals ''

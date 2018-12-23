@@ -48,7 +48,7 @@ show_help()
     echo
     echo "First try porting a few single sessions."
     echo "To show a randomly sampled 10-digit id:"
-    echo "  \$ ${my_name} --10"
+    echo "  \$ ${my_name} --id10"
     echo "Then try porting it."
     echo "For example, if the 10-digit id is 9f8TeZMZA2"
     echo "  \$ ${my_name} 9f8TeZMZA2"
@@ -56,7 +56,7 @@ show_help()
     echo "If all is well, you can move on to porting all"
     echo "the sessions with a given 2-digit prefix."
     echo "To show a randomly sampled 2-digit id:"
-    echo "  \$ ${my_name} --2"
+    echo "  \$ ${my_name} --id2"
     echo "Then try porting them."
     echo "For example, if the 2-digit prefix is 5A"
     echo "  \$ ${my_name} 5A"

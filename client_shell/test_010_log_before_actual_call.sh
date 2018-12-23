@@ -14,7 +14,7 @@ test_010_log_before_actual_call()
   create_stub_porter_volume_mount_root_dir ${name}
 
   # don't use --nolog
-  port --10
+  port --id10
   cleanup_stubs ${name}
 
   assert_stdout_includes "Confirmed: docker is installed"

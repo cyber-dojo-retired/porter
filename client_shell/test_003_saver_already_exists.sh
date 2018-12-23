@@ -12,7 +12,7 @@ test_003_saver_already_exists()
   create_stub_porter_volume_mount_root_dir ${name}
 
   docker run --detach --name "${name}-saver" alpine > /dev/null
-  port --nolog --10
+  port --nolog --id10
   docker rm --force "${name}-saver" > /dev/null
   cleanup_stubs ${name}
 

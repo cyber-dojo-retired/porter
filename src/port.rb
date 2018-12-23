@@ -26,12 +26,12 @@ def arg
   ARGV[0]
 end
 
-def port_sample_10
+def port_sample_id10
   STDERR.puts('ERROR: storer is empty!')
   exit(11)
 end
 
-def port_sample_2
+def port_sample_id2
 end
 
 def port_one # arg{id-10}
@@ -54,7 +54,7 @@ end
 args = {}
 ARGV.each do |arg|
   case arg
-  when '--10'           then args[:sample_10] = true
+  when '--id10'           then args[:id_10] = true
     else
       args[:error] = true
       STDERR.puts("ERROR: unknown arg <#{arg}>")
@@ -66,6 +66,6 @@ if args[:error]
   exit(10)
 end
 
-if args[:sample_10]
-  port_sample_10
+if args[:id_10]
+  port_sample_id10
 end

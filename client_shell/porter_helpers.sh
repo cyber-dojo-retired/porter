@@ -107,3 +107,26 @@ cleanup_stubs()
   docker container rm --force --volumes ${dc_name} > /dev/null 2>&1
   docker image rm --force ${image_name}            > /dev/null 2>&1
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+assert_stdout_includes_docker_installed()
+{
+  assert_stdout_includes "Confirmed: docker is installed"
+}
+
+assert_stdout_includes_curl_installed()
+{
+  assert_stdout_includes "Confirmed: curl is installed"
+}
+
+assert_stdout_includes_storer_not_running()
+{
+  assert_stdout_includes "Confirmed: the storer service is not already running"
+}
+
+assert_stderr_equals_cant_find_storers_data_container()
+{
+  assert_stderr_includes "ERROR: Cannot find storer's data-container cyber-dojo-katas-DATA-CONTAINER"
+  assert_stderr_line_count_equals 1
+}
