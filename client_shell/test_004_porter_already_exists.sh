@@ -12,14 +12,18 @@ test_004_porter_already_exists()
   create_stub_porter_volume_mount_root_dir ${name}
 
   docker run --detach --name "${name}-porter" alpine > /dev/null
-  port --nolog --id10
+  port --id10
   docker rm --force "${name}-porter" > /dev/null
   cleanup_stubs ${name}
 
-  assert_stdout_equals ''
-  assert_stderr_includes "ERROR: A porter service already exists"
-  assert_stderr_includes "Please run $ [sudo] docker rm -f porter"
-  assert_status_equals 5
+  assert_stdout_includes_docker_installed
+  assert_stdout_includes_curl_installed
+  assert_stdout_includes_storers_data_container_exists
+  assert_stdout_includes_storer_not_already_running
+  assert_stdout_includes_saver_not_already_running
+  assert_stdout_line_count_equals 5
+  assert_stderr_equals_porter_already_running
+  assert_status_equals 6
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

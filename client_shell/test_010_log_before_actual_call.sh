@@ -13,7 +13,6 @@ test_010_log_before_actual_call()
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}
 
-  # don't use --nolog
   port --id10
   cleanup_stubs ${name}
 

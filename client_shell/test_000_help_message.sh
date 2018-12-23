@@ -12,24 +12,14 @@ test_000_help_message()
   port
   assert_stdout_includes "${help_line1}"
   assert_stdout_includes "${help_line2}"
+  assert_stdout_line_count_equals 48
   assert_stderr_equals ''
   assert_status_equals 0
 
   port --help
   assert_stdout_includes "${help_line1}"
   assert_stdout_includes "${help_line2}"
-  assert_stderr_equals ''
-  assert_status_equals 0
-
-  port --nolog
-  assert_stdout_includes "${help_line1}"
-  assert_stdout_includes "${help_line2}"
-  assert_stderr_equals ''
-  assert_status_equals 0
-
-  port --nolog --help
-  assert_stdout_includes "${help_line1}"
-  assert_stdout_includes "${help_line2}"
+  assert_stdout_line_count_equals 48
   assert_stderr_equals ''
   assert_status_equals 0
 }

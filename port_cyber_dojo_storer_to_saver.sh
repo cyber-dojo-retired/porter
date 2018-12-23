@@ -83,40 +83,32 @@ readonly porter_port=4517
 
 readonly newline=$'\n'
 
-declare show_log="true"
-
-if [ "${1}" = "--nolog" ]; then
-  shift
-  show_log="false"
-fi
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-log()
+info()
 {
-  if [ "${show_log}" = "true" ]; then
-    echo "${1}" "${2}"
-  fi
+  echo "${1}" "${2}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 remove_docker_network()
 {
-  log "Removing network ${network_name}"
+  info "Removing the network ${network_name}"
   docker network rm ${network_name} > /dev/null
 }
+
 remove_one_service()
 {
   local name=${1}
   local cid=${2}
   if [ ! -z "${cid}" ]; then
-    log "Stopping service ${name}"
+    info "Stopping the ${name} service"
     docker container stop --time 1 ${cid} > /dev/null
-    log "Removing service ${name}"
+    info "Removing the ${name} service"
+    # Very important this does NOT include --volumes
     docker container rm --force ${cid}    > /dev/null
   fi
 }
+
 remove_all_services_and_network()
 {
   remove_one_service storer ${storer_cid}
@@ -124,15 +116,25 @@ remove_all_services_and_network()
   remove_one_service porter ${porter_cid}
   remove_docker_network
 }
+
 create_docker_network()
 {
   docker network create --driver bridge ${network_name} > /dev/null
-  log "Confirmed: network ${network_name} has been created"
+  info "Checking the network ${network_name} has been created. OK"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 error()
+{
+  local status=${1}
+  local msg="${2}"
+  >&2 echo "ERROR"
+  >&2 echo "${msg}"
+  exit ${status}
+}
+
+error_no_prefix()
 {
   local status=${1}
   local msg="${2}"
@@ -145,10 +147,11 @@ error()
 exit_unless_installed()
 {
   local cmd=${1}
+  local status=${2}
   if ! hash ${cmd} 2> /dev/null ; then
-    error 1 "ERROR: ${cmd} needs to be installed"
+    error ${status} "${cmd} needs to be installed"
   else
-    log "Confirmed: ${cmd} is installed"
+    info "Checking ${cmd} is installed. OK"
   fi
 }
 
@@ -166,45 +169,55 @@ exists_container()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-exit_unless_storer_preconditions_met()
+exit_unless_storer_data_container_exists()
 {
-  if exists_container storer ; then
-    message+="ERROR: A storer service already exists${newline}"
-    message+="Please run $ [sudo] cyber-dojo down"
-    error 2 "${message}"
-  else
-    log 'Confirmed: the storer service is not already running'
-  fi
+  local status=${1}
   if ! docker ps --all | grep ${storer_data_container_name} > /dev/null ; then
-    error 3 "ERROR: Cannot find storer's data-container ${storer_data_container_name}"
+    error ${status} "Cannot find storer's data-container ${storer_data_container_name}"
   else
-    log 'Confirmed: found the storer data-container'
+    info "Checking storer's data-container exists. OK"
   fi
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-exit_unless_saver_preconditions_met()
+exit_if_storer_already_running()
 {
-  if exists_container saver ; then
-    message+="ERROR: A saver service already exists${newline}"
+  local status=${1}
+  if exists_container storer ; then
+    message+="A storer service is already running${newline}"
     message+="Please run $ [sudo] cyber-dojo down"
-    error 4 "${message}"
+    error ${status} "${message}"
   else
-    log 'Confirmed: the saver service is not already running'
+    info 'Checking the storer service is not already running. OK'
   fi
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-exit_unless_porter_preconditions_met()
+exit_if_saver_already_running()
 {
-  if exists_container porter ; then
-    message+="ERROR: A porter service already exists${newline}"
-    message+="Please run $ [sudo] docker rm -f porter"
-    error 5 "${message}"
+  local status=${1}
+  if exists_container saver ; then
+    message+="A saver service is already running${newline}"
+    message+="Please run $ [sudo] cyber-dojo down"
+    error ${status} "${message}"
   else
-    log 'Confirmed: the porter service is not already running'
+    info 'Checking the saver service is not already running. OK'
+  fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+exit_if_porter_already_running()
+{
+  local status=${1}
+  if exists_container porter ; then
+    message+="A porter service is already running${newline}"
+    message+="Please run $ [sudo] docker rm -f porter"
+    error ${status} "${message}"
+  else
+    info 'Checking the porter service is not already running. OK'
   fi
 }
 
@@ -233,26 +246,25 @@ wait_till_running()
   if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
     cmd="docker-machine ssh ${DOCKER_MACHINE_NAME} ${cmd}"
   fi
+  info -n "Checking the ${name} service is running"
   while [ $(( max_tries -= 1 )) -ge 0 ] ; do
-    log -n '.'
+    info -n '.'
     if eval ${cmd} ; then
-      echo
-      log "Confirmed: the ${name} service is running"
+      info 'OK'
       return 0 # true
     else
       sleep 0.05
     fi
   done
-  echo
+  info 'FAIL'
   local docker_log="$(docker logs ${cid})"
-  error ${error_code} "${docker_log}"
+  error_no_prefix ${error_code} "${docker_log}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 run_storer_service()
 {
-  log "Starting the storer service"
   storer_cid=$(docker run \
     --detach \
     --name storer \
@@ -268,7 +280,6 @@ run_storer_service()
 
 run_saver_service()
 {
-  log "Starting the saver service"
   saver_cid=$(docker run \
     --detach \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
@@ -285,7 +296,6 @@ run_saver_service()
 
 run_porter_service()
 {
-  log "Starting the porter service"
   porter_cid=$(docker run \
     --detach \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
@@ -315,12 +325,12 @@ run_port_exec()
 
 show_help ${*}
 
-exit_unless_installed docker
-exit_unless_installed curl
-
-exit_unless_storer_preconditions_met
-exit_unless_saver_preconditions_met
-exit_unless_porter_preconditions_met
+exit_unless_installed docker 1
+exit_unless_installed curl 2
+exit_unless_storer_data_container_exists 3
+exit_if_storer_already_running 4
+exit_if_saver_already_running 5
+exit_if_porter_already_running 6
 
 create_docker_network
 trap remove_all_services_and_network EXIT INT

@@ -11,7 +11,7 @@ test_007_unknown_arg()
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}
 
-  port --nolog alpha
+  port alpha
   cleanup_stubs ${name}
 
   assert_stdout_equals ''

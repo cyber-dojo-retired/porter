@@ -112,42 +112,130 @@ cleanup_stubs()
 
 assert_stdout_includes_docker_installed()
 {
-  assert_stdout_includes "Confirmed: docker is installed"
+  assert_stdout_includes "Checking docker is installed. OK"
 }
 
 assert_stdout_includes_curl_installed()
 {
-  assert_stdout_includes "Confirmed: curl is installed"
-}
-
-assert_stdout_includes_storer_not_running()
-{
-  assert_stdout_includes "Confirmed: the storer service is not already running"
-}
-
-assert_stdout_includes_found_the_storer_data_container()
-{
-  assert_stdout_includes "Confirmed: found the storer data-container"
+  assert_stdout_includes "Checking curl is installed. OK"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-assert_stderr_equals_storer_service_already_exists()
+assert_stdout_includes_storers_data_container_exists()
 {
-  assert_stderr_includes "ERROR: A storer service already exists"
-  assert_stderr_includes "Please run $ [sudo] cyber-dojo down"
-  assert_stderr_line_count_equals 2
+  assert_stdout_includes "Checking storer's data-container exists. OK"
 }
 
-assert_stderr_equals_saver_service_already_exists()
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+assert_stdout_includes_storer_not_already_running()
 {
-  assert_stderr_includes "ERROR: A saver service already exists"
+  assert_stdout_includes "Checking the storer service is not already running. OK"
+}
+
+assert_stdout_includes_saver_not_already_running()
+{
+  assert_stdout_includes "Checking the saver service is not already running. OK"
+}
+
+assert_stdout_includes_porter_not_already_running()
+{
+  assert_stdout_includes "Checking the porter service is not already running. OK"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+assert_stdout_includes_storer_running()
+{
+  assert_stdout_includes "Checking the storer service is running."
+}
+
+assert_stdout_includes_saver_running()
+{
+  assert_stdout_includes "Checking the saver service is running."
+}
+
+assert_stdout_includes_porter_running()
+{
+  assert_stdout_includes "Checking the porter service is running."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+assert_stdout_includes_the_network_has_been_created()
+{
+  assert_stdout_includes "Checking the network port_cyber_dojo_storer_to_saver has been created. OK"
+}
+
+assert_stdout_includes_stopping_storer()
+{
+  assert_stdout_includes "Stopping the storer service"
+}
+
+assert_stdout_includes_removing_storer()
+{
+  assert_stdout_includes "Removing the storer service"
+}
+
+assert_stdout_includes_stopping_saver()
+{
+  assert_stdout_includes "Stopping the saver service"
+}
+
+assert_stdout_includes_removing_saver()
+{
+  assert_stdout_includes "Removing the saver service"
+}
+
+assert_stdout_includes_removing_the_network()
+{
+  assert_stdout_includes "Removing the network port_cyber_dojo_storer_to_saver"
+}
+
+# = = = = = = = = = = = = = = = = = = = = = = = =
+
+assert_stderr_equals_storer_already_running()
+{
+  assert_stderr_includes "ERROR"
+  assert_stderr_includes "A storer service is already running"
   assert_stderr_includes "Please run $ [sudo] cyber-dojo down"
-  assert_stderr_line_count_equals 2
+  assert_stderr_line_count_equals 3
+}
+
+assert_stderr_equals_saver_already_running()
+{
+  assert_stderr_includes "ERROR"
+  assert_stderr_includes "A saver service is already running"
+  assert_stderr_includes "Please run $ [sudo] cyber-dojo down"
+  assert_stderr_line_count_equals 3
+}
+
+assert_stderr_equals_porter_already_running()
+{
+  assert_stderr_includes "ERROR"
+  assert_stderr_includes "A porter service is already running"
+  assert_stderr_includes "Please run $ [sudo] docker rm -f porter"
+  assert_stderr_line_count_equals 3
 }
 
 assert_stderr_equals_cant_find_storers_data_container()
 {
-  assert_stderr_includes "ERROR: Cannot find storer's data-container cyber-dojo-katas-DATA-CONTAINER"
-  assert_stderr_line_count_equals 1
+  assert_stderr_includes "ERROR"
+  assert_stderr_includes "Cannot find storer's data-container cyber-dojo-katas-DATA-CONTAINER"
+  assert_stderr_line_count_equals 2
+}
+
+assert_stderr_equals_no_rights_to_saver_volume_mount()
+{
+  assert_stderr_includes "ERROR"
+  assert_stderr_includes "The saver service needs write access to /cyber-dojo"
+  assert_stderr_includes "username=saver (uid=19663)"
+  assert_stderr_includes "group=nogroup (gid=65533)"
+  assert_stderr_includes "Please run:"
+  assert_stderr_includes "  \$ [sudo] chown 19663:65533 /cyber-dojo"
+  assert_stderr_includes "If you are running on Docker-Toolbox remember"
+  assert_stderr_includes "to run this on the target VM. For example:"
+  assert_stderr_includes "  \$ docker-machine ssh default sudo chown 19663:65533 /cyber-dojo"
+  assert_stderr_line_count_equals 9
 }
