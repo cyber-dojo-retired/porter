@@ -83,28 +83,23 @@ readonly porter_port=4517
 
 readonly newline=$'\n'
 
-declare verbose=1
 if [ "${1}" = "--verbose" ]; then
   shift
-  verbose=0
   set -x
 fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-info()
+log()
 {
-  local msg="${1}"
-  if [ "${verbose}" = "0" ]; then
-    echo "${msg}"
-  fi
+  >&3 echo "${1}" "${2}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 remove_docker_network()
 {
-  info "Removing network ${network_name}"
+  log "Removing network ${network_name}"
   docker network rm ${network_name} > /dev/null
 }
 remove_one_service()
@@ -112,9 +107,9 @@ remove_one_service()
   local name=${1}
   local cid=${2}
   if [ ! -z "${cid}" ]; then
-    info "Stopping service ${name}"
+    log "Stopping service ${name}"
     docker container stop --time 1 ${cid} > /dev/null
-    info "Removing service ${name}"
+    log "Removing service ${name}"
     docker container rm --force ${cid}    > /dev/null
   fi
 }
@@ -128,7 +123,7 @@ remove_all_services_and_network()
 create_docker_network()
 {
   docker network create --driver bridge ${network_name} > /dev/null
-  info "Confirmed: network ${network_name} has been created."
+  log "Confirmed: network ${network_name} has been created."
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,7 +144,7 @@ exit_unless_installed()
   if ! hash ${cmd} 2> /dev/null ; then
     error 1 "ERROR: ${cmd} needs to be installed"
   else
-    info "Confirmed: ${cmd} is installed."
+    log "Confirmed: ${cmd} is installed."
   fi
 }
 
@@ -174,12 +169,12 @@ exit_unless_storer_preconditions_met()
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 2 "${message}"
   else
-    info 'Confirmed: the storer service is not already running.'
+    log 'Confirmed: the storer service is not already running.'
   fi
   if ! docker ps --all | grep ${storer_data_container_name} > /dev/null ; then
     error 3 "ERROR: Cannot find storer's data-container ${storer_data_container_name}"
   else
-    info 'Confirmed: found the storer data-container.'
+    log 'Confirmed: found the storer data-container.'
   fi
 }
 
@@ -192,7 +187,7 @@ exit_unless_saver_preconditions_met()
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 4 "${message}"
   else
-    info 'Confirmed: the saver service is not already running'
+    log 'Confirmed: the saver service is not already running'
   fi
 }
 
@@ -205,7 +200,7 @@ exit_unless_porter_preconditions_met()
     message+="Please run $ [sudo] docker rm -f porter${newline}"
     error 5 "${message}"
   else
-    info 'Confirmed: the porter service is not already running'
+    log 'Confirmed: the porter service is not already running'
   fi
 }
 
@@ -235,25 +230,25 @@ wait_till_running()
     cmd="docker-machine ssh ${DOCKER_MACHINE_NAME} ${cmd}"
   fi
   while [ $(( max_tries -= 1 )) -ge 0 ] ; do
-    echo -n '.'
+    log -n '.'
     if eval ${cmd} ; then
       echo
-      info "Confirmed: the ${name} service is running."
+      log "Confirmed: the ${name} service is running."
       return 0 # true
     else
       sleep 0.05
     fi
   done
   echo
-  local log="$(docker logs ${cid})"
-  error ${error_code} "${log}"
+  local docker_log="$(docker logs ${cid})"
+  error ${error_code} "${docker_log}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 run_storer_service()
 {
-  echo -n "Starting the storer service"
+  log "Starting the storer service"
   storer_cid=$(docker run \
     --detach \
     --name storer \
@@ -261,6 +256,7 @@ run_storer_service()
     --publish ${storer_port}:${storer_port} \
     --volumes-from ${storer_data_container_name} \
       cyberdojo/storer)
+
   wait_till_running storer ${storer_port} ${storer_cid} 6
 }
 
@@ -268,7 +264,7 @@ run_storer_service()
 
 run_saver_service()
 {
-  echo -n "Starting the saver service"
+  log "Starting the saver service"
   saver_cid=$(docker run \
     --detach \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
@@ -285,7 +281,7 @@ run_saver_service()
 
 run_porter_service()
 {
-  echo -n "Starting the porter service"
+  log "Starting the porter service"
   porter_cid=$(docker run \
     --detach \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \

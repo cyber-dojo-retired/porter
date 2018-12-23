@@ -14,7 +14,8 @@ test_010_no_katas_sample_10()
   port --10
   cleanup_stubs ${name}
 
-  #assert_stdout_equals ''
+  assert_stdout_equals ''
+  #assert_stdlog_equals 'sdsd'
   assert_stderr_equals 'ERROR: storer is empty!'
   assert_status_equals 11
 }
