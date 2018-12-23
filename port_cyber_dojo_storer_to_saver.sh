@@ -170,7 +170,7 @@ exit_unless_storer_preconditions_met()
 {
   if exists_container storer ; then
     message+="ERROR: A storer service already exists${newline}"
-    message+="Please run $ [sudo] cyber-dojo down${newline}"
+    message+="Please run $ [sudo] cyber-dojo down"
     error 2 "${message}"
   else
     log 'Confirmed: the storer service is not already running'
@@ -188,7 +188,7 @@ exit_unless_saver_preconditions_met()
 {
   if exists_container saver ; then
     message+="ERROR: A saver service already exists${newline}"
-    message+="Please run $ [sudo] cyber-dojo down${newline}"
+    message+="Please run $ [sudo] cyber-dojo down"
     error 4 "${message}"
   else
     log 'Confirmed: the saver service is not already running'
@@ -201,7 +201,7 @@ exit_unless_porter_preconditions_met()
 {
   if exists_container porter ; then
     message+="ERROR: A porter service already exists${newline}"
-    message+="Please run $ [sudo] docker rm -f porter${newline}"
+    message+="Please run $ [sudo] docker rm -f porter"
     error 5 "${message}"
   else
     log 'Confirmed: the porter service is not already running'

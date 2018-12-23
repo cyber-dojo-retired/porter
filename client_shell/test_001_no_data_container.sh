@@ -13,6 +13,8 @@ test_001_no_data_container()
   assert_status_equals 3
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - -
+
 test_001_no_data_container_with_log()
 {
   port --id10
@@ -24,8 +26,6 @@ test_001_no_data_container_with_log()
   assert_stderr_equals_cant_find_storers_data_container
   assert_status_equals 3
 }
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 . ${my_dir}/shunit2_helpers.sh
 . ${my_dir}/shunit2

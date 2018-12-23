@@ -17,7 +17,7 @@ assert_stdout_includes()
 
 assert_stdout_line_count_equals()
 {
-  assertEquals ${1} $(wc -l ${stdoutF} | awk '{ print $1 }')
+  assertEquals 'stdout-line-count' ${1} $(wc -l ${stdoutF} | awk '{ print $1 }')
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,7 +40,7 @@ assert_stderr_includes()
 
 assert_stderr_line_count_equals()
 {
-  assertEquals ${1} $(wc -l ${stderrF} | awk '{ print $1 }')
+  assertEquals 'stderr-line-count' ${1} $(wc -l ${stderrF} | awk '{ print $1 }')
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -34,7 +34,5 @@ test_000_help_message()
   assert_status_equals 0
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 . ${my_dir}/shunit2_helpers.sh
 . ${my_dir}/shunit2

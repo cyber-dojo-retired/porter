@@ -125,6 +125,27 @@ assert_stdout_includes_storer_not_running()
   assert_stdout_includes "Confirmed: the storer service is not already running"
 }
 
+assert_stdout_includes_found_the_storer_data_container()
+{
+  assert_stdout_includes "Confirmed: found the storer data-container"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+assert_stderr_equals_storer_service_already_exists()
+{
+  assert_stderr_includes "ERROR: A storer service already exists"
+  assert_stderr_includes "Please run $ [sudo] cyber-dojo down"
+  assert_stderr_line_count_equals 2
+}
+
+assert_stderr_equals_saver_service_already_exists()
+{
+  assert_stderr_includes "ERROR: A saver service already exists"
+  assert_stderr_includes "Please run $ [sudo] cyber-dojo down"
+  assert_stderr_line_count_equals 2
+}
+
 assert_stderr_equals_cant_find_storers_data_container()
 {
   assert_stderr_includes "ERROR: Cannot find storer's data-container cyber-dojo-katas-DATA-CONTAINER"

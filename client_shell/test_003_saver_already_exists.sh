@@ -6,7 +6,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 test_003_saver_already_exists()
 {
-  local name=003
+  local name=003a
   create_stub_storer_data_container ${name}
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}
@@ -17,12 +17,32 @@ test_003_saver_already_exists()
   cleanup_stubs ${name}
 
   assert_stdout_equals ''
-  assert_stderr_includes "ERROR: A saver service already exists"
-  assert_stderr_includes "Please run $ [sudo] cyber-dojo down"
+  assert_stderr_equals_saver_service_already_exists
   assert_status_equals 4
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+test_003_saver_already_exists_with_log()
+{
+  local name=003b
+  create_stub_storer_data_container ${name}
+  create_stub_saver_volume_mount_root_dir ${name}
+  create_stub_porter_volume_mount_root_dir ${name}
+
+  docker run --detach --name "${name}-saver" alpine > /dev/null
+  port --id10
+  docker rm --force "${name}-saver" > /dev/null
+  cleanup_stubs ${name}
+
+  assert_stdout_includes_docker_installed
+  assert_stdout_includes_curl_installed
+  assert_stdout_includes_storer_not_running
+  assert_stdout_includes_found_the_storer_data_container
+  assert_stdout_line_count_equals 4
+  assert_stderr_equals_saver_service_already_exists
+  assert_status_equals 4
+}
 
 . ${my_dir}/shunit2_helpers.sh
 . ${my_dir}/shunit2
