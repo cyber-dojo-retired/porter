@@ -127,7 +127,7 @@ remove_all_services_and_network()
 create_docker_network()
 {
   docker network create --driver bridge ${network_name} > /dev/null
-  log "Confirmed: network ${network_name} has been created."
+  log "Confirmed: network ${network_name} has been created"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -148,7 +148,7 @@ exit_unless_installed()
   if ! hash ${cmd} 2> /dev/null ; then
     error 1 "ERROR: ${cmd} needs to be installed"
   else
-    log "Confirmed: ${cmd} is installed."
+    log "Confirmed: ${cmd} is installed"
   fi
 }
 
@@ -173,12 +173,12 @@ exit_unless_storer_preconditions_met()
     message+="Please run $ [sudo] cyber-dojo down${newline}"
     error 2 "${message}"
   else
-    log 'Confirmed: the storer service is not already running.'
+    log 'Confirmed: the storer service is not already running'
   fi
   if ! docker ps --all | grep ${storer_data_container_name} > /dev/null ; then
     error 3 "ERROR: Cannot find storer's data-container ${storer_data_container_name}"
   else
-    log 'Confirmed: found the storer data-container.'
+    log 'Confirmed: found the storer data-container'
   fi
 }
 
@@ -237,7 +237,7 @@ wait_till_running()
     log -n '.'
     if eval ${cmd} ; then
       echo
-      log "Confirmed: the ${name} service is running."
+      log "Confirmed: the ${name} service is running"
       return 0 # true
     else
       sleep 0.05

@@ -13,8 +13,6 @@ test_005_no_rights_to_saver_volume_mount()
   port --nolog --10
   cleanup_stubs ${name}
 
-  #assert_stdout_includes 'Starting the storer service'
-  #assert_stdout_includes 'Starting the saver service'
   assert_stdout_equals ''
   assert_stderr_includes 'ERROR'
   assert_stderr_includes "The saver service needs write access to /cyber-dojo"

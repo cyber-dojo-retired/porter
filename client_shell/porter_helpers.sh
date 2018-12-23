@@ -1,7 +1,6 @@
 
-MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
-
-readonly PORT_STORER_2_SAVER=${MY_DIR}/../port_cyber_dojo_storer_to_saver.sh
+readonly shell_dir="$( cd "$( dirname "${0}" )" && pwd )"
+readonly PORT_STORER_2_SAVER=${shell_dir}/../port_cyber_dojo_storer_to_saver.sh
 
 port()
 {
@@ -33,7 +32,7 @@ create_stub_storer_data_container()
   local image_name=$(get_image_name "${name}")
   local dc_name=$(get_data_container_name "${name}")
 
-  cd ${MY_DIR} && \
+  cd ${shell_dir} && \
     docker build \
       --tag=${image_name} \
       --file=./Dockerfile.storer-data-container \

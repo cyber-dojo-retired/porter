@@ -1,11 +1,11 @@
 #!/bin/bash
 
-MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
+readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
-. ${MY_DIR}/porter_helpers.sh
+. ${my_dir}/porter_helpers.sh
 
-readonly help_line1="As each session is ported, a single P/E/M character is printed:"
-readonly help_line2="Ports cyber-dojo practice sessions"
+readonly help_line1="Ports cyber-dojo practice sessions"
+readonly help_line2="As each session is ported, a single P/E/M character is printed:"
 
 test_000_help_message()
 {
@@ -36,5 +36,5 @@ test_000_help_message()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-. ${MY_DIR}/shunit2_helpers.sh
-. ${MY_DIR}/shunit2
+. ${my_dir}/shunit2_helpers.sh
+. ${my_dir}/shunit2
