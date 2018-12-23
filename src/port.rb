@@ -27,7 +27,8 @@ def arg
 end
 
 def port_sample_10
-  exit(99)
+  STDERR.puts('ERROR: storer is empty!')
+  exit(11)
 end
 
 def port_sample_2
@@ -56,7 +57,7 @@ ARGV.each do |arg|
   when '--10'           then args[:sample_10] = true
     else
       args[:error] = true
-      STDERR.puts "ERROR: unknown arg <#{arg}>"
+      STDERR.puts("ERROR: unknown arg <#{arg}>")
       STDERR.flush
   end
 end
