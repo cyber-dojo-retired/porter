@@ -16,16 +16,16 @@ test_005_no_rights_to_saver_volume_mount()
   assert_stdout_includes_docker_installed # 1
   assert_stdout_includes_curl_installed # 2
   assert_stdout_includes_storers_data_container_exists # 3
-  assert_stdout_includes_storer_not_already_running # 4
-  assert_stdout_includes_saver_not_already_running # 5
-  assert_stdout_includes_porter_not_already_running # 6
+  assert_stdout_includes_not_already_running storer # 4
+  assert_stdout_includes_not_already_running saver # 5
+  assert_stdout_includes_not_already_running porter # 6
   assert_stdout_includes_the_network_has_been_created # 7
-  assert_stdout_includes_storer_running # 8
-  assert_stdout_includes_saver_running 'FAIL' # 9
-  assert_stdout_includes_stopping_storer # 10
-  assert_stdout_includes_removing_storer # 11
-  assert_stdout_includes_stopping_saver # 12
-  assert_stdout_includes_removing_saver # 13
+  assert_stdout_includes_running storer OK # 8
+  assert_stdout_includes_running saver FAIL # 9
+  assert_stdout_includes_stopping storer # 10
+  assert_stdout_includes_removing storer # 11
+  assert_stdout_includes_stopping saver # 12
+  assert_stdout_includes_removing saver # 13
   assert_stdout_includes_removing_the_network # 14
   assert_stdout_line_count_equals 14
 

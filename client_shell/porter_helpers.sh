@@ -129,43 +129,24 @@ assert_stdout_includes_storers_data_container_exists()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-assert_stdout_includes_storer_not_already_running()
+assert_stdout_includes_not_already_running()
 {
-  assert_stdout_includes "Checking the storer service is not already running. OK"
-}
-
-assert_stdout_includes_saver_not_already_running()
-{
-  assert_stdout_includes "Checking the saver service is not already running. OK"
-}
-
-assert_stdout_includes_porter_not_already_running()
-{
-  assert_stdout_includes "Checking the porter service is not already running. OK"
+  local name=${1}
+  assert_stdout_includes "Checking the ${name} service is not already running. OK"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-assert_stdout_includes_storer_running()
+assert_stdout_includes_running()
 {
+  local name=${1}
   local stdout="`cat ${stdoutF}`"
-  local result=${1:-OK}
-  local prefix="Checking the storer service is running"
+  local result=${2}
+  local prefix="Checking the ${name} service is running"
   local regex="${prefix}\\.+${result}"
-  #assert_stdout_includes "Checking the storer service is running."
   if [[ ! ${stdout} =~ ${regex} ]]; then
     fail "stdout did not include: ${prefix}...${result}"
   fi
-}
-
-assert_stdout_includes_saver_running()
-{
-  assert_stdout_includes "Checking the saver service is running."
-}
-
-assert_stdout_includes_porter_running()
-{
-  assert_stdout_includes "Checking the porter service is running."
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
@@ -175,29 +156,23 @@ assert_stdout_includes_the_network_has_been_created()
   assert_stdout_includes "Checking the network port_cyber_dojo_storer_to_saver has been created. OK"
 }
 
-assert_stdout_includes_stopping_storer()
-{
-  assert_stdout_includes "Stopping the storer service"
-}
-
-assert_stdout_includes_removing_storer()
-{
-  assert_stdout_includes "Removing the storer service"
-}
-
-assert_stdout_includes_stopping_saver()
-{
-  assert_stdout_includes "Stopping the saver service"
-}
-
-assert_stdout_includes_removing_saver()
-{
-  assert_stdout_includes "Removing the saver service"
-}
-
 assert_stdout_includes_removing_the_network()
 {
   assert_stdout_includes "Removing the network port_cyber_dojo_storer_to_saver"
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+assert_stdout_includes_stopping()
+{
+  local name=${1}
+  assert_stdout_includes "Stopping the ${name} service"
+}
+
+assert_stdout_includes_removing()
+{
+  local name=${1}
+  assert_stdout_includes "Removing the ${name} service"
 }
 
 # = = = = = = = = = = = = = = = = = = = = = = = =
@@ -244,5 +219,19 @@ assert_stderr_equals_no_rights_to_saver_volume_mount()
   assert_stderr_includes "If you are running on Docker-Toolbox remember"
   assert_stderr_includes "to run this on the target VM. For example:"
   assert_stderr_includes "  \$ docker-machine ssh default sudo chown 19663:65533 /cyber-dojo"
+  assert_stderr_line_count_equals 9
+}
+
+assert_stderr_equals_no_rights_to_porter_volume_mount()
+{
+  assert_stderr_includes "ERROR"
+  assert_stderr_includes "The porter service needs write access to /porter"
+  assert_stderr_includes "username=porter (uid=19664)"
+  assert_stderr_includes "group=nogroup (gid=65533)"
+  assert_stderr_includes "Please run:"
+  assert_stderr_includes "  \$ [sudo] chown 19664:65533 /porter"
+  assert_stderr_includes "If you are running on Docker-Toolbox remember"
+  assert_stderr_includes "to run this on the target VM. For example:"
+  assert_stderr_includes "  \$ docker-machine ssh default sudo chown 19664:65533 /porter"
   assert_stderr_line_count_equals 9
 }
