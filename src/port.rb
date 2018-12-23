@@ -20,11 +20,14 @@ def saver
   externals.saver
 end
 
+# - - - - - - - - - - - - - - - - - - - - -
+
 def arg
   ARGV[0]
 end
 
 def port_sample_10
+  exit(99)
 end
 
 def port_sample_2
@@ -45,6 +48,8 @@ def port_all # arg(all)
 #      port_many()
 end
 
+# - - - - - - - - - - - - - - - - - - - -
+
 args = {}
 ARGV.each do |arg|
   case arg
@@ -58,4 +63,8 @@ end
 
 if args[:error]
   exit(10)
+end
+
+if args[:sample_10]
+  port_sample_10
 end
