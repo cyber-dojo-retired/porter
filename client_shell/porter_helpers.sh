@@ -110,14 +110,10 @@ cleanup_stubs()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-assert_stdout_includes_docker_installed()
+assert_stdout_includes_installed()
 {
-  assert_stdout_includes "Checking docker is installed. OK"
-}
-
-assert_stdout_includes_curl_installed()
-{
-  assert_stdout_includes "Checking curl is installed. OK"
+  local name=${1}
+  assert_stdout_includes "Checking ${name} is installed. OK"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -

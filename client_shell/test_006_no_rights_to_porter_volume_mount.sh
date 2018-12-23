@@ -14,8 +14,8 @@ test_006_no_rights_to_porter_volume_mount()
   port --id10
   cleanup_stubs ${name}
 
-  assert_stdout_includes_docker_installed # 1
-  assert_stdout_includes_curl_installed # 2
+  assert_stdout_includes_installed docker # 1
+  assert_stdout_includes_installed curl # 2
   assert_stdout_includes_storers_data_container_exists # 3
   assert_stdout_includes_not_already_running storer # 4
   assert_stdout_includes_not_already_running saver # 5

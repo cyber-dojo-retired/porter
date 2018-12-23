@@ -16,10 +16,10 @@ test_003_saver_already_exists()
   docker rm --force "${name}-saver" > /dev/null
   cleanup_stubs ${name}
 
-  assert_stdout_includes_docker_installed
-  assert_stdout_includes_curl_installed
+  assert_stdout_includes_installed docker
+  assert_stdout_includes_installed curl
   assert_stdout_includes_storers_data_container_exists
-  assert_stdout_includes_storer_not_already_running
+  assert_stdout_includes_not_already_running storer
   assert_stdout_line_count_equals 4
   assert_stderr_equals_saver_already_running
   assert_status_equals 5

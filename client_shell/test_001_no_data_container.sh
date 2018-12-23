@@ -8,8 +8,8 @@ test_001_no_data_container()
 {
   port --id10
 
-  assert_stdout_includes_docker_installed
-  assert_stdout_includes_curl_installed
+  assert_stdout_includes_installed docker
+  assert_stdout_includes_installed curl
   assert_stdout_line_count_equals 2
   assert_stderr_equals_cant_find_storers_data_container
   assert_status_equals 3
