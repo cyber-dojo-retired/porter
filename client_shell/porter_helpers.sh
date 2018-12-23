@@ -148,7 +148,14 @@ assert_stdout_includes_porter_not_already_running()
 
 assert_stdout_includes_storer_running()
 {
-  assert_stdout_includes "Checking the storer service is running."
+  local stdout="`cat ${stdoutF}`"
+  local result=${1:-OK}
+  local prefix="Checking the storer service is running"
+  local regex="${prefix}\\.+${result}"
+  #assert_stdout_includes "Checking the storer service is running."
+  if [[ ! ${stdout} =~ ${regex} ]]; then
+    fail "stdout did not include: ${prefix}...${result}"
+  fi
 }
 
 assert_stdout_includes_saver_running()

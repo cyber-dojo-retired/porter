@@ -21,7 +21,7 @@ test_005_no_rights_to_saver_volume_mount()
   assert_stdout_includes_porter_not_already_running # 6
   assert_stdout_includes_the_network_has_been_created # 7
   assert_stdout_includes_storer_running # 8
-  assert_stdout_includes_saver_running # (no OK) # 9
+  assert_stdout_includes_saver_running 'FAIL' # 9
   assert_stdout_includes_stopping_storer # 10
   assert_stdout_includes_removing_storer # 11
   assert_stdout_includes_stopping_saver # 12
