@@ -18,7 +18,7 @@ test_013_sample_id2_no_katas()
   assert_stdout_includes_all_up_down
   assert_stdout_line_count_equals 17
   assert_stderr_equals 'ERROR: storer is empty!'
-  assert_status_equals 111
+  assert_status_equals 12
 }
 
 . ${my_dir}/shunit2_helpers.sh

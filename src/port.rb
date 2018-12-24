@@ -43,6 +43,15 @@ end
 # - - - - - - - - - - - - - - - - - - - - -
 
 def port_sample_id2
+  sample = storer.sample_id2
+  if sample.nil?
+    STDERR.puts('ERROR: storer is empty!')
+    STDERR.flush
+    exit(12)
+  else
+    STDOUT.puts(sample)
+    STDOUT.flush
+  end
 end
 
 # - - - - - - - - - - - - - - - - - - - - -
@@ -71,7 +80,8 @@ end
 args = {}
 ARGV.each do |arg|
   case arg
-  when '--id10'           then args[:id_10] = true
+  when '--id10'  then args[:id_10] = true
+  when '--id2'   then args[:id_2] = true
     else
       args[:error] = true
       STDERR.puts("ERROR: unknown arg <#{arg}>")
@@ -85,4 +95,7 @@ end
 
 if args[:id_10]
   port_sample_id10
+end
+if args[:id_2]
+  port_sample_id2
 end
