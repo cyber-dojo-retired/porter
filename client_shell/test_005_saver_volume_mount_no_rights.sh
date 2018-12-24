@@ -4,12 +4,13 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_005_no_rights_to_saver_volume_mount()
+test_005_saver_volume_mount_no_rights()
 {
   local name=005
   create_stub_storer_data_container ${name}
   create_stub_saver_volume_mount_root_dir ${name} no-chown
 
+  export SHOW_PORTER_INFO=true
   port --id10
   cleanup_stubs ${name}
 

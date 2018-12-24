@@ -68,6 +68,8 @@ show_help()
   fi
 }
 
+readonly newline=$'\n'
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 declare storer_cid=""
@@ -81,11 +83,11 @@ readonly porter_port=4517
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-readonly newline=$'\n'
-
 info()
 {
-  echo "${1}" "${2}"
+  if [ "${SHOW_PORTER_INFO}" = "true" ]; then
+    echo "${1}" "${2}"
+  fi
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

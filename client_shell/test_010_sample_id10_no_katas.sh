@@ -11,6 +11,7 @@ test_010_sample_id10_no_katas()
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}
 
+  export SHOW_PORTER_INFO=true
   port --id10
   cleanup_stubs ${name}
 

@@ -4,8 +4,9 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_001_no_data_container()
+test_001_storer_data_container_missing()
 {
+  export SHOW_PORTER_INFO=true
   port --id10
 
   assert_stdout_includes_installed docker

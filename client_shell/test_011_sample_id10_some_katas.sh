@@ -16,15 +16,16 @@ test_011_sample_id10_no_katas()
     --volumes-from ${dc_name} \
       cyberdojo/storer sh)
   ${my_dir}/../inserter/insert.sh jj old
-  docker container rm --force ${cid}
+  docker container rm --force ${cid} > /dev/null
 
+  export SHOW_PORTER_INFO=true
   port --id10
   cleanup_stubs ${name}
 
   assert_stdout_includes_all_up_down
-  assert_stdout_line_count_equals 17
-  assert_stderr_equals 'ERROR: storer is empty!'
-  assert_status_equals 11
+  assert_stdout_line_count_equals 18 # 17 + 1 which is the sample!
+  assert_stderr_equals ''
+  assert_status_equals 0
 }
 
 . ${my_dir}/shunit2_helpers.sh

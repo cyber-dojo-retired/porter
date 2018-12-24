@@ -11,6 +11,7 @@ test_007_unknown_arg()
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}
 
+  export SHOW_PORTER_INFO=true
   port alpha
   cleanup_stubs ${name}
 
