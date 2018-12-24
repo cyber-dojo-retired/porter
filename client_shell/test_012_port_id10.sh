@@ -15,7 +15,7 @@ test_012_port_id10_not_found_as_user_sees_it()
 
 test_012_port_id10_ok_with_porter_info()
 {
-  :
+  : # port --id10 14535aeGHP
 }
 test_012_port_id10_ok_as_user_sees_it()
 {

@@ -51,7 +51,7 @@ show_help()
     echo "  \$ ./${my_name} --id10"
     echo "  9f8TeZMZA2"
     echo "Then try porting it."
-    echo "  \$ ./${my_name} 9f8TeZMZA2"
+    echo "  \$ ./${my_name} --id10 9f8TeZMZA2"
     echo "  P"
     echo
     echo "If all is well, you can move on to porting all"
@@ -60,7 +60,7 @@ show_help()
     echo "  \$ ./${my_name} --id2"
     echo "  5A"
     echo "Then try porting them."
-    echo "  \$ ./${my_name} 5A"
+    echo "  \$ ./${my_name} --id2 5A"
     echo "  5A:PPPPPPPPP..."
     echo
     echo "If all is well, port all the sessions:"

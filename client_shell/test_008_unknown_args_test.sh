@@ -12,13 +12,12 @@ test_008_unknown_args()
   create_stub_porter_volume_mount_root_dir ${name}
 
   export SHOW_PORTER_INFO=true
-  port alpha beta
+  port alpha ignored
   cleanup_stubs ${name}
 
   assert_stdout_includes_all_up_down
   assert_stdout_line_count_equals 17
   assert_stderr_includes 'ERROR: unknown arg <alpha>'
-  assert_stderr_includes 'ERROR: unknown arg <beta>'
   assert_status_equals 10
 }
 
