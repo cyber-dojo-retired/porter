@@ -6,6 +6,7 @@ class ExternalStorer
     get(__method__)
   end
 
+  # :nocov:
   def sample_id10
     get(__method__)
   end
@@ -13,6 +14,7 @@ class ExternalStorer
   def sample_id2
     get(__method__)
   end
+  # :nocov:
 
   def katas_completed(partial_id)
     get(__method__, partial_id)
