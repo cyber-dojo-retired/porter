@@ -1,8 +1,0 @@
-
-Add a test that verifies after the script finishes
-there are no container still up.
-And that this is true whether the script passes or not.
-
-Maybe the info text could be saved to a /tmp dir
-whose path is passed in an extra command line arg.
-This would allow detailed confirmation of events.
