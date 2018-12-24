@@ -36,9 +36,7 @@ test_010_sample_id10_as_user_sees_it()
   port --id10
   cleanup_stubs ${name}
 
-  local id10="`cat ${stdoutF}`"
-  assert_id10 "${id10}"
-  assert_stdout_line_count_equals 1
+  assert_stdout_equals_id10
   assert_stderr_equals ''
   assert_status_equals 0
 }

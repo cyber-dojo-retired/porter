@@ -36,9 +36,7 @@ test_012_sample_id2_as_user_sees_it()
   port --id2
   cleanup_stubs ${name}
 
-  local id2="`cat ${stdoutF}`"
-  assert_id2 "${id2}"
-  assert_stdout_line_count_equals 1
+  assert_stdout_equals_id2
   assert_stderr_equals ''
   assert_status_equals 0
 }

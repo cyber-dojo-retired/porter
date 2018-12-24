@@ -216,32 +216,34 @@ assert_stdout_includes_all_up_down()
 
 assert_stdout_includes_storer_empty()
 {
-  assert_stdout_includes "storer is empty"    
+  assert_stdout_includes "storer is empty"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-assert_id10()
+assert_stdout_equals_id10()
 {
-  local arg="${1}"
-  if [[ ! "${#arg}" = "10" ]]; then
-    fail "${arg} is not 10-digits long"
+  assert_stdout_line_count_equals 1
+  local id10="`cat ${stdoutF}`"
+  if [[ ! "${#id10}" = "10" ]]; then
+    fail "${id10} is not 10-digits long"
   fi
   local id10_regex="[0-9a-zA-Z]{10}"
-  if [[ ! ${arg} =~ ${id10_regex} ]]; then
-    fail "${arg} is not a 10-digit id"
+  if [[ ! ${id10} =~ ${id10_regex} ]]; then
+    fail "${id10} is not a 10-digit id"
   fi
 }
 
-assert_id2()
+assert_stdout_equals_id2()
 {
-  local arg="${1}"
-  if [[ ! "${#arg}" = "2" ]]; then
-    fail "${arg} is not 2-digits long"
+  assert_stdout_line_count_equals 1
+  local id2="`cat ${stdoutF}`"
+  if [[ ! "${#id2}" = "2" ]]; then
+    fail "${id2} is not 2-digits long"
   fi
   local id2_regex="[0-9a-zA-Z]{2}"
-  if [[ ! ${arg} =~ ${id2_regex} ]]; then
-    fail "${arg} is not a 2-digit id"
+  if [[ ! ${id2} =~ ${id2_regex} ]]; then
+    fail "${id2} is not a 2-digit id"
   fi
 }
 
