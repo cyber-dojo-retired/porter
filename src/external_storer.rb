@@ -6,6 +6,14 @@ class ExternalStorer
     get(__method__)
   end
 
+  def sample_id10
+    get(__method__)
+  end
+
+  def sample_id2
+    get(__method__)
+  end
+
   def katas_completed(partial_id)
     get(__method__, partial_id)
   end

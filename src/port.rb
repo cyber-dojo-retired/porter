@@ -27,8 +27,15 @@ def arg
 end
 
 def port_sample_id10
-  STDERR.puts('ERROR: storer is empty!')
-  exit(11)
+  sample = storer.sample_id10
+  if sample.nil?
+    STDERR.puts('ERROR: storer is empty!')
+    STDERR.flush
+    exit(11)
+  else
+    STDOUT.puts(sample)
+    STDOUT.flush
+  end
 end
 
 def port_sample_id2
