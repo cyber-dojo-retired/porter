@@ -7,12 +7,6 @@ class Porter
     @externals = externals
   end
 
-  def port_all
-  end
-
-  def port_many(id2)
-  end
-
   def port_one(id)
     if !storer.kata_exists?(id)
       fail "malformed:id:#{id} !exist"
