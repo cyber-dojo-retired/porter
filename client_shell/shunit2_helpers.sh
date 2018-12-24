@@ -18,7 +18,8 @@ assert_stdout_includes()
 assert_stdout_line_count_equals()
 {
   local stdout="`cat ${stdoutF}`"
-  assertEquals "stdout-line-count:${stdout}" ${1} $(wc -l ${stdoutF} | awk '{ print $1 }')
+  local diagnostic="stdout-line-count:<stdout>${stdout}</stdout>"
+  assertEquals "${diagnostic}" ${1} $(echo "${stderr}" | wc -l | awk '{ print $1 }')
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -41,8 +42,9 @@ assert_stderr_includes()
 
 assert_stderr_line_count_equals()
 {
-  local stderr="`cat ${stderrF}`"  
-  assertEquals "stderr-line-count:${stderr}" ${1} $(wc -l ${stderrF} | awk '{ print $1 }')
+  local stderr="`cat ${stderrF}`"
+  local diagnostic="stderr-line-count:<stderr>${stderr}</stderr>"
+  assertEquals "${diagnostic}" ${1} $(echo "${stderr}" | wc -l | awk '{ print $1 }')
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
