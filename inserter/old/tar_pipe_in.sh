@@ -13,12 +13,8 @@ readonly KATA_IDS=( \
   420BD5D5BE \
   421AFD7EC5 )
 
-# - - - - - - - - - - - - - - - - - - - - - - - -
-
-echo "inserting old katas into ${STORER_CONTAINER}"
 for KATA_ID in "${KATA_IDS[@]}"
 do
-  echo "...${KATA_ID}"
   cat ${MY_DIR}/${KATA_ID}.tgz \
     | docker exec \
         --user root \
