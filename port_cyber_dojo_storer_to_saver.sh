@@ -23,7 +23,7 @@ show_help()
     echo "  o) a service called storer"
     echo "  o) a docker data-container"
     echo "  o) was coupled to avatar names"
-    echo "  o) fudged support for individual sessions"
+    echo "  o) didn't properly support for individual sessions"
     echo "The new format uses:"
     echo "  o) 6-digit ids (with a larger alphabet)"
     echo "  o) a service called saver"
