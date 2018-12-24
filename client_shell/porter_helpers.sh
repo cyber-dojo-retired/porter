@@ -228,6 +228,18 @@ assert_id10()
   fi
 }
 
+assert_id2()
+{
+  local arg="${1}"
+  if [[ ! "${#arg}" = "2" ]]; then
+    fail "${arg} is not 2-digits long"
+  fi
+  local id2_regex="[0-9a-zA-Z]{2}"
+  if [[ ! ${arg} =~ ${id2_regex} ]]; then
+    fail "${arg} is not a 2-digit id"
+  fi
+}
+
 # = = = = = = = = = = = = = = = = = = = = = = = =
 
 assert_stderr_equals_storer_already_running()
