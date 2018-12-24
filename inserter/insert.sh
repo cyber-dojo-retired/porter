@@ -24,8 +24,8 @@ docker exec \
 
 for arg in $@
 do
-  ${ROOT_DIR}/sh/tar_pipe_in.sh \
-      ${arg} ${STORER_CONTAINER} ${KATAS_ROOT}
+  ${ROOT_DIR}/${arg}/tar_pipe_in.sh \
+      ${STORER_CONTAINER} ${KATAS_ROOT}
 done
 
 # - - - - - - - - - - - - - - - - - - - - - - - -

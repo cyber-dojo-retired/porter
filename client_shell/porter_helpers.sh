@@ -147,14 +147,16 @@ assert_stdout_includes_running()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
+readonly network_name="port_cyber_dojo_storer_to_saver"
+
 assert_stdout_includes_the_network_has_been_created()
 {
-  assert_stdout_includes "Checking the network port_cyber_dojo_storer_to_saver has been created. OK"
+  assert_stdout_includes "Checking the network ${network_name} has been created. OK"
 }
 
 assert_stdout_includes_removing_the_network()
 {
-  assert_stdout_includes "Removing the network port_cyber_dojo_storer_to_saver"
+  assert_stdout_includes "Removing the network ${network_name}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -

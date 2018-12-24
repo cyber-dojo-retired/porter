@@ -26,6 +26,8 @@ def arg
   ARGV[0]
 end
 
+# - - - - - - - - - - - - - - - - - - - - -
+
 def port_sample_id10
   sample = storer.sample_id10
   if sample.nil?
@@ -38,18 +40,26 @@ def port_sample_id10
   end
 end
 
+# - - - - - - - - - - - - - - - - - - - - -
+
 def port_sample_id2
 end
+
+# - - - - - - - - - - - - - - - - - - - - -
 
 def port_one # arg{id-10}
 #    porter.port_one(id-10)
 #    print P/E/M
 end
 
+# - - - - - - - - - - - - - - - - - - - - -
+
 def port_many # arg{id-2}
 #    kata_completions(id-2).each
 #      port_one()
 end
+
+# - - - - - - - - - - - - - - - - - - - - -
 
 def port_all # arg(all)
 #    use all 58x58 generated id-2's.each
