@@ -196,6 +196,20 @@ assert_stdout_includes_all_up_down()
   assert_stdout_includes_removing_the_network # 17
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+assert_id10()
+{
+  local arg="${1}"
+  if [[ ! "${#arg}" = "10" ]]; then
+    fail "${arg} is not 10-digits long"
+  fi
+  local id10_regex="[0-9a-zA-Z]{10}"
+  if [[ ! ${arg} =~ ${id10_regex} ]]; then
+    fail "${arg} is not a 10-digit id"
+  fi
+}
+
 # = = = = = = = = = = = = = = = = = = = = = = = =
 
 assert_stderr_equals_storer_already_running()

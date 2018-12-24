@@ -49,7 +49,7 @@ test_011_sample_id10_some_katas_as_user_sees_it()
   cleanup_stubs ${name}
 
   local id10="`cat ${stdoutF}`"
-  printf 'id10=<%s>\n' "${id10}"
+  assert_id10 "${id10}"
   assert_stdout_line_count_equals 1
   assert_stderr_equals ''
   assert_status_equals 0
