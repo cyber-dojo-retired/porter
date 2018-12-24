@@ -10,13 +10,7 @@ test_011_sample_id10_some_katas_with_porter_info()
   create_stub_storer_data_container ${name}
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}
-
-  local dc_name=$(get_data_container_name "${name}")
-  local cid=$(docker run --detach --interactive --name jj \
-    --volumes-from ${dc_name} \
-      cyberdojo/storer sh)
-  ${my_dir}/../inserter/insert.sh jj old
-  docker container rm --force ${cid} > /dev/null
+  insert_kata_data_in_storer_data_container ${name} old
 
   export SHOW_PORTER_INFO=true
   port --id10
@@ -36,13 +30,7 @@ test_011_sample_id10_some_katas_as_user_sees_it()
   create_stub_storer_data_container ${name}
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}
-
-  local dc_name=$(get_data_container_name "${name}")
-  local cid=$(docker run --detach --interactive --name jj \
-    --volumes-from ${dc_name} \
-      cyberdojo/storer sh)
-  ${my_dir}/../inserter/insert.sh jj old
-  docker container rm --force ${cid} > /dev/null
+  insert_kata_data_in_storer_data_container ${name} old
 
   export SHOW_PORTER_INFO=false
   port --id10

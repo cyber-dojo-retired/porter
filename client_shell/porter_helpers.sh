@@ -68,6 +68,8 @@ on_host()
   $(${cmd})
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
 create_stub_saver_volume_mount_root_dir()
 {
   local name=${1}
@@ -81,6 +83,8 @@ create_stub_saver_volume_mount_root_dir()
   fi
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
 create_stub_porter_volume_mount_root_dir()
 {
   local name=${1}
@@ -92,6 +96,20 @@ create_stub_porter_volume_mount_root_dir()
   if [ ! "${2}" = "no-chown" ]; then
     on_host "chown -R 19664:65533 ${PORTER_HOST_ROOT_DIR}"
   fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+insert_kata_data_in_storer_data_container()
+{
+  local name="${1}"
+  local katas_name="${2}"
+  local dc_name=$(get_data_container_name "${name}")
+  local cid=$(docker run --detach --interactive --name ${name} \
+    --volumes-from ${dc_name} \
+      cyberdojo/storer sh)
+  ${my_dir}/../inserter/insert.sh ${name} ${katas_name}
+  docker container rm --force ${cid} > /dev/null
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
