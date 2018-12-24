@@ -34,7 +34,5 @@ test_005_no_rights_to_saver_volume_mount()
   assert_status_equals 7
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 . ${my_dir}/shunit2_helpers.sh
 . ${my_dir}/shunit2

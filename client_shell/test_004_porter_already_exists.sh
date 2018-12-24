@@ -26,7 +26,5 @@ test_004_porter_already_exists()
   assert_status_equals 6
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 . ${my_dir}/shunit2_helpers.sh
 . ${my_dir}/shunit2

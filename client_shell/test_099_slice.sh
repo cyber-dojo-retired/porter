@@ -11,7 +11,7 @@ x_test_099_slice()
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}
 
-  port --10
+  port --id10
   cleanup_stubs ${name}
 
   #...

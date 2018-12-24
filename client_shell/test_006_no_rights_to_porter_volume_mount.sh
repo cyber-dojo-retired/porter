@@ -36,7 +36,5 @@ test_006_no_rights_to_porter_volume_mount()
   assert_status_equals 8
 }
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 . ${my_dir}/shunit2_helpers.sh
 . ${my_dir}/shunit2

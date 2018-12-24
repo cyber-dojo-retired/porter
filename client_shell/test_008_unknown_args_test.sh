@@ -14,13 +14,12 @@ test_008_unknown_args()
   port alpha beta
   cleanup_stubs ${name}
 
-  assert_stdout_equals ''
+  assert_stdout_includes_all_up_down
+  assert_stdout_line_count_equals 17
   assert_stderr_includes 'ERROR: unknown arg <alpha>'
   assert_stderr_includes 'ERROR: unknown arg <beta>'
   assert_status_equals 10
 }
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 . ${my_dir}/shunit2_helpers.sh
 . ${my_dir}/shunit2

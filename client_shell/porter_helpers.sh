@@ -171,6 +171,29 @@ assert_stdout_includes_removing()
   assert_stdout_includes "Removing the ${name} service"
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+assert_stdout_includes_all_up_down()
+{
+  assert_stdout_includes_installed docker # 1
+  assert_stdout_includes_installed curl # 2
+  assert_stdout_includes_storers_data_container_exists # 3
+  assert_stdout_includes_not_already_running storer # 4
+  assert_stdout_includes_not_already_running saver # 5
+  assert_stdout_includes_not_already_running porter # 6
+  assert_stdout_includes_the_network_has_been_created # 7
+  assert_stdout_includes_running storer OK # 8
+  assert_stdout_includes_running saver OK # 9
+  assert_stdout_includes_running porter OK # 10
+  assert_stdout_includes_stopping storer # 11
+  assert_stdout_includes_removing storer # 12
+  assert_stdout_includes_stopping saver # 13
+  assert_stdout_includes_removing saver # 14
+  assert_stdout_includes_stopping porter # 15
+  assert_stdout_includes_removing porter # 16
+  assert_stdout_includes_removing_the_network # 17
+}
+
 # = = = = = = = = = = = = = = = = = = = = = = = =
 
 assert_stderr_equals_storer_already_running()
