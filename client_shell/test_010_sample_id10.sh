@@ -4,9 +4,9 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_011_sample_id10_some_katas_with_porter_info()
+test_010_sample_id10_with_porter_info()
 {
-  local name=011a
+  local name=010a
   create_stub_storer_data_container ${name}
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}
@@ -24,9 +24,9 @@ test_011_sample_id10_some_katas_with_porter_info()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011_sample_id10_some_katas_as_user_sees_it()
+test_010_sample_id10_as_user_sees_it()
 {
-  local name=011b
+  local name=010b
   create_stub_storer_data_container ${name}
   create_stub_saver_volume_mount_root_dir ${name}
   create_stub_porter_volume_mount_root_dir ${name}

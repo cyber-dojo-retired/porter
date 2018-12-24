@@ -214,6 +214,11 @@ assert_stdout_includes_all_up_down()
   assert_stdout_includes_removing_the_network # 17
 }
 
+assert_stdout_includes_storer_empty()
+{
+  assert_stdout_includes "storer is empty"    
+}
+
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
 assert_id10()

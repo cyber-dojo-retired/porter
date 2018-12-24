@@ -58,27 +58,26 @@ if args[:error]
   exit(10)
 end
 
+if storer.sample_id2.nil?
+  STDOUT.puts('storer is empty')
+  STDOUT.flush
+  exit(0)
+end
+
 # - - - - - - - - - - - - - - - - - - - -
 
 if args[:id_10]
   id10 = ARGV[1]
   if id10.nil?
-    sample = storer.sample_id10
-    if sample.nil?
-      STDERR.puts('ERROR: storer is empty!')
-      STDERR.flush
-      exit(11)
-    else
-      STDOUT.puts(sample)
-      STDOUT.flush
-    end
+    STDOUT.puts(storer.sample_id10)
+    STDOUT.flush
   else
-    #  check id10 well-formed, else error 12
+    #  check id10 well-formed, else error 11
     #  try
     #    port_one(id10)
     #  rescue => error
     #    error.message == "malformed:id:#{id} !exist"
-    #      error 13
+    #      error 12
     #  end
     port_one(id10)
   end
@@ -89,17 +88,10 @@ end
 if args[:id_2]
   id2 = ARGV[1]
   if id2.nil?
-    sample = storer.sample_id2
-    if sample.nil?
-      STDERR.puts('ERROR: storer is empty!')
-      STDERR.flush
-      exit(14)
-    else
-      STDOUT.puts(sample)
-      STDOUT.flush
-    end
+    STDOUT.puts(storer.sample_id2)
+    STDOUT.flush
   else
-    #  check id2 well-formed, else error 15
+    #  check id2 well-formed, else error 13
     port_many(id2)
   end
 end
