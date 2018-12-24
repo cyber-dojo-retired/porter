@@ -4,7 +4,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_011_sample_id10_some_katas()
+test_011_sample_id10_some_katas_with_porter_info()
 {
   local name=011a
   create_stub_storer_data_container ${name}
@@ -30,7 +30,7 @@ test_011_sample_id10_some_katas()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011_sample_id10_some_katas_no_info()
+test_011_sample_id10_some_katas_as_user_sees_it()
 {
   local name=011b
   create_stub_storer_data_container ${name}
@@ -44,10 +44,12 @@ test_011_sample_id10_some_katas_no_info()
   ${my_dir}/../inserter/insert.sh jj old
   docker container rm --force ${cid} > /dev/null
 
+  export SHOW_PORTER_INFO=false
   port --id10
   cleanup_stubs ${name}
 
-  cat ${stdoutF}
+  local id10="`cat ${stdoutF}`"
+  printf 'id10=<%s>\n' "${id10}"
   assert_stdout_line_count_equals 1
   assert_stderr_equals ''
   assert_status_equals 0
