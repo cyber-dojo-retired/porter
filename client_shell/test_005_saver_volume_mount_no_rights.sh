@@ -27,12 +27,14 @@ test_005_saver_volume_mount_no_rights()
   assert_stdout_includes_removing storer # 11
   assert_stdout_includes_stopping saver # 12
   assert_stdout_includes_removing saver # 13
-  assert_stdout_includes_removing_the_network # 14
-  assert_stdout_line_count_equals 14
+  assert_stdout_includes_stopping porter # 14
+  assert_stdout_includes_removing porter # 15
+  assert_stdout_includes_removing_the_network # 16
+  assert_stdout_line_count_equals 16
 
   assert_stderr_equals_no_rights_to_saver_volume_mount
 
-  assert_status_equals 7
+  assert_status_equals 8
 }
 
 . ${my_dir}/shunit2_helpers.sh

@@ -185,7 +185,7 @@ exit_unless_storer_data_container_exists()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-exit_if_storer_already_running()
+exit_if_already_running_storer()
 {
   local status=${1}
   if exists_container storer ; then
@@ -199,7 +199,7 @@ exit_if_storer_already_running()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-exit_if_saver_already_running()
+exit_if_already_running_saver()
 {
   local status=${1}
   if exists_container saver ; then
@@ -213,7 +213,7 @@ exit_if_saver_already_running()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-exit_if_porter_already_running()
+exit_if_already_running_porter()
 {
   local status=${1}
   if exists_container porter ; then
@@ -239,10 +239,12 @@ pull_latest_images()
 wait_till_running()
 {
   local name=${1}
-  local port=${2}
-  local cid=${3}
-  local error_code=${4}
+  local error_code=${2}
   local max_tries=10
+  local vport="${name}_port"
+  local port="${!vport}"
+  local vcid="${name}_cid"
+  local cid="${!vcid}"
 
   local cmd="curl --silent --fail --data '{}' -X GET http://localhost:${port}/sha"
   cmd+=" > /dev/null 2>&1"
@@ -276,8 +278,6 @@ run_storer_service()
     --publish ${storer_port}:${storer_port} \
     --volumes-from ${storer_data_container_name} \
       cyberdojo/storer)
-
-  wait_till_running storer ${storer_port} ${storer_cid} 6
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -292,8 +292,6 @@ run_saver_service()
     --publish ${saver_port}:${saver_port} \
     --volume ${saver_host_root_dir}/cyber-dojo:/cyber-dojo \
       cyberdojo/saver)
-
-  wait_till_running saver ${saver_port} ${saver_cid} 7
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -309,8 +307,6 @@ run_porter_service()
     --publish ${porter_port}:${porter_port} \
     --volume ${porter_host_root_dir}/porter:/porter \
       cyberdojo/porter)
-
-  wait_till_running porter ${porter_port} ${porter_cid} 8
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -332,17 +328,21 @@ show_help ${*}
 exit_unless_installed docker 1
 exit_unless_installed curl 2
 exit_unless_storer_data_container_exists 3
-exit_if_storer_already_running 4
-exit_if_saver_already_running 5
-exit_if_porter_already_running 6
+exit_if_already_running_storer 4
+exit_if_already_running_saver  5
+exit_if_already_running_porter 6
 
 create_docker_network
 trap remove_all_services_and_network EXIT INT
 
-#TODO: restore this
-#pull_latest_images
+#pull_latest_images #TODO: restore this
+
 run_storer_service
 run_saver_service
 run_porter_service
+
+wait_till_running storer 7
+wait_till_running saver  8
+wait_till_running porter 9
 
 run_port_exec ${*}

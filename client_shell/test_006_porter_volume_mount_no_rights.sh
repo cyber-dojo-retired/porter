@@ -34,7 +34,7 @@ test_006_porter_volume_mount_no_rights()
   assert_stdout_includes_removing_the_network # 17
   assert_stdout_line_count_equals 17
   assert_stderr_equals_no_rights_to_porter_volume_mount
-  assert_status_equals 8
+  assert_status_equals 9
 }
 
 . ${my_dir}/shunit2_helpers.sh
