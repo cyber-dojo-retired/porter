@@ -76,8 +76,9 @@ docker-compose \
   --force-recreate
 
 wait_till_ready "test-${MY_NAME}-server" 4517
+wait_till_ready "test-${MY_NAME}-saver"  4537
+
 wait_till_up "test-${MY_NAME}-client"
 wait_till_up "test-${MY_NAME}-storer"
-wait_till_up "test-${MY_NAME}-saver"
 
 exit_unless_started_cleanly "test-${MY_NAME}-server"

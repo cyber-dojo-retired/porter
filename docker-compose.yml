@@ -30,7 +30,7 @@ services:
     init: true
     container_name: test-porter-server
     ports:
-      - 4517:4517    
+      - 4517:4517
     read_only: true
     tmpfs:
       - /porter:uid=19664,gid=65533
@@ -59,6 +59,8 @@ services:
     image: cyberdojo/saver
     init: true
     container_name: test-porter-saver
+    ports:
+      - 4537:4537
     read_only: true
     tmpfs:
       - /cyber-dojo:uid=19663,gid=65533
