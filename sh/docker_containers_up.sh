@@ -80,8 +80,10 @@ readonly MY_NAME=porter
 
 wait_until_ready "test-${MY_NAME}-server" 4517
 wait_until_ready "test-${MY_NAME}-saver"  4537
+wait_until_ready "test-${MY_NAME}-storer" 4577
 
 exit_unless_clean "test-${MY_NAME}-server"
+exit_unless_clean "test-${MY_NAME}-saver"
+exit_unless_clean "test-${MY_NAME}-storer"
 
 wait_until_up "test-${MY_NAME}-client"
-wait_until_up "test-${MY_NAME}-storer"

@@ -3,7 +3,7 @@ set -e
 
 readonly STORER_CONTAINER=test-porter-storer
 
-echo "inserting test-data into ${STORER_CONTAINER}"
+echo "Inserting test-data into ${STORER_CONTAINER}"
 
 docker run \
    --rm \

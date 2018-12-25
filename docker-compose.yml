@@ -47,6 +47,8 @@ services:
     image: cyberdojo/storer
     init: true
     container_name: test-porter-storer
+    ports:
+      - 4577:4577
     read_only: true
     tmpfs:
       - /usr/src/cyber-dojo/katas:uid=19661,gid=65533
