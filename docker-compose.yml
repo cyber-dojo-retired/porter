@@ -29,6 +29,8 @@ services:
     image: cyberdojo/porter
     init: true
     container_name: test-porter-server
+    ports:
+      - 4517:4517    
     read_only: true
     tmpfs:
       - /porter:uid=19664,gid=65533
