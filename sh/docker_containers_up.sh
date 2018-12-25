@@ -49,7 +49,7 @@ wait_until_up()
 
 # - - - - - - - - - - - - - - - - - - -
 
-exit_unless_started_cleanly()
+exit_unless_clean()
 {
   local name="${1}"
   local docker_logs=$(docker logs "${name}")
@@ -81,7 +81,7 @@ readonly MY_NAME=porter
 wait_until_ready "test-${MY_NAME}-server" 4517
 wait_until_ready "test-${MY_NAME}-saver"  4537
 
-exit_unless_started_cleanly "test-${MY_NAME}-server"
+exit_unless_clean "test-${MY_NAME}-server"
 
 wait_until_up "test-${MY_NAME}-client"
 wait_until_up "test-${MY_NAME}-storer"
