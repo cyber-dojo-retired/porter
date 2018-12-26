@@ -4,21 +4,9 @@
 # The intention is to...
 #  o) run on an old (storer-based) server
 #  o) bring down the server
-#  o) run the port script to move from storer -> saver
+#  o) run the port script to move katas from storer -> saver
 #  o) upgrade the server (to saver-based)
 #  o) run the new server
-
-# Use cases...
-# [1] no clash on porter/storer, id6 free on saver
-#     uses id6==id10[0..5] and ask saver to use that id
-#
-# [2] no clash on porter/storer, id6 not free on saver
-#     ask saver to use new id6, id-map it
-#
-# ]3] clash on porter/storer
-#     ask saver to use new id6, id-map it
-#     In theory this id6 could equal id10[0..5] !!! (use case 1)
-#     In practice, the chance is miniscule. Worth looping/asserting on?
 
 class Porter
 
@@ -37,7 +25,7 @@ class Porter
     manifest = storer.kata_manifest(id)
     update_manifest(manifest)
     set_id(manifest)
-    id6 = saver.group_create(manifest) #[3]
+    id6 = saver.group_create(manifest)
     remember_mapping(id, id6)
 
     storer.avatars_started(id).each do |avatar_name|
@@ -99,27 +87,25 @@ class Porter
 
   def set_id(manifest)
     id6 = manifest['id'][0..5]
-    if unique?(id6)
+    if from_unique?(id6) # && to_available?(id6)
       manifest['id'] = id6
     else
-      force_saver_to_generate_a_new_id(manifest)
+      # force saver to generate a new id
+      manifest.delete('id')
     end
   end
 
   # - - - - - - - - - - - - - - - - - - -
 
-  def unique?(id6)
-    ported = Dir.glob("/porter/id-map/#{id6}**")
+  def from_unique?(id6)
+    ported_ids = Dir.glob("/porter/id-map/#{id6}**")
     storer_ids = storer.katas_completed(id6)
-    ported.size + storer_ids.size == 1
-    # && !saver.group_exists?(id6)
+    ported_ids.size + storer_ids.size == 1
   end
 
-  # - - - - - - - - - - - - - - - - - - -
-
-  def force_saver_to_generate_a_new_id(manifest)
-    manifest.delete('id')
-  end
+  #def to_available?(id6)
+  #  !saver.group_exists?(id6)
+  #end
 
   # - - - - - - - - - - - - - - - - - - -
 
