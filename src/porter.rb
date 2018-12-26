@@ -53,7 +53,7 @@ class Porter
     id6
   end
 
-  private
+  # - - - - - - - - - - - - - - - - - - -
 
   def update_manifest(manifest)
     # output is now stdout/stderr/status which
@@ -69,7 +69,7 @@ class Porter
     }
   end
 
-  # - - - - - - - - - - - - - - - - - - -
+  private
 
   def update_files(files)
     files.transform_values!{ |content| file(content) }
@@ -87,7 +87,7 @@ class Porter
 
   def set_id(manifest)
     id6 = manifest['id'][0..5]
-    if from_unique?(id6) # && to_available?(id6)
+    if from_unique?(id6) && to_available?(id6)
       manifest['id'] = id6
     else
       # force saver to generate a new id
@@ -103,9 +103,9 @@ class Porter
     ported_ids.size + storer_ids.size == 1
   end
 
-  #def to_available?(id6)
-  #  !saver.group_exists?(id6)
-  #end
+  def to_available?(id6)
+    !saver.group_exists?(id6)
+  end
 
   # - - - - - - - - - - - - - - - - - - -
 

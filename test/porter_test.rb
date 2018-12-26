@@ -29,8 +29,9 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '1E5', %w(
+  test '444', %w(
   after port of id which is unique in 1st 6 chars in storer,
+  and the id6 is available in saver, then
   saver has saved the practice-session
   with an id equal to its original 1st 6 chars
   ) do
@@ -38,9 +39,6 @@ class PorterTest < TestBase
       1F00C1BFC8
       5A0F824303
       420B05BA0A
-      420F2A2979
-      420BD5D5BE
-      421AFD7EC5
     )
     kata_ids << '421F303E80' # 'revert_tag' in its increments
     kata_ids.each do |id10|
@@ -50,7 +48,31 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '1E6', %w(
+  test '445', %w(
+  after port of id which is unique in 1st 6 chars in storer,
+  but the id6 is _not_ available in saver, then
+  saver has saved the practice-session
+  with an id unequal to its original 1st 6 chars
+  ) do
+    kata_ids = %w(
+      420F2A2979
+      420BD5D5BE
+      421AFD7EC5
+    )
+    kata_ids.each do |id10|
+      manifest = storer.kata_manifest(id10)
+      porter.update_manifest(manifest)
+      id6 = id10[0..5]
+      manifest['id'] = id6
+      saver.group_create(manifest)
+      assert saver.group_exists?(id6)
+      assert_ports_with_different_id(id10)
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '446', %w(
   after port of id that has more than one 6-char match in storer
   saver has saved the practice-session
   with an id unequal to its original 1st 6 chars
