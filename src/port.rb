@@ -19,7 +19,15 @@ end
 # - - - - - - - - - - - - - - - - - - - - -
 
 def port_one(id10)
-#  porter.port(id10)
+#  try
+#    porter.port(id10)
+#  rescue => error
+#    if error.message == "malformed:id:#{id} !exist"
+#      error 12
+#    else
+#      raise
+#    end
+#  end
 #  print P/E/M
 end
 
@@ -35,7 +43,7 @@ def port_all
 #  count = 1
 #  while !(id2 = storer.sample_id2).nil?
 #    percent = (count / max * 100).to_i
-#    print "#{percent}%:"
+#    print "~#{percent}%:"
 #    port_many(id2)
 #  end
 end
@@ -73,12 +81,6 @@ if args[:id_10]
     STDOUT.flush
   else
     #  check id10 well-formed, else error 11
-    #  try
-    #    port_one(id10)
-    #  rescue => error
-    #    error.message == "malformed:id:#{id} !exist"
-    #      error 12
-    #  end
     port_one(id10)
   end
 end

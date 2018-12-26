@@ -60,7 +60,11 @@ vs           56^6 ==  30,840,979,456 ==  30 billion
 
 It is tempting to use 7 chars...
 
-80^7 == 2.09x10^13 == 20.9 trillion
 56^7 == 1.72x10^12 == 1.72 trillion
+Or more...
+56^8  == 96.7x10^12 == 96.7 trillion
+56^9  == 5416.694x10^12 == 5416.694 trillion = 5.41 quadrillion
+56^10 == 303305.49x19^12 == 303305.49 trillion = 303.30 quadrillion
+
 
 Downside is people are used to using 6 char IDs
