@@ -5,8 +5,8 @@ class RackDispatcherStub
     "hello from #{self.class.name}.sha"
   end
 
-  def port_one(_kata_id)
-    "hello from #{self.class.name}.port_one"
+  def port(_kata_id)
+    "hello from #{self.class.name}.port"
   end
 
 end

@@ -12,7 +12,7 @@ class PorterTest < TestBase
   port of id that does not exist raises
   ) do
     id = '9k81d40123'
-    error = assert_raises(RuntimeError) { port_one(id) }
+    error = assert_raises(RuntimeError) { port(id) }
     assert_equal "malformed:id:#{id} !exist", error.message
   end
 
@@ -22,8 +22,8 @@ class PorterTest < TestBase
   port of id that has already been ported raises
   ) do
     id = '9f8TeZMZAq'
-    port_one(id)
-    error = assert_raises(RuntimeError) { port_one(id) }
+    port(id)
+    error = assert_raises(RuntimeError) { port(id) }
     assert_equal "malformed:id:#{id} !exist", error.message
   end
 

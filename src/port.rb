@@ -19,7 +19,7 @@ end
 # - - - - - - - - - - - - - - - - - - - - -
 
 def port_one(id10)
-#  porter.port_one(id10)
+#  porter.port(id10)
 #  print P/E/M
 end
 
