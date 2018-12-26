@@ -15,6 +15,7 @@ readonly KATA_IDS=( \
 
 for KATA_ID in "${KATA_IDS[@]}"
 do
+  echo -n '.'
   cat ${MY_DIR}/${KATA_ID}.tgz \
     | docker exec \
         --user root \

@@ -3,7 +3,7 @@ set -e
 
 readonly STORER_CONTAINER=test-porter-storer
 
-echo "Inserting test-data into ${STORER_CONTAINER}"
+echo -n "Inserting test-data into ${STORER_CONTAINER}"
 
 docker run \
    --rm \
@@ -13,3 +13,4 @@ docker run \
      ${STORER_CONTAINER} \
        dup_server old new red
        # 7E 4D
+echo 'OK'

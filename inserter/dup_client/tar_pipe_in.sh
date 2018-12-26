@@ -8,10 +8,9 @@ readonly KATA_IDS=( \
     0BA7E1E01B \
     0BA7E16149 )
 
-# - - - - - - - - - - - - - - - - - - - - - - - -
-
 for KATA_ID in "${KATA_IDS[@]}"
 do
+  echo -n '.'
   cat ${MY_DIR}/${KATA_ID}.tgz \
     | docker exec \
         --user root \
