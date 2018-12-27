@@ -40,12 +40,16 @@ end
 # - - - - - - - - - - - - - - - - - - - - -
 
 def port_many(id2)
+  counts = { 'P' => 0, 'M' => 0, 'E' => 0 }
   print "#{id2}:"
   storer.katas_completions(id2).each do |id8|
     pme = port_one(id2+id8)
+    counts[pme] += 1
     print pme
   end
   print "\n"
+  puts "P(#{counts['P']}),M(#{counts['M']}),E(#{counts['E']})"
+  counts
 end
 
 # - - - - - - - - - - - - - - - - - - - - -

@@ -59,7 +59,43 @@ test_013d_port_id2_all_Ps()
   port --id2 ${id2}
   cleanup_stubs ${name}
 
-  assert_stdout_equals "${id2}:PPPPPPPPP"
+  assert_stdout_includes "${id2}:PPPPPPPPP"
+  assert_stdout_includes "P(9),M(0),E(0)"
+  assert_stdout_line_count_equals 2
+  assert_stderr_equals ''
+  assert_status_equals 0
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+test_013e_port_id2_all_Ms()
+{
+  local name=013e
+  local id2=0B
+  create_stubs_and_insert_test_data ${name} dup_client
+  port --id2 ${id2}
+  cleanup_stubs ${name}
+
+  assert_stdout_includes "${id2}:MM"
+  assert_stdout_includes "P(0),M(2),E(0)"
+  assert_stdout_line_count_equals 2
+  assert_stderr_equals ''
+  assert_status_equals 0
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+test_013f_port_id2_all_Es()
+{
+  local name=013d
+  local id2=4D
+  create_stubs_and_insert_test_data ${name} throws
+  port --id2 ${id2}
+  cleanup_stubs ${name}
+
+  assert_stdout_includes "${id2}:EE"
+  assert_stdout_includes "P(0),M(0),E(2)"
+  assert_stdout_line_count_equals 2
   assert_stderr_equals ''
   assert_status_equals 0
 }
