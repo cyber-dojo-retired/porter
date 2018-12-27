@@ -232,6 +232,9 @@ pull_latest_images()
 {
   docker pull cyberdojo/storer > /dev/null
   docker pull cyberdojo/saver  > /dev/null
+  # This line is very tricky....
+  # When it runs on Travis it will [docker pull] before
+  # the tests have completed and so before the [docker push]
   docker pull cyberdojo/porter > /dev/null
 }
 
