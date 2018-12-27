@@ -10,8 +10,12 @@ class ExternalDirWriter
 
   attr_reader :name
 
-  def exists?
-    File.directory?(name)
+  def exists?(filename = nil)
+    if filename.nil?
+      File.directory?(name)
+    else
+      File.file?(pathed(filename))
+    end
   end
 
   def make

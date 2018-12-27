@@ -42,7 +42,11 @@ fi
 set -e
 
 if [ ! -d /${dir}/id-map ]; then
-  mkdir /${dir}/id-map
+  mkdir /${dir}/mapped-ids
+fi
+
+if [ ! -d /${dir}/id-map ]; then
+  mkdir /${dir}/raised-ids
 fi
 
 rackup             \

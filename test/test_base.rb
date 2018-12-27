@@ -1,5 +1,6 @@
 require_relative 'hex_mini_test'
 require_relative '../src/externals'
+require_relative '../src/external_disk_writer'
 
 class TestBase < HexMiniTest
 
@@ -18,7 +19,7 @@ class TestBase < HexMiniTest
   def assert_ports_with_matching_id(id10)
     assert_ports(id10) do |id6,gid|
       assert_equal id6,gid,id10
-      # TODO: there is no id-map/id10 dir
+      refute disk['/porter/mapped-ids'].exists?(id10)
     end
   end
 
@@ -27,7 +28,7 @@ class TestBase < HexMiniTest
   def assert_ports_with_different_id(id10)
     assert_ports(id10) do |id6,gid|
       refute_equal id6,gid,id10
-      # TODO: there is id-map/id10 dir
+      assert disk['/porter/mapped-ids'].exists?(id10)
     end
   end
 
@@ -195,6 +196,10 @@ class TestBase < HexMiniTest
     )
 
   # - - - - - - - - - - - - - - - - -
+
+  def disk
+    externals.disk
+  end
 
   def porter
     externals.porter

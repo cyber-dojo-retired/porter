@@ -98,7 +98,7 @@ class Porter
   # - - - - - - - - - - - - - - - - - - -
 
   def from_unique?(id6)
-    ported_ids = Dir.glob("/porter/id-map/#{id6}**")
+    ported_ids = Dir.glob("/porter/mapped-ids/#{id6}**")
     storer_ids = storer.katas_completed(id6)
     ported_ids.size + storer_ids.size == 1
   end
@@ -111,7 +111,7 @@ class Porter
 
   def remember_mapping(kata_id, id6)
     if id6 != kata_id[0..5]
-      IO.write("/porter/id-map/#{kata_id}", id6)
+      disk['/porter/mapped-ids'].write(kata_id, id6)
     end
   end
 
@@ -147,6 +147,10 @@ class Porter
     )
 
   # - - - - - - - - - - - - - - - - - - -
+
+  def disk
+    @externals.disk
+  end
 
   def storer
     @externals.storer
