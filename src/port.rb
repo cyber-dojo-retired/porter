@@ -79,7 +79,7 @@ if args[:id_10]
       exit(11)
     end
     unless id10.size == 10
-      STDERR.puts("ERROR: malformed id10 <#{id10}> (size==9 !10)")
+      STDERR.puts("ERROR: malformed id10 <#{id10}> (size==#{id10.size} !10)")
       STDERR.flush
       exit(12)
     end
