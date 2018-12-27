@@ -110,7 +110,11 @@ if args[:id_2]
       STDERR.flush
       exit(15)
     end
-    # ...
+    if storer.katas_completions(id2) == []
+      STDERR.puts("ERROR: id2 <#{id2}> does not exist")
+      STDERR.flush
+      exit(16)
+    end
     port_many(id2)
   end
 end
