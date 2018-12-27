@@ -58,6 +58,7 @@ def port_all
   # Can't use sample_id2 because 2-digit outer-dir
   # is still left after all the katas inside
   # it have been ported and then removed.
+  counts = { 'P' => 0, 'M' => 0, 'E' => 0 }
   alphabet = Base58.alphabet
   max = alphabet.size * alphabet.size
   count = 0
@@ -65,11 +66,16 @@ def port_all
     alphabet.each_char do |c2|
       count += 1
       id2 = c1 + c2
-      percent = (count / max * 100).to_i
+      percent = (count * 100 / max).to_i
       print "~#{percent}%:"
-      port_many(id2)
+      id2_counts = port_many(id2)
+      counts['P'] += id2_counts['P']
+      counts['M'] += id2_counts['M']
+      counts['E'] += id2_counts['E']
     end
   end
+  puts "total: P(#{counts['P']}),M(#{counts['M']}),E(#{counts['E']})"
+  counts
 end
 
 # - - - - - - - - - - - - - - - - - - - -
