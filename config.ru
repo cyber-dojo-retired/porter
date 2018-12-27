@@ -1,3 +1,6 @@
+$stdout.sync = true 
+$stderr.sync = true
+
 require_relative 'src/externals'
 require_relative 'src/rack_dispatcher'
 require 'rack'
