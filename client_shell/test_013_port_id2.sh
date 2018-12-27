@@ -4,16 +4,13 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
+export SHOW_PORTER_INFO=false
+
 test_013a_port_id2_malformed_not_base58()
 {
   local name=015a
-  create_stub_storer_data_container ${name}
-  create_stub_saver_volume_mount_root_dir ${name}
-  create_stub_porter_volume_mount_root_dir ${name}
-  insert_kata_data_in_storer_data_container ${name} new
-
-  export SHOW_PORTER_INFO=false
   local not_base_58=£B
+  create_stubs_and_insert_test_data ${name} new
   port --id2 ${not_base_58}
   cleanup_stubs ${name}
 
@@ -27,13 +24,8 @@ test_013a_port_id2_malformed_not_base58()
 test_013b_port_id2_malformed_not_size_2()
 {
   local name=013b
-  create_stub_storer_data_container ${name}
-  create_stub_saver_volume_mount_root_dir ${name}
-  create_stub_porter_volume_mount_root_dir ${name}
-  insert_kata_data_in_storer_data_container ${name} new
-
-  export SHOW_PORTER_INFO=false
   local not_size_2=12345BCDE
+  create_stubs_and_insert_test_data ${name} new
   port --id2 ${not_size_2}
   cleanup_stubs ${name}
 
@@ -47,13 +39,8 @@ test_013b_port_id2_malformed_not_size_2()
 test_013c_port_id2_does_not_exist()
 {
   local name=013c
-  create_stub_storer_data_container ${name}
-  create_stub_saver_volume_mount_root_dir ${name}
-  create_stub_porter_volume_mount_root_dir ${name}
-  insert_kata_data_in_storer_data_container ${name} new
-
-  export SHOW_PORTER_INFO=false
   local not_exist=0F
+  create_stubs_and_insert_test_data ${name} new
   port --id2 ${not_exist}
   cleanup_stubs ${name}
 
@@ -67,13 +54,8 @@ test_013c_port_id2_does_not_exist()
 test_013d_port_id2_all_Ps()
 {
   local name=013d
-  create_stub_storer_data_container ${name}
-  create_stub_saver_volume_mount_root_dir ${name}
-  create_stub_porter_volume_mount_root_dir ${name}
-  insert_kata_data_in_storer_data_container ${name} new
-
-  export SHOW_PORTER_INFO=false
   local id2=9f
+  create_stubs_and_insert_test_data ${name} new
   port --id2 ${id2}
   cleanup_stubs ${name}
 

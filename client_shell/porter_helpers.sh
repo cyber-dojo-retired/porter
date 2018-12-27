@@ -114,6 +114,18 @@ insert_kata_data_in_storer_data_container()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
+create_stubs_and_insert_test_data()
+{
+  local name="${1}"
+  local data_name="${2}"
+  create_stub_storer_data_container ${name}
+  create_stub_saver_volume_mount_root_dir ${name}
+  create_stub_porter_volume_mount_root_dir ${name}
+  insert_kata_data_in_storer_data_container ${name} ${data_name}
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
 cleanup_stubs()
 {
   local name=${1}
