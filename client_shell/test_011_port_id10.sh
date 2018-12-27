@@ -66,16 +66,33 @@ test_011d_port_id10_P()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011d_port_id10_M()
+test_011e_port_id10_M()
 {
-  :
+  local name=011e
+  local dup1=0BA7E1E01B
+  local dup2=0BA7E16149
+  create_stubs_and_insert_test_data ${name} dup_client
+  port --id10 ${dup1}
+  cleanup_stubs ${name}
+
+  assert_stdout_equals 'M'
+  assert_stderr_equals ''
+  assert_status_equals 0
+
+  create_stubs_and_insert_test_data ${name} dup_client
+  port --id10 ${dup2}
+  cleanup_stubs ${name}
+
+  assert_stdout_equals 'M'
+  assert_stderr_equals ''
+  assert_status_equals 0
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011d_port_id10_E()
+test_011f_port_id10_E()
 {
-  :
+  local name=011f
 }
 
 . ${my_dir}/shunit2_helpers.sh

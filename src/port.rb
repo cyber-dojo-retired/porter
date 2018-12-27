@@ -20,8 +20,13 @@ end
 # - - - - - - - - - - - - - - - - - - - - -
 
 def port_one(id10)
-  porter.port(id10)
-  print 'P'  # E/M
+  id6 = porter.port(id10)
+  if id10[0..5] == id6
+    print 'P'
+  else
+    print 'M'
+  end
+  # print 'E'
 end
 
 # - - - - - - - - - - - - - - - - - - - - -
