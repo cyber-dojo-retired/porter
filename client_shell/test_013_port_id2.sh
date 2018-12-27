@@ -66,7 +66,20 @@ test_013c_port_id2_does_not_exist()
 
 test_013d_port_id2_all_Ps()
 {
-  :
+  local name=013d
+  create_stub_storer_data_container ${name}
+  create_stub_saver_volume_mount_root_dir ${name}
+  create_stub_porter_volume_mount_root_dir ${name}
+  insert_kata_data_in_storer_data_container ${name} new
+
+  export SHOW_PORTER_INFO=false
+  local id2=9f
+  port --id2 ${id2}
+  cleanup_stubs ${name}
+
+  assert_stdout_equals "${id2}:PPPPPPPPP"
+  assert_stderr_equals ''
+  assert_status_equals 0
 }
 
 . ${my_dir}/shunit2_helpers.sh

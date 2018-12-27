@@ -25,10 +25,10 @@ def port_one(id10)
 end
 
 def port_many(id2)
-#  print "#{id2}:"
-#  storer.kata_completions(id2).each do |id10|
-#    port_one(id10)
-#  end
+  print "#{id2}:"
+  storer.katas_completions(id2).each do |id8|
+    port_one(id2+id8)
+  end
 end
 
 def port_all
