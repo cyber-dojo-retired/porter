@@ -12,8 +12,6 @@ test_014_port_all()
   create_stub_porter_volume_mount_root_dir ${name}
   insert_kata_data_in_storer_data_container ${name} old # 1F 5A 42
   insert_kata_data_in_storer_data_container ${name} new # 9f
-  #insert_kata_data_in_storer_data_container ${name} 4D
-  #insert_kata_data_in_storer_data_container ${name} 7E
   insert_kata_data_in_storer_data_container ${name} dup_client # 0B
   export SHOW_PORTER_INFO=false
   port --all
@@ -23,10 +21,7 @@ test_014_port_all()
   assert_stdout_includes '%:5A:P'
   assert_stdout_includes '%:42:PPPPP'
   assert_stdout_includes '%:9f:PPPPPPPPP'
-  #assert_stdout_includes '%:4D:PPPPPPPPP' #...
-  #assert_stdout_includes '%:7E:PPPPPPPPPPPPP' #...
-  assert_stdout_includes '%:0B:PP'
-
+  assert_stdout_includes '%:0B:MM'
   assert_stderr_equals ''
   assert_status_equals 0
 }
