@@ -27,6 +27,7 @@ do
   ${ROOT_DIR}/${arg}/tar_pipe_in.sh \
       ${STORER_CONTAINER} ${KATAS_ROOT}
 done
+echo
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 # set ownership of test-data in storer-container

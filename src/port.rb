@@ -1,3 +1,4 @@
+require_relative 'base58'
 require_relative 'externals'
 
 # - - - - - - - - - - - - - - - - - - - - -
@@ -80,7 +81,16 @@ if args[:id_10]
     STDOUT.puts(storer.sample_id10)
     STDOUT.flush
   else
-    #  check id10 well-formed, else error 11
+    unless Base58.string?(id10)
+      STDERR.puts("ERROR: malformed id10 <#{id10}> (!Base58)")
+      STDERR.flush
+      exit(11)
+    end
+    unless id10.size == 10
+      STDERR.puts("ERROR: malformed id10 <#{id10}> (size==9 !10)")
+      STDERR.flush
+      exit(12)
+    end
     port_one(id10)
   end
 end
