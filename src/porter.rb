@@ -14,6 +14,11 @@ class Porter
     @externals = externals
   end
 
+  def ready
+    storer.sha
+    saver.sha
+  end
+
   #def ported_id(partial_id)
   #end
 

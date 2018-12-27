@@ -22,9 +22,9 @@ test_006_porter_volume_mount_no_rights()
   assert_stdout_includes_not_already_running saver # 5
   assert_stdout_includes_not_already_running porter # 6
   assert_stdout_includes_the_network_has_been_created # 7
-  assert_stdout_includes_running storer OK # 8
-  assert_stdout_includes_running saver OK # 9
-  assert_stdout_includes_running porter FAIL # 10
+  assert_stdout_includes_ready storer OK # 8
+  assert_stdout_includes_ready saver OK # 9
+  assert_stdout_includes_ready porter FAIL # 10
   assert_stdout_includes_stopping storer # 11
   assert_stdout_includes_removing storer # 12
   assert_stdout_includes_stopping saver # 13

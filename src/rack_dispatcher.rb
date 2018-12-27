@@ -38,8 +38,9 @@ class RackDispatcher
     porter = @externals.porter
     wfa = WellFormedArgs.new(body)
     args = case name
-      when /^sha$/  then [env]
-      when /^port$/ then [porter, wfa.id]
+      when /^ready$/ then [porter]
+      when /^sha$/   then [env]
+      when /^port$/  then [porter, wfa.id]
       else
         raise ClientError, "#{name}:unknown:"
     end

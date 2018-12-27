@@ -48,7 +48,6 @@ class RackDispatcherTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # image
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test 'E41',
@@ -58,6 +57,12 @@ class RackDispatcherTest < TestBase
     )
   end
 
+  test 'E42',
+  'dispatch to ready' do
+    assert_dispatch('ready', {}.to_json,
+      "hello from #{stub_name}.ready"
+    )
+  end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
   # porter

@@ -49,7 +49,7 @@ show_help()
     echo
 
 
-    
+
     echo "First port a few single sessions."
     echo "To show a randomly sampled 10-digit id:"
     echo "  \$ ./${my_name} --id10"
@@ -245,23 +245,24 @@ pull_latest_images()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-wait_till_running()
+wait_till_ready()
 {
-  local name=${1}
-  local error_code=${2}
+  local name="${1}"
+  local error_code="${2}"
+  local method="${3}"
   local max_tries=10
   local vport="${name}_port"
   local port="${!vport}"
   local vcid="${name}_cid"
   local cid="${!vcid}"
 
-  local cmd="curl --silent --fail --data '{}' -X GET http://localhost:${port}/sha"
+  local cmd="curl --silent --fail --data '{}' -X GET http://localhost:${port}/${method}"
   cmd+=" > /dev/null 2>&1"
 
   if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
     cmd="docker-machine ssh ${DOCKER_MACHINE_NAME} ${cmd}"
   fi
-  info -n "Checking the ${name} service is running"
+  info -n "Checking the ${name} service is ready"
   while [ $(( max_tries -= 1 )) -ge 0 ] ; do
     info -n '.'
     if eval ${cmd} ; then
@@ -350,8 +351,8 @@ run_storer_service
 run_saver_service
 run_porter_service
 
-wait_till_running storer 7
-wait_till_running saver  8
-wait_till_running porter 9
+wait_till_ready storer 7 sha
+wait_till_ready saver  8 sha
+wait_till_ready porter 9 ready
 
 run_port_exec ${*}

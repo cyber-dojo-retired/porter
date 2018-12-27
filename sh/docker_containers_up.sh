@@ -5,8 +5,9 @@ wait_until_ready()
 {
   local name="${1}"
   local port="${2}"
+  local method="${3}"
   local max_tries=20
-  local cmd="curl --silent --fail --data '{}' -X GET http://localhost:${port}/sha"
+  local cmd="curl --silent --fail --data '{}' -X GET http://localhost:${port}/${method}"
   cmd+=" > /dev/null 2>&1"
 
   if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
@@ -83,12 +84,12 @@ docker-compose \
 
 readonly MY_NAME=porter
 
-wait_until_ready "test-${MY_NAME}-server" 4517
-wait_until_ready "test-${MY_NAME}-saver"  4537
-wait_until_ready "test-${MY_NAME}-storer" 4577
+wait_until_ready "test-${MY_NAME}-storer" 4577 sha
+wait_until_ready "test-${MY_NAME}-saver"  4537 sha
+wait_until_ready "test-${MY_NAME}-server" 4517 ready
 
-exit_unless_clean "test-${MY_NAME}-server"
-exit_unless_clean "test-${MY_NAME}-saver"
 exit_unless_clean "test-${MY_NAME}-storer"
+exit_unless_clean "test-${MY_NAME}-saver"
+exit_unless_clean "test-${MY_NAME}-server"
 
 wait_until_up "test-${MY_NAME}-client"

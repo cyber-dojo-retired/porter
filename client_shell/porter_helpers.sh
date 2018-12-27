@@ -173,12 +173,12 @@ assert_stdout_includes_not_already_running()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-assert_stdout_includes_running()
+assert_stdout_includes_ready()
 {
   local name=${1}
   local stdout="`cat ${stdoutF}`"
   local result=${2}
-  local prefix="Checking the ${name} service is running"
+  local prefix="Checking the ${name} service is ready"
   local regex="${prefix}\\.+${result}"
   if [[ ! ${stdout} =~ ${regex} ]]; then
     fail "stdout did not include: ${prefix}...${result}"
@@ -224,9 +224,9 @@ assert_stdout_includes_all_up_down()
   assert_stdout_includes_not_already_running saver # 5
   assert_stdout_includes_not_already_running porter # 6
   assert_stdout_includes_the_network_has_been_created # 7
-  assert_stdout_includes_running storer OK # 8
-  assert_stdout_includes_running saver OK # 9
-  assert_stdout_includes_running porter OK # 10
+  assert_stdout_includes_ready storer OK # 8
+  assert_stdout_includes_ready saver OK # 9
+  assert_stdout_includes_ready porter OK # 10
   assert_stdout_includes_stopping storer # 11
   assert_stdout_includes_removing storer # 12
   assert_stdout_includes_stopping saver # 13
