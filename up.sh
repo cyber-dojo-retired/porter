@@ -41,11 +41,11 @@ fi
 # - - - - - - - - - - - - - - - - - - - - -
 set -e
 
-if [ ! -d /${dir}/id-map ]; then
+if [ ! -d /${dir}/mapped-ids ]; then
   mkdir /${dir}/mapped-ids
 fi
 
-if [ ! -d /${dir}/id-map ]; then
+if [ ! -d /${dir}/raised-ids ]; then
   mkdir /${dir}/raised-ids
 fi
 
