@@ -230,9 +230,9 @@ exit_if_already_running_porter()
 
 pull_latest_images()
 {
-  docker pull cyberdojo/storer
-  docker pull cyberdojo/saver
-  docker pull cyberdojo/porter
+  docker pull cyberdojo/storer > /dev/null
+  docker pull cyberdojo/saver  > /dev/null
+  docker pull cyberdojo/porter > /dev/null
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
