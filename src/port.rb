@@ -21,7 +21,7 @@ end
 
 def port_one(id10)
   porter.port(id10)
-  #  print P/E/M
+  print 'P'  # E/M
 end
 
 def port_many(id2)
@@ -89,7 +89,6 @@ if args[:id_10]
       exit(13)
     end
     port_one(id10)
-
   end
 end
 

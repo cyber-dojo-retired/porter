@@ -22,6 +22,8 @@ test_011a_port_id10_malformed_not_base58()
   assert_status_equals 11
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
 test_011b_port_id10_malformed_not_size_10()
 {
   local name=011b
@@ -39,6 +41,8 @@ test_011b_port_id10_malformed_not_size_10()
   assert_stderr_equals "ERROR: malformed id10 <${not_size_10}> (size==9 !10)"
   assert_status_equals 12
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
 
 test_011c_port_id10_does_not_exist()
 {
@@ -58,14 +62,35 @@ test_011c_port_id10_does_not_exist()
   assert_status_equals 13
 }
 
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
 test_011d_port_id10_P()
 {
-  : # port --id10 14535aeGHP
+  local name=011d
+  create_stub_storer_data_container ${name}
+  create_stub_saver_volume_mount_root_dir ${name}
+  create_stub_porter_volume_mount_root_dir ${name}
+  insert_kata_data_in_storer_data_container ${name} new
+
+  export SHOW_PORTER_INFO=false
+  local exists=9fH6TumFV2
+  port --id10 ${exists}
+  cleanup_stubs ${name}
+
+  assert_stdout_equals 'P'
+  assert_stderr_equals ''
+  assert_status_equals 0
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
 test_011d_port_id10_M()
 {
   :
 }
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
 test_011d_port_id10_E()
 {
   :
