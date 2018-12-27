@@ -2,8 +2,6 @@ require_relative 'base58'
 require_relative 'externals'
 
 # - - - - - - - - - - - - - - - - - - - - -
-# if E(exeption) or M(id-mapped)
-#    porter.rb (not this) will add id info (to json? file, named from date+time?)
 
 def externals
   Externals.new
