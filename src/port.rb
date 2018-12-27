@@ -100,7 +100,17 @@ if args[:id_2]
     STDOUT.puts(storer.sample_id2)
     STDOUT.flush
   else
-    #  check id2 well-formed, else error 13
+    unless Base58.string?(id2)
+      STDERR.puts("ERROR: malformed id2 <#{id2}> (!Base58)")
+      STDERR.flush
+      exit(14)
+    end
+    unless id2.size == 2
+      STDERR.puts("ERROR: malformed id2 <#{id2}> (size==#{id2.size} !2)")
+      STDERR.flush
+      exit(15)
+    end
+    # ...
     port_many(id2)
   end
 end

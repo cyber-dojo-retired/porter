@@ -4,7 +4,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_010_sample_id10_with_porter_info()
+test_010a_sample_id10_with_porter_info()
 {
   local name=010a
   create_stub_storer_data_container ${name}
@@ -24,7 +24,7 @@ test_010_sample_id10_with_porter_info()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_010_sample_id10_as_user_sees_it()
+test_010b_sample_id10_as_user_sees_it()
 {
   local name=010b
   create_stub_storer_data_container ${name}

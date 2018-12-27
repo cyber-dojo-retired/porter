@@ -4,38 +4,54 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_015_port_id2_not_found_with_porter_info()
+test_013a_port_id2_malformed_not_base58()
 {
-  :
+  local name=015a
+  create_stub_storer_data_container ${name}
+  create_stub_saver_volume_mount_root_dir ${name}
+  create_stub_porter_volume_mount_root_dir ${name}
+  insert_kata_data_in_storer_data_container ${name} new
+
+  export SHOW_PORTER_INFO=false
+  local not_base_58=£B
+  port --id2 ${not_base_58}
+  cleanup_stubs ${name}
+
+  assert_stdout_equals ''
+  assert_stderr_equals "ERROR: malformed id2 <${not_base_58}> (!Base58)"
+  assert_status_equals 14
 }
-test_015_port_id2_not_found_as_user_sees_it()
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+test_013b_port_id2_malformed_not_size_2()
+{
+  local name=013b
+  create_stub_storer_data_container ${name}
+  create_stub_saver_volume_mount_root_dir ${name}
+  create_stub_porter_volume_mount_root_dir ${name}
+  insert_kata_data_in_storer_data_container ${name} new
+
+  export SHOW_PORTER_INFO=false
+  local not_size_2=12345BCDE
+  port --id2 ${not_size_2}
+  cleanup_stubs ${name}
+
+  assert_stdout_equals ''
+  assert_stderr_equals "ERROR: malformed id2 <${not_size_2}> (size==9 !2)"
+  assert_status_equals 15
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+test_013c_port_id2_does_not_exist()
 {
   :
 }
 
-test_015_port_id2_ok_with_porter_info()
-{
-  :
-}
-test_015_port_id2_ok_as_user_sees_it()
-{
-  :
-}
+# - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_015_port_id2_mapped_with_porter_info()
-{
-  :
-}
-test_015_port_id2_mapped_as_user_sees_it()
-{
-  :
-}
-
-test_015_port_id2_exception_with_porter_info()
-{
-  :
-}
-test_015_port_id2_exception_as_user_sees_it()
+test_013d_port_id2_all_Ps()
 {
   :
 }
