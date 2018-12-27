@@ -88,7 +88,6 @@ class PorterTest < TestBase
   port of id with broken json raises
   ) do
     assert_raises(ServiceError) { port('4DFAC32630') }
-    # TODO: there is an exception log in /porter/...???
     assert_raises(ServiceError) { port('4DxsSZpqTZ') }
   end
 

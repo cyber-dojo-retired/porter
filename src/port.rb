@@ -20,13 +20,17 @@ end
 # - - - - - - - - - - - - - - - - - - - - -
 
 def port_one(id10)
-  id6 = porter.port(id10)
-  if id10[0..5] == id6
-    print 'P'
-  else
-    print 'M'
+  begin
+    id6 = porter.port(id10)
+    if id10[0..5] == id6
+      return 'P'
+    else
+      return 'M'
+    end
+  rescue => error
+    # write error.message to /porter/raised-ids/id10
+    return 'E'
   end
-  # print 'E'
 end
 
 # - - - - - - - - - - - - - - - - - - - - -
@@ -34,7 +38,8 @@ end
 def port_many(id2)
   print "#{id2}:"
   storer.katas_completions(id2).each do |id8|
-    port_one(id2+id8)
+    pme = port_one(id2+id8)
+    print pme
   end
   print "\n"
 end
@@ -106,7 +111,8 @@ if args[:id_10]
       STDERR.flush
       exit(13)
     end
-    port_one(id10)
+    pme = port_one(id10)
+    print pme
   end
 end
 

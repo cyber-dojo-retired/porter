@@ -93,6 +93,14 @@ test_011e_port_id10_M()
 test_011f_port_id10_E()
 {
   local name=011f
+  local raises=4DFAC32630
+  create_stubs_and_insert_test_data ${name} throws
+  port --id10 ${raises}
+  cleanup_stubs ${name}
+
+  assert_stdout_equals 'E'
+  assert_stderr_equals ''
+  assert_status_equals 0
 }
 
 . ${my_dir}/shunit2_helpers.sh
