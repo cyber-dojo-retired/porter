@@ -24,31 +24,44 @@ def port_one(id10)
   print 'P'  # E/M
 end
 
+# - - - - - - - - - - - - - - - - - - - - -
+
 def port_many(id2)
   print "#{id2}:"
   storer.katas_completions(id2).each do |id8|
     port_one(id2+id8)
   end
+  print "\n"
 end
 
+# - - - - - - - - - - - - - - - - - - - - -
+
 def port_all
-#  max = 58*58
-#  count = 1
-#  while !(id2 = storer.sample_id2).nil?
-#    percent = (count / max * 100).to_i
-#    print "~#{percent}%:"
-#    port_many(id2)
-#  end
+  # Can't use sample_id2 because 2-digit outer-dir
+  # is still left after all the katas inside
+  # it have been ported and then removed.
+  alphabet = Base58.alphabet
+  max = alphabet.size * alphabet.size
+  count = 0
+  alphabet.each_char do |c1|
+    alphabet.each_char do |c2|
+      count += 1
+      id2 = c1 + c2
+      percent = (count / max * 100).to_i
+      print "~#{percent}%:"
+      port_many(id2)
+    end
+  end
 end
 
 # - - - - - - - - - - - - - - - - - - - -
 
 args = {}
 case ARGV[0]
-  when '--id10' then args[:id_10 ] = true
-  when '--id2'  then args[:id_2  ] = true
-  when '--all'  then args[:id_all] = true
-  else               args[:error ] = true
+  when '--id10' then args[:id_10] = true
+  when '--id2'  then args[:id_2 ] = true
+  when '--all'  then args[:all  ] = true
+  else               args[:error] = true
 end
 
 # - - - - - - - - - - - - - - - - - - - -
