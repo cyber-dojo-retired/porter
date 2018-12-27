@@ -1,3 +1,6 @@
+$stdout.sync = true
+$stderr.sync = true
+
 require_relative 'base58'
 require_relative 'externals'
 
@@ -69,7 +72,7 @@ def port_all
       id2 = c1 + c2
       percent = (count * 100 / max).to_i
       STDOUT.print("~#{percent}%:")
-      STDOUT.flush      
+      STDOUT.flush
       id2_counts = port_many(id2)
       counts['P'] += id2_counts['P']
       counts['M'] += id2_counts['M']

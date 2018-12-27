@@ -51,6 +51,11 @@ wait_until_up()
 
 exit_unless_clean()
 {
+  # This test for empty docker-logs relies on the rack server
+  # not syncing stdout. If sync is on/true then you get 3 lines:
+  #    Thin web server (v1.7.2 codename Bachmanity)
+  #    Maximum connections set to 1024
+  #    Listening on 0.0.0.0:4517, CTRL+C to stop
   local name="${1}"
   local docker_logs=$(docker logs "${name}")
   echo -n "Checking ${name} started cleanly..."
@@ -82,7 +87,7 @@ wait_until_ready "test-${MY_NAME}-server" 4517
 wait_until_ready "test-${MY_NAME}-saver"  4537
 wait_until_ready "test-${MY_NAME}-storer" 4577
 
-#exit_unless_clean "test-${MY_NAME}-server"
+exit_unless_clean "test-${MY_NAME}-server"
 exit_unless_clean "test-${MY_NAME}-saver"
 exit_unless_clean "test-${MY_NAME}-storer"
 
