@@ -7,11 +7,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 test_012_sample_id2_with_porter_info()
 {
   local name=012a
-  create_stub_storer_data_container ${name}
-  create_stub_saver_volume_mount_root_dir ${name}
-  create_stub_porter_volume_mount_root_dir ${name}
-  insert_kata_data_in_storer_data_container ${name} old
-
+  create_stubs_and_insert_test_data ${name} old
   export SHOW_PORTER_INFO=true
   port --id2
   cleanup_stubs ${name}
@@ -27,11 +23,7 @@ test_012_sample_id2_with_porter_info()
 test_012_sample_id2_as_user_sees_it()
 {
   local name=012b
-  create_stub_storer_data_container ${name}
-  create_stub_saver_volume_mount_root_dir ${name}
-  create_stub_porter_volume_mount_root_dir ${name}
-  insert_kata_data_in_storer_data_container ${name} old
-
+  create_stubs_and_insert_test_data ${name} old
   export SHOW_PORTER_INFO=false
   port --id2
   cleanup_stubs ${name}
