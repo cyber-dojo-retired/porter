@@ -98,6 +98,15 @@ create_stub_porter_volume_mount_root_dir()
   fi
 }
 
+assert_porter_file_exists()
+{
+  local path="${PORTER_HOST_ROOT_DIR}/${1}"
+  local message="expected file ${1} to exist"
+  $(on_host "[ -f ${path} ]")
+  local status=$?
+  assertTrue "${message}" ${status}
+}
+
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
 insert_kata_data_in_storer_data_container()

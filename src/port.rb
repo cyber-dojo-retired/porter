@@ -17,6 +17,10 @@ def storer
   externals.storer
 end
 
+def disk
+  externals.disk
+end
+
 # - - - - - - - - - - - - - - - - - - - - -
 
 def port_one(id10)
@@ -28,7 +32,7 @@ def port_one(id10)
       return 'M'
     end
   rescue => error
-    # write error.message to /porter/raised-ids/id10
+    disk['/porter/raised-ids'].write(id10, error.message)
     return 'E'
   end
 end

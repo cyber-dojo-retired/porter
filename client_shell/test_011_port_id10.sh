@@ -73,6 +73,7 @@ test_011e_port_id10_M()
   local dup2=0BA7E16149
   create_stubs_and_insert_test_data ${name} dup_client
   port --id10 ${dup1}
+  assert_porter_file_exists "/porter/mapped-ids/${dup1}"
   cleanup_stubs ${name}
 
   assert_stdout_equals 'M'
@@ -81,6 +82,7 @@ test_011e_port_id10_M()
 
   create_stubs_and_insert_test_data ${name} dup_client
   port --id10 ${dup2}
+  assert_porter_file_exists "/porter/mapped-ids/${dup2}"    
   cleanup_stubs ${name}
 
   assert_stdout_equals 'M'
@@ -96,6 +98,7 @@ test_011f_port_id10_E()
   local raises=4DFAC32630
   create_stubs_and_insert_test_data ${name} throws
   port --id10 ${raises}
+  assert_porter_file_exists "/porter/raised-ids/${raises}"
   cleanup_stubs ${name}
 
   assert_stdout_equals 'E'
