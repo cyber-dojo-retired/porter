@@ -20,16 +20,8 @@ end
 # - - - - - - - - - - - - - - - - - - - - -
 
 def port_one(id10)
-#  try
-#    porter.port(id10)
-#  rescue => error
-#    if error.message == "malformed:id:#{id} !exist"
-#      error 12
-#    else
-#      raise
-#    end
-#  end
-#  print P/E/M
+  porter.port(id10)
+  #  print P/E/M
 end
 
 def port_many(id2)
@@ -91,7 +83,13 @@ if args[:id_10]
       STDERR.flush
       exit(12)
     end
+    unless storer.kata_exists?(id10)
+      STDERR.puts("ERROR: id10 <#{id10}> does not exist")
+      STDERR.flush
+      exit(13)
+    end
     port_one(id10)
+
   end
 end
 
