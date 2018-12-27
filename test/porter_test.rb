@@ -78,16 +78,17 @@ class PorterTest < TestBase
   with an id unequal to its original 1st 6 chars
   and records the mapping in /porter/id_map.json
   ) do
-    #assert_matching_pair('0BA7E1'+'E01B',
-    #                     '0BA7E1'+'6149')
     assert_matching_pair('463748'+'A0E8',
                          '463748'+'D943')
-    #assert_matching_pair('7E5373'+'2F00',
-    #                     '7E5373'+'E92E')
-    #assert_matching_pair('7E4F34'+'7A86',
-    #                     '7E4F34'+'AC14')
-    #assert_matching_pair('7EC4C9'+'3129',
-    #                     '7EC4C9'+'E1E2')
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '447', %w(
+  port of id with broken json raises
+  ) do
+    assert_raises(ServiceError) { port('4DFAC32630') }
+    assert_raises(ServiceError) { port('4DxsSZpqTZ') }
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
