@@ -337,7 +337,9 @@ show_help ${*}
 
 exit_unless_installed docker 1
 exit_unless_installed curl 2
+
 exit_unless_storer_data_container_exists 3
+
 exit_if_already_running_storer 4
 exit_if_already_running_saver  5
 exit_if_already_running_porter 6
@@ -345,7 +347,7 @@ exit_if_already_running_porter 6
 create_docker_network
 trap remove_all_services_and_network EXIT INT
 
-pull_latest_images
+pull_latest_images # ????
 
 run_storer_service
 run_saver_service
