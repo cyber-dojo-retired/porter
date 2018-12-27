@@ -40,6 +40,7 @@ end
 def port_many(id2)
   counts = { 'P' => 0, 'M' => 0, 'E' => 0 }
   STDOUT.print("#{id2}:")
+  STDOUT.flush
   storer.katas_completions(id2).each do |id8|
     pme = port_one(id2+id8)
     counts[pme] += 1
@@ -48,6 +49,7 @@ def port_many(id2)
   end
   STDOUT.print("\n")
   STDOUT.puts("P(#{counts['P']}),M(#{counts['M']}),E(#{counts['E']})")
+  STDOUT.flush
   counts
 end
 
@@ -67,6 +69,7 @@ def port_all
       id2 = c1 + c2
       percent = (count * 100 / max).to_i
       STDOUT.print("~#{percent}%:")
+      STDOUT.flush      
       id2_counts = port_many(id2)
       counts['P'] += id2_counts['P']
       counts['M'] += id2_counts['M']
@@ -74,6 +77,7 @@ def port_all
     end
   end
   STDOUT.puts("total: P(#{counts['P']}),M(#{counts['M']}),E(#{counts['E']})")
+  STDOUT.flush
   counts
 end
 

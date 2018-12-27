@@ -47,11 +47,14 @@ show_help()
     echo "      For example 9f8TeZMZA2 -> Exception"
     echo "        and /porter/raised-ids/9f8TeZMZA2 will contain the trace"
     echo
+
+
+    
     echo "First port a few single sessions."
     echo "To show a randomly sampled 10-digit id:"
     echo "  \$ ./${my_name} --id10"
     echo "  9f8TeZMZA2"
-    echo "Then port it."
+    echo "Then port it:"
     echo "  \$ ./${my_name} --id10 9f8TeZMZA2"
     echo "  P"
     echo
@@ -60,7 +63,7 @@ show_help()
     echo "To show a randomly sampled 2-digit id:"
     echo "  \$ ./${my_name} --id2"
     echo "  5A"
-    echo "Then port them."
+    echo "Then port them:"
     echo "  \$ ./${my_name} --id2 5A"
     echo "  5A:PPPPPPPPPPPPPP..."
     echo
@@ -236,7 +239,7 @@ pull_latest_images()
   # When porter runs on Travis it will [docker pull] before
   # the tests have completed and so before the [docker push].
   # To mitigate this I got a working image locally and
-  # manually pushed it. 
+  # manually pushed it.
   docker pull cyberdojo/porter > /dev/null
 }
 
