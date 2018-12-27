@@ -14,14 +14,14 @@ class ExternalStorer
   def sample_id2
     get(__method__)
   end
+
+  def katas_completions(outer_id)
+    get(__method__, outer_id)
+  end
   # :nocov:
 
   def katas_completed(partial_id)
     get(__method__, partial_id)
-  end
-
-  def katas_completions(outer_id)
-    get(__method__, outer_id)
   end
 
   def kata_exists?(kata_id)

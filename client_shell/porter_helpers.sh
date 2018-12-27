@@ -109,6 +109,7 @@ insert_kata_data_in_storer_data_container()
     --volumes-from ${dc_name} \
       cyberdojo/storer sh)
   ${my_dir}/../inserter/insert.sh ${name} ${katas_name}
+  echo
   docker container rm --force ${cid} > /dev/null
 }
 
