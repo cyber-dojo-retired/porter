@@ -39,18 +39,20 @@ show_help()
     echo
     echo "  M - The session has been removed from storer and"
     echo "      the new 6-digit id is NOT the 1st 6 chars of the old 10-digit id."
-    echo "      For example 9f8TeZMZA2 -> uQMecK"
-    echo "        and /porter/mapped-ids/9f8TeZMZA2 will contain uQMecK"
+    echo "      For example if 9f8TeZMZA2 -> uQMecK"
+    echo "      then /porter/mapped-ids/9f8TeZMZA2 will contain uQMecK"
     echo
     echo "  E - The session failed to port because an exception arose"
     echo "      The session is still in the storer."
-    echo "      For example 9f8TeZMZA2 -> Exception"
-    echo "        and /porter/raised-ids/9f8TeZMZA2 will contain the trace"
+    echo "      For example if 9f8TeZMZA2 raises an exception"
+    echo "      then /porter/raised-ids/9f8TeZMZA2 will contain the trace"
     echo
-
-
-
-    echo "First port a few single sessions."
+    echo "Step 1: Pull the latest docker images for the required services:"
+    echo "  \$ docker pull cyberdojo/storer"
+    echo "  \$ docker pull cyberdojo/saver"
+    echo "  \$ docker pull cyberdojo/porter"
+    echo
+    echo "Step 2: Check porting a single session works."
     echo "To show a randomly sampled 10-digit id:"
     echo "  \$ ./${my_name} --id10"
     echo "  9f8TeZMZA2"
@@ -58,16 +60,15 @@ show_help()
     echo "  \$ ./${my_name} --id10 9f8TeZMZA2"
     echo "  P"
     echo
-    echo "If all is well, you can move on to porting all"
-    echo "sessions with a given 2-digit prefix."
-    echo "To show a randomly sampled 2-digit id:"
+    echo "Step 3: Check porting a batch of sessions works."
+    echo "To show a randomly sampled 2-digit id prefix:"
     echo "  \$ ./${my_name} --id2"
     echo "  5A"
     echo "Then port them:"
     echo "  \$ ./${my_name} --id2 5A"
-    echo "  5A:PPPPPPPPPPPPPP..."
+    echo "  5A:PPPPPPPPPPPPPP...PPP"
     echo
-    echo "If all is well, port all the sessions:"
+    echo "Step 4: Port all the sessions:"
     echo "  \$ ./${my_name} --all"
     echo ""
     exit 0
@@ -231,20 +232,6 @@ exit_if_already_running_porter()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-pull_latest_images()
-{
-  docker pull cyberdojo/storer > /dev/null
-  docker pull cyberdojo/saver  > /dev/null
-  # This line is very tricky....
-  # When porter runs on Travis it will [docker pull] before
-  # the tests have completed and so before the [docker push].
-  # To mitigate this I got a working image locally and
-  # manually pushed it.
-  docker pull cyberdojo/porter > /dev/null
-}
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 wait_till_ready()
 {
   local name="${1}"
@@ -279,7 +266,7 @@ wait_till_ready()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-run_storer_service()
+run_service_storer()
 {
   storer_cid=$(docker run \
     --detach \
@@ -292,7 +279,7 @@ run_storer_service()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-run_saver_service()
+run_service_saver()
 {
   saver_cid=$(docker run \
     --detach \
@@ -306,7 +293,7 @@ run_saver_service()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-run_porter_service()
+run_service_porter()
 {
   porter_cid=$(docker run \
     --detach \
@@ -347,11 +334,9 @@ exit_if_already_running_porter 6
 create_docker_network
 trap remove_all_services_and_network EXIT INT
 
-pull_latest_images # ????
-
-run_storer_service
-run_saver_service
-run_porter_service
+run_service_storer
+run_service_saver
+run_service_porter
 
 wait_till_ready storer 7 sha
 wait_till_ready saver  8 sha
