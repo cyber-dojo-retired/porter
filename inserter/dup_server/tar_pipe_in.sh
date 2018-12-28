@@ -18,3 +18,8 @@ do
         ${STORER_CONTAINER} \
             sh -c "tar -zxf - -C ${KATAS_ROOT}"
 done
+
+docker exec \
+  --user root \
+  ${STORER_CONTAINER} \
+    sh -c "chown -R storer:storer ${KATAS_ROOT}/46"

@@ -12,3 +12,8 @@ cat ${MY_DIR}/red.tgz \
       --interactive \
       ${STORER_CONTAINER} \
           sh -c "tar -zxf - -C ${KATAS_ROOT}"
+
+docker exec \
+  --user root \
+  ${STORER_CONTAINER} \
+    sh -c "chown -R storer:storer ${KATAS_ROOT}/02 ${KATAS_ROOT}/03 ${KATAS_ROOT}/05 ${KATAS_ROOT}/7E"

@@ -13,4 +13,5 @@ docker run \
      ${STORER_CONTAINER} \
        dup_server old new red throws
        # 02 4D 7E
+
 echo 'OK'
