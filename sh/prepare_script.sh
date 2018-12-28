@@ -18,3 +18,6 @@ docker run --detach -it --name temp --volumes-from cyber-dojo-katas-DATA-CONTAIN
 docker exec temp tar -c -f - -C /usr/src/cyber-dojo/katas 02 | tar -x -f - -C .
 tar -zcf 02.tgz 02
 docker rm -f temp
+
+# to shell into a container that can see the data-container
+docker run --rm -it --volumes-from cyber-dojo-katas-DATA-CONTAINER alpine sh

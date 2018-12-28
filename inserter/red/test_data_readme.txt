@@ -1,9 +1,17 @@
 
-katas that came from 7E and 02 that initially failed to port.
+katas that came from 02,03,05,7E that initially failed to port.
 
 02/
 0123D57E
 37439B3C
+
+03/
+310BDE8F
+A0F63283
+
+05/
+BF0BCE3C
+E221728D
 
 7E/
 010BE86C	218AC28C	2AEE8E64	53732F00	9B1F7E60	A354ED66	C7A19DF3
