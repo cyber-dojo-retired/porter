@@ -57,7 +57,7 @@ class TestBase < HexMiniTest
     was[:manifest].delete('id') # 10-chars long
     refute now[:manifest]['visible_files'].keys.include?('output'), kata_id
     now[:manifest].delete('id') #  6-chars long
-    was_created = was[:manifest].delete('created')
+    created = was_created = was[:manifest].delete('created')
     now_created = now[:manifest].delete('created')
     assert_equal was_created << 0, now_created, kata_id
     # runner_choice has been dropped
@@ -70,8 +70,13 @@ class TestBase < HexMiniTest
       # for a while I experimented with holding revert information
       incs = incs.map{ |inc| inc.delete('revert_tag'); inc }
       incs.each_with_index do |inc,index|
-        # time-stamps now use 7th usec integer
-        inc['time'] << 0
+        if inc['time'].nil?
+          # some increments.json files have "time":"null"
+          inc['time'] = created
+        else
+          # time-stamps now use 7th usec integer
+          inc['time'] << 0
+        end
         # duration is now stored on test events
         unless index == 0
           inc['duration'] = 0.0

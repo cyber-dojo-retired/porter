@@ -36,11 +36,18 @@ class Porter
     storer.avatars_started(id).each do |avatar_name|
       kid = group_join(id6, avatar_name)
       increments = storer.avatar_increments(id, avatar_name)
+      # skip [0] which is automatically added for creation event
       increments[1..-1].each do |increment|
         colour = increment['colour'] || increment['outcome']
         time = increment['time']
-        # time-stamps now use 7th usec integer
-        time << 0
+        if time.nil?
+          # some increments.json files have "time":"null"
+          # update_manifest() has already added 7th usec
+          time = manifest['created']
+        else
+          # time-stamps now use 7th usec integer
+          time << 0
+        end
         # duration is now stored
         duration = 0.0
         index = increment['number']
