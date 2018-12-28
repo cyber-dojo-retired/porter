@@ -189,6 +189,18 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
 =begin
+  test '944', %w(
+  id from 02 dir that initially failed to port
+  because somehow some avatars have got no increments.json file
+  ) do
+    assert_ports_with_matching_id('020123D57E')
+    assert_ports_with_matching_id('0237439B3C')
+  end
+=end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+
+=begin
   test '120', %w(
   ids from 4D that initially failed to port
   ) do

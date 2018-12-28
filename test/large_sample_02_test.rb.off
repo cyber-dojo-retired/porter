@@ -15,16 +15,6 @@ class LargeSample02Test < TestBase
     end
   end
 
-  # 0123D57E
-  # "No such file or directory @ rb_sysopen -
-  #   /usr/src/cyber-dojo/katas/02/0123D57E/hummingbird/increments.json",
-  #   /usr/src/cyber-dojo/katas/02/0123D57E/hummingbird is empty
-
-  # 37439B3C
-  # "No such file or directory @ rb_sysopen -
-  #   /usr/src/cyber-dojo/katas/02/37439B3C/salmon/increments.json",
-  #   /usr/src/cyber-dojo/katas/02/37439B3C/salmon is empty
-
   private
 
   def limit

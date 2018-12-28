@@ -11,7 +11,7 @@ docker run \
    --volume /var/run/docker.sock:/var/run/docker.sock \
    cyberdojo/inserter \
      ${STORER_CONTAINER} \
-       02
-       # dup_server old new red throws
-       # 7E 4D
+       red
+       # dup_server old new throws
+       # 02 7E 4D
 echo 'OK'
