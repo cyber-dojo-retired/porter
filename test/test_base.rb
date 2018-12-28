@@ -134,13 +134,17 @@ class TestBase < HexMiniTest
     was[:increments].each do |avatar_name,increments|
       was[:tag_files][avatar_name] = {}
       increments.each do |increment|
-        # TODO: do this in the port() call?
+        # old sessions used outcome instead of colour
         outcome = increment.delete('outcome')
         unless outcome.nil?
           increment['colour'] = outcome
         end
         tag = increment['number']
         was_files = storer.tag_visible_files(kata_id, avatar_name, tag)
+        # some sessions are missing an 'output' file
+        unless was_files.keys.include?('output')
+          was_files['output'] = ''
+        end
         was[:tag_files][avatar_name][tag] = was_files
       end
     end

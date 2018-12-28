@@ -52,7 +52,8 @@ class Porter
         duration = 0.0
         index = increment['number']
         files = storer.tag_visible_files(id, avatar_name, index)
-        stdout = file(files.delete('output'))
+        # some increments have a manifest.json with no 'output'
+        stdout = file(files.delete('output') || '')
         stderr = file('')
         status = 0
         update_files(files)
