@@ -43,16 +43,13 @@ end
 def port_many(id2)
   counts = { 'P' => 0, 'M' => 0, 'E' => 0 }
   STDOUT.print("#{id2}:")
-  STDOUT.flush
   storer.katas_completions(id2).each do |id8|
     pme = port_one(id2+id8)
     counts[pme] += 1
     STDOUT.print(pme)
-    STDOUT.flush
   end
   STDOUT.print("\n")
   STDOUT.puts("P(#{counts['P']}),M(#{counts['M']}),E(#{counts['E']})")
-  STDOUT.flush
   counts
 end
 
@@ -72,7 +69,6 @@ def port_all
       id2 = c1 + c2
       percent = (count * 100 / max).to_i
       STDOUT.print("~#{percent}%:")
-      STDOUT.flush
       id2_counts = port_many(id2)
       counts['P'] += id2_counts['P']
       counts['M'] += id2_counts['M']
@@ -80,7 +76,6 @@ def port_all
     end
   end
   STDOUT.puts("total: P(#{counts['P']}),M(#{counts['M']}),E(#{counts['E']})")
-  STDOUT.flush
   counts
 end
 
@@ -98,13 +93,11 @@ end
 
 if args[:error]
   STDERR.puts("ERROR: unknown arg <#{ARGV[0]}>")
-  STDERR.flush
   exit(10)
 end
 
 if storer.sample_id2.nil?
   STDOUT.puts('storer is empty')
-  STDOUT.flush
   exit(0)
 end
 
@@ -114,26 +107,21 @@ if args[:id_10]
   id10 = ARGV[1]
   if id10.nil?
     STDOUT.puts(storer.sample_id10)
-    STDOUT.flush
   else
     unless Base58.string?(id10)
       STDERR.puts("ERROR: malformed id10 <#{id10}> (!Base58)")
-      STDERR.flush
       exit(11)
     end
     unless id10.size == 10
       STDERR.puts("ERROR: malformed id10 <#{id10}> (size==#{id10.size} !10)")
-      STDERR.flush
       exit(12)
     end
     unless storer.kata_exists?(id10)
       STDERR.puts("ERROR: id10 <#{id10}> does not exist")
-      STDERR.flush
       exit(13)
     end
     pme = port_one(id10)
     STDOUT.print(pme)
-    STDOUT.flush
   end
 end
 
@@ -143,21 +131,17 @@ if args[:id_2]
   id2 = ARGV[1]
   if id2.nil?
     STDOUT.puts(storer.sample_id2)
-    STDOUT.flush
   else
     unless Base58.string?(id2)
       STDERR.puts("ERROR: malformed id2 <#{id2}> (!Base58)")
-      STDERR.flush
       exit(14)
     end
     unless id2.size == 2
       STDERR.puts("ERROR: malformed id2 <#{id2}> (size==#{id2.size} !2)")
-      STDERR.flush
       exit(15)
     end
     if storer.katas_completions(id2) == []
       STDERR.puts("ERROR: id2 <#{id2}> does not exist")
-      STDERR.flush
       exit(16)
     end
     port_many(id2)
