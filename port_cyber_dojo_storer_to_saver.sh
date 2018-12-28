@@ -300,7 +300,6 @@ run_service_porter()
   porter_cid=$(docker run \
     --detach \
     --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
-    --interactive \
     --name porter \
     --network ${network_name} \
     --publish ${porter_port}:${porter_port} \
@@ -315,7 +314,6 @@ run_port_exec()
 {
   # Note: web will use porter's rack-dispatcher API, we don't
   docker exec     \
-    --interactive \
     --user porter \
     ${porter_cid} \
       sh -c "ruby /app/src/port.rb ${*}"
