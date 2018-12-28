@@ -13,7 +13,14 @@ cat ${MY_DIR}/89.tgz \
       ${STORER_CONTAINER} \
           sh -c "tar -zxf - -C ${KATAS_ROOT}"
 
+# notes.txt file
+
 docker exec \
   --user root \
   ${STORER_CONTAINER} \
     sh -c "chown -R nobody ${KATAS_ROOT}/89"
+
+docker exec \
+  --user root \
+  ${STORER_CONTAINER} \
+    sh -c "chown storer ${KATAS_ROOT}/89"
