@@ -273,6 +273,7 @@ run_service_storer()
     --name storer \
     --network ${network_name} \
     --publish ${storer_port}:${storer_port} \
+    --user storer \
     --volumes-from ${storer_data_container_name} \
       cyberdojo/storer)
 }
@@ -287,6 +288,7 @@ run_service_saver()
     --name saver \
     --network ${network_name} \
     --publish ${saver_port}:${saver_port} \
+    --user saver \
     --volume ${saver_host_root_dir}/cyber-dojo:/cyber-dojo \
       cyberdojo/saver)
 }
@@ -302,6 +304,7 @@ run_service_porter()
     --name porter \
     --network ${network_name} \
     --publish ${porter_port}:${porter_port} \
+    --user porter \
     --volume ${porter_host_root_dir}/porter:/porter \
       cyberdojo/porter)
 }
