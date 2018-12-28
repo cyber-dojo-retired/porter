@@ -79,6 +79,10 @@ class Porter
     manifest['visible_files'].transform_values!{ |content|
       { 'content' => content }
     }
+    if manifest['exercise'].nil?
+      # some custom sessions erroneously set exercise (to null)
+      manifest.delete('exercise')
+    end
   end
 
   private
