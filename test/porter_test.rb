@@ -189,7 +189,7 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '944', %w(
-  id from 02 dir that initially failed to port
+  ids from 02 dir that initially failed to port
   because some avatars have no increments.json file
   ) do
     assert_ports_with_matching_id('020123D57E')
@@ -199,11 +199,21 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '945', %w(
-  id from 03 dir that initially failed to port
-  because some increments.json files have a time set to null
+  ids from 03 dir that initially failed to port
+  because some increments.json files have 'time' field set to null
   ) do
     assert_ports_with_matching_id('03310BDE8F')
     assert_ports_with_matching_id('03A0F63283')
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '946', %w(
+  ids from 05 dir that initially failed to port
+  because of more fields set to null
+  ) do
+    assert_ports_with_matching_id('05BF0BCE3C') # exercise:null
+    assert_ports_with_matching_id('05E221728D') # stdout['content']:null
   end
 
 =begin
