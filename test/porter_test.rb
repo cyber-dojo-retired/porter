@@ -219,14 +219,12 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '947', %w(
-  ids from 89 dir which are owned by nobody and so storer.kata_delete()
+  ids from 89 dir have sandbox/ dirs owned by nobody and so storer.kata_delete()
   cannot fully delete, causing storer work-around with DELETED.marker file
   ) do
     kata_ids = %w(
       890C8AE514
-      896B16A0BC
       89716C1BC6
-      89F7D1C449
     )
     kata_ids.each do |kata_id|
       assert_ports_with_matching_id(kata_id)
