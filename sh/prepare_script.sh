@@ -9,5 +9,12 @@ sudo chown 19663:65533 /cyber-dojo
 sudo chown 19664:65533 /porter
 
 
-# Used to look at specific id10's in DC after a port run...
-docker run --rm -it --volumes-from cyber-dojo-katas-DATA-CONTAINER alpine sh
+# To look at specific id10's in DC after a port run...
+# docker run --rm -it --volumes-from cyber-dojo-katas-DATA-CONTAINER alpine sh
+
+# To extract an id2 subset...eg 02
+
+docker run --detach -it --name temp --volumes-from cyber-dojo-katas-DATA-CONTAINER alpine sh
+docker exec temp tar -c -f - -C /usr/src/cyber-dojo/katas 02 | tar -x -f - -C .
+tar -zcf 02.tgz 02
+docker rm -f temp
