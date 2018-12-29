@@ -9,7 +9,7 @@ katas that came from 02,03,05,7E that initially failed to port.
 310BDE8F
 A0F63283
 
-05/
+05/   see test 946
 BF0BCE3C
 E221728D
 

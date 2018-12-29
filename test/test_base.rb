@@ -126,9 +126,6 @@ class TestBase < HexMiniTest
   def was_data(kata_id)
     was = {}
     was[:manifest] = storer.kata_manifest(kata_id)
-    if was[:manifest]['exercise'].nil?
-      was[:manifest].delete('exercise')
-    end
     was[:increments] = storer.kata_increments(kata_id)
     was[:tag_files] = {}
     was[:increments].each do |avatar_name,increments|
