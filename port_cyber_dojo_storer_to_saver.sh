@@ -17,19 +17,13 @@ show_help()
   local my_name=`basename "${0}"`
   if [ "${1}" = "--help" ] || [ "${1}" = "" ]; then
     echo
-    echo "Ports cyber-dojo practice sessions from their old format to their new format."
-    echo "The old format:"
-    echo "  o) had 10-digit ids"
-    echo "  o) ran in a service called storer"
-    echo "  o) used a docker data-container"
-    echo "  o) was coupled to avatar names"
-    echo "  o) didn't properly support for individual sessions"
-    echo "The new format:"
-    echo "  o) has 6-digit ids (with a larger alphabet)"
-    echo "  o) runs in a service called saver"
-    echo "  o) uses a volume-mounted directory"
-    echo "  o) is decoupled from avatar names"
-    echo "  o) properly supports individual sessions"
+    echo "Ports cyber-dojo practice sessions:"
+    echo "                           old-format   --->  new-format"
+    echo "  o) id-length             10                 6"
+    echo "  o) service name          storer             saver"
+    echo "  o) storage               data-container     volume-mount"
+    echo "  o) avatar-coupling?      yes                no"
+    echo "  o) individual sessions?  no                 yes"
     echo
     echo "As each session is ported, a single P/E/M character is printed:"
     echo
@@ -46,6 +40,9 @@ show_help()
     echo "      The session is still in the storer."
     echo "      For example if 9f8TeZMZA2 raises an exception"
     echo "      then /porter/raised-ids/9f8TeZMZA2 will contain the trace"
+    echo
+    echo "Please be patient - initialization takes a few seconds."
+    echo "Please follow instructions - one-time chown commands will be needed."
     echo
     echo "Step 1: Pull the latest docker images for the required services:"
     echo "  \$ docker pull cyberdojo/storer"

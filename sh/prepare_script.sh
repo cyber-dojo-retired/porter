@@ -5,7 +5,9 @@ chmod 700 port_cyber_dojo_storer_to_saver.sh
 docker pull cyberdojo/storer
 docker pull cyberdojo/saver
 docker pull cyberdojo/porter
+sudo mkdir /cyber-dojo
 sudo chown 19663:65533 /cyber-dojo
+sudo mkdir /porter
 sudo chown 19664:65533 /porter
 
 # To extract an id2 subset...eg 02
