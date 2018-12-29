@@ -22,3 +22,9 @@ do
   ${ROOT_DIR}/${arg}/tar_pipe_in.sh \
       ${STORER_CONTAINER} ${KATAS_ROOT}
 done
+
+# set ownership of root dir
+docker exec \
+  --user root \
+  ${STORER_CONTAINER} \
+    sh -c "chown storer:storer ${KATAS_ROOT}"

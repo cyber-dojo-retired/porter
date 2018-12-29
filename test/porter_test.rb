@@ -229,7 +229,7 @@ class PorterTest < TestBase
     kata_ids.each do |kata_id|
       assert_ports_with_matching_id(kata_id)
       all89 = storer.katas_completions('89')
-      refute all89.includes?(kata_id)
+      refute all89.include?(kata_id[2..-1]), all89
     end
   end
 

@@ -36,13 +36,13 @@ class TestBase < HexMiniTest
 
   def assert_ports(id10)
     id6 = id10[0..5]
-    assert storer.kata_exists?(id10), id10
+    assert storer.kata_exists?(id10), "!storer.kata_exists?(#{id10})"
     was = was_data(id10)
     gid = port(id10)
     yield id6,gid
-    assert saver.group_exists?(gid), id10
+    assert saver.group_exists?(gid), "!storer.group_exists?(#{id10})"
     now = now_data(gid)
-    refute storer.kata_exists?(id10), id10
+    refute storer.kata_exists?(id10), "storer.kata_exists?(#{id10})"
     assert_ported(was, now, id10)
     print '.'
     STDOUT.flush
