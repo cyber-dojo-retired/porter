@@ -235,6 +235,15 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
+  test '948', %w(
+  ids from 34 dir that initially failed to port
+  because of dead 'name' manifest property
+  which storer's Updater needed to strip out
+  ) do
+    kata_id = '346EF637B9' # red data-set
+    assert_ports_with_matching_id(kata_id)
+  end
+
 =begin
   test '120', %w(
   ids from 4D that initially failed to port
