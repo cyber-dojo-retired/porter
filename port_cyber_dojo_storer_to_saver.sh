@@ -234,7 +234,7 @@ wait_till_ready()
   local name="${1}"
   local error_code="${2}"
   local method="${3}"
-  local max_tries=10
+  local max_tries=40
   local vport="${name}_port"
   local port="${!vport}"
   local vcid="${name}_cid"
