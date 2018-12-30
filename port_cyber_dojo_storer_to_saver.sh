@@ -229,7 +229,7 @@ exit_if_already_running_porter()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-wait_till_ready()
+wait_until_ready()
 {
   local name="${1}"
   local error_code="${2}"
@@ -336,8 +336,8 @@ run_service_storer
 run_service_saver
 run_service_porter
 
-wait_till_ready storer 7 sha
-wait_till_ready saver  8 sha
-wait_till_ready porter 9 ready
+wait_until_ready storer 7 sha
+wait_until_ready saver  8 sha
+wait_until_ready porter 9 ready
 
 run_port_exec ${*}
