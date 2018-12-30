@@ -123,7 +123,6 @@ insert_kata_data_in_storer_data_container()
   # insert test data set into storer's data-container
   local cid2=$(docker run \
     --rm \
-    --interactive \
     --volume /var/run/docker.sock:/var/run/docker.sock \
       cyberdojo/inserter ${cid} ${katas_name})
   docker container rm --force ${cid} > /dev/null
