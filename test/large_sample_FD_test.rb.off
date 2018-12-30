@@ -1,0 +1,30 @@
+require_relative 'test_base'
+
+class LargeSampleFDTest < TestBase
+
+  def self.hex_prefix
+    'A1C'
+  end
+
+  test '9FD',
+  'all of katas sampled from FD/ dir port ok' do
+    dups = [ 'FDEAE9' ]
+    all = externals.storer.katas_completions('FD')
+    raises = '3D55C9E3'
+    all -= [raises]
+    all[0..limit].each_with_index do |id8,index|
+      if dups.include?('FD'+id8[0..3])
+        assert_ports_with_different_id("FD#{id8}")
+      else
+        assert_ports_with_matching_id("FD#{id8}")
+      end
+    end
+  end
+
+  private
+
+  def limit
+    -1
+  end
+
+end
