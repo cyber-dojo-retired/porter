@@ -114,11 +114,18 @@ insert_kata_data_in_storer_data_container()
   local name="${1}"
   local katas_name="${2}"
   local dc_name=$(get_data_container_name "${name}")
-  local cid=$(docker run --detach --interactive --name ${name} \
+  # create storer container with data-container
+  local cid=$(docker run \
+    --detach \
+    --interactive \
     --volumes-from ${dc_name} \
-      cyberdojo/storer sh)
-  ${my_dir}/../inserter/insert.sh ${name} ${katas_name}
-  echo
+     cyberdojo/storer sh)
+  # insert test data set into storer's data-container
+  local cid2=$(docker run \
+    --rm \
+    --interactive \
+    --volume /var/run/docker.sock:/var/run/docker.sock \
+      cyberdojo/inserter ${cid} ${katas_name})
   docker container rm --force ${cid} > /dev/null
 }
 

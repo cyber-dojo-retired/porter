@@ -29,9 +29,9 @@ services:
     image: cyberdojo/porter
     init: true
     container_name: test-porter-server
+    read_only: true
     ports:
       - 4517:4517
-    read_only: true
     tmpfs:
       - /porter:uid=19664,gid=65533
       - /tmp:uid=19664,gid=65533
@@ -47,9 +47,9 @@ services:
     image: cyberdojo/storer
     init: true
     container_name: test-porter-storer
+    read_only: true
     ports:
       - 4577:4577
-    read_only: true
     tmpfs:
       - /usr/src/cyber-dojo/katas:uid=19661,gid=65533
       - /tmp:uid=19661,gid=65533
@@ -61,23 +61,9 @@ services:
     image: cyberdojo/saver
     init: true
     container_name: test-porter-saver
+    read_only: true
     ports:
       - 4537:4537
-    read_only: true
     tmpfs:
       - /cyber-dojo:uid=19663,gid=65533
       - /tmp:uid=19663,gid=65533
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  inserter:
-    build:
-      context: inserter
-    image: cyberdojo/inserter
-    init: true
-    container_name: test-porter-inserter
-    read_only: true
-    tmpfs: /tmp
-    restart: 'no'
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
