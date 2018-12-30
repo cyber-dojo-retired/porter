@@ -43,7 +43,7 @@ services:
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   storer:
-    user: storer:storer
+    user: storer
     image: cyberdojo/storer
     init: true
     container_name: test-porter-storer
