@@ -253,7 +253,7 @@ wait_until_ready()
       info 'OK'
       return 0 # true
     else
-      sleep 0.05
+      sleep 0.10
     fi
   done
   info 'FAIL'
