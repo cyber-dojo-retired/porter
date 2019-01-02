@@ -1,5 +1,5 @@
 services: docker
-language: node_js
+language: bash
 git:
   depth: 1
   quiet: true
