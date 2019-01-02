@@ -19,33 +19,17 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
-=begin
   test '1E2', %w(
-  port of id that has already been ported to saver with matching id6 raises
+  port of id that has already been ported to saver raises
   ) do
-    id = '9f8TeZMZAq'
-    manifest = storer.kata_manifest(id)
-    porter.update_manifest(manifest)
-    manifest['id'] = id[0..5]
-    id6 = saver.group_create(manifest)
-    error = assert_raises(RuntimeError) { port(id) }
-    expected = "malformed:id: saver.group_exists?(#{id[0..5]})"
-    assert_equal expected, error.message
+    kata_ids = %w( 029CD5E9ED 029CD5A603 )
+    kata_ids.each do |id|
+      port(id)
+      error = assert_raises(RuntimeError) { port(id) }
+      expected = "malformed:id: already ported #{id}"
+      assert_equal expected, error.message
+    end
   end
-
-  # - - - - - - - - - - - - - - - - - - - - - - -
-
-  test '1E5', %w(
-  port of id that has already been ported to saver with a mapped-id raises
-  ) do
-    # 029CD5A603 029CD5E9ED  # in inserter's dup_server data-set
-    id = '029CD5A603'
-    disk['/porter/mapped-ids'].write(id, 'stub')
-    error = assert_raises(RuntimeError) { port(id) }
-    expected = "malformed:id: saver.group_exists?(#{id[0..5]}) {mapped}"
-    assert_equal expected, error.message
-  end
-=end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -109,16 +93,6 @@ class PorterTest < TestBase
   ) do
     assert_raises(ServiceError) { port('4DFAC32630') }
     assert_raises(ServiceError) { port('4DxsSZpqTZ') }
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - -
-
-  def assert_matching_pair(id1, id2)
-    assert_equal id1[0..5], id2[0..5]
-    dup = id1[0..5]
-    assert_equal [id1,id2].sort, storer.katas_completed(dup).sort
-    assert_ports_with_different_id(id1)
-    assert_ports_with_different_id(id2)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
@@ -262,6 +236,16 @@ class PorterTest < TestBase
   ) do
     kata_id = '346EF637B9' # red data-set
     assert_ports_with_matching_id(kata_id)
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
+  def assert_matching_pair(id1, id2)
+    assert_equal id1[0..5], id2[0..5]
+    dup = id1[0..5]
+    assert_equal [id1,id2].sort, storer.katas_completed(dup).sort
+    assert_ports_with_different_id(id1)
+    assert_ports_with_different_id(id2)
   end
 
 =begin
