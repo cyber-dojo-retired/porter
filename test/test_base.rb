@@ -19,7 +19,6 @@ class TestBase < HexMiniTest
   def assert_ports_with_matching_id(id10)
     assert_ports(id10) do |id6,gid|
       assert_equal id6,gid,id10
-      refute disk['/porter/mapped-ids'].exists?(id10)
     end
   end
 
@@ -28,7 +27,6 @@ class TestBase < HexMiniTest
   def assert_ports_with_different_id(id10)
     assert_ports(id10) do |id6,gid|
       refute_equal id6,gid,id10
-      assert disk['/porter/mapped-ids'].exists?(id10)
     end
   end
 
@@ -36,16 +34,30 @@ class TestBase < HexMiniTest
 
   def assert_ports(id10)
     id6 = id10[0..5]
-    assert storer.kata_exists?(id10), "!storer.kata_exists?(#{id10})"
+    diagnostic = "!storer.kata_exists?(#{id10})"
+    assert storer.kata_exists?(id10), diagnostic
     was = was_data(id10)
     gid = port(id10)
     yield id6,gid
-    assert saver.group_exists?(gid), "!storer.group_exists?(#{id10})"
+    diagnostic = "!storer.group_exists?(#{id10})"
+    assert saver.group_exists?(gid), diagnostic
     now = now_data(gid)
-    refute storer.kata_exists?(id10), "storer.kata_exists?(#{id10})"
+    diagnostic = "storer.kata_exists?(#{id10})"
+    refute storer.kata_exists?(id10), diagnostic
     assert_ported(was, now, id10)
+    diagnostic = "!mapping_is_recorded?(#{id10},#{gid})"
+    assert mapping_is_recorded?(id10, gid), diagnostic
     print '.'
     STDOUT.flush
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  def mapping_is_recorded?(id10, gid)
+    id2 = id10[0..1]
+    id8 = id10[2..-1]
+    dir = disk["/porter/mapped-ids/#{id2}"]
+    dir.read(id8) == gid
   end
 
   # - - - - - - - - - - - - - - - - -

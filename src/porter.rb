@@ -37,7 +37,7 @@ class Porter
     update_manifest(manifest)
     set_id(manifest)
     id6 = saver.group_create(manifest)
-    remember_id_if_mapped(id, id6)
+    remember_mapping(id, id6)
 
     storer.avatars_started(id).each do |avatar_name|
       kid = group_join(id6, avatar_name)
@@ -117,7 +117,10 @@ class Porter
   # - - - - - - - - - - - - - - - - - - -
 
   def from_unique?(id6)
-    ported_ids = Dir.glob("/porter/mapped-ids/#{id6}**")
+    id2 = id6[0..1]
+    id4 = id6[2..-1]
+    path = "/porter/mapped-ids/#{id2}/#{id4}**"
+    ported_ids = Dir.glob(path)
     storer_ids = storer.katas_completed(id6)
     ported_ids.size + storer_ids.size == 1
   end
@@ -128,10 +131,12 @@ class Porter
 
   # - - - - - - - - - - - - - - - - - - -
 
-  def remember_id_if_mapped(kata_id, id6)
-    if id6 != kata_id[0..5]
-      disk['/porter/mapped-ids'].write(kata_id, id6)
-    end
+  def remember_mapping(kata_id, id6)
+    id2 = kata_id[0..1]
+    id8 = kata_id[2..-1]
+    dir = disk["/porter/mapped-ids/#{id2}"]
+    dir.make
+    dir.write(id8, id6)
   end
 
   # - - - - - - - - - - - - - - - - - - -
