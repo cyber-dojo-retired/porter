@@ -20,14 +20,13 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1E2', %w(
-  port of id that has already been ported to saver raises
+  port of id that has already been ported returns the ported id
   ) do
     kata_ids = %w( 029CD5E9ED 029CD5A603 )
     kata_ids.each do |id|
-      port(id)
-      error = assert_raises(RuntimeError) { port(id) }
-      expected = "malformed:id: already ported #{id}"
-      assert_equal expected, error.message
+      id6 = port(id)
+      idempotent = port(id)
+      assert_equal idempotent, id6
     end
   end
 

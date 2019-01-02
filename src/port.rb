@@ -25,6 +25,11 @@ end
 # - - - - - - - - - - - - - - - - - - - - -
 
 def port_one(id10)
+  id2 = id10[0..1]
+  id8 = id10[2..-1]
+  if disk["/porter/mapped-ids/#{id2}"].exists?(id8)
+    return 'a'
+  end  
   begin
     id6 = porter.port(id10)
     if id10[0..5] == id6
@@ -33,8 +38,9 @@ def port_one(id10)
       return 'M'
     end
   rescue => error
-    disk['/porter/raised-ids'].write(id10, error.message)
-    return 'E'
+      disk['/porter/raised-ids'].write(id10, error.message)
+      return 'e'
+    end
   end
 end
 

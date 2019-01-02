@@ -51,7 +51,7 @@ test_011c_port_id10_does_not_exist()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011d_port_id10_P()
+test_011d_port_id10_P_ported_with_prefix_id()
 {
   local name=011d
   create_stubs_and_insert_test_data ${name} new
@@ -65,7 +65,7 @@ test_011d_port_id10_P()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011e_port_id10_M()
+test_011e_port_id10_M_ported_with_mapped_id()
 {
   local name=011e
   create_stubs_and_insert_test_data ${name} dup_client
@@ -87,14 +87,33 @@ test_011e_port_id10_M()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011f_port_id10_E()
+test_011f_port_id10_a_already_ported()
 {
   local name=011f
+  create_stubs_and_insert_test_data ${name} new
+  port --id10 9fH6TumFV2
+  assert_stdout_equals 'P'
+  assert_stderr_equals ''
+  assert_status_equals 0
+
+  create_stubs_and_insert_test_data ${name} new
+  port --id10 9fH6TumFV2
+  cleanup_stubs ${name}
+  assert_stdout_equals 'a'
+  assert_stderr_equals ''
+  assert_status_equals 0
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+
+test_011g_port_id10_e_raised_an_exception()
+{
+  local name=011g
   create_stubs_and_insert_test_data ${name} throws
   port --id10 4DFAC32630
   cleanup_stubs ${name}
 
-  assert_stdout_equals 'E'
+  assert_stdout_equals 'e'
   assert_stderr_equals ''
   assert_status_equals 0
 }

@@ -27,21 +27,19 @@ show_help()
       o) avatar-coupling?      yes                no
       o) individual sessions?  no                 yes
 
-    As each session is ported, a single P/E/M character is printed:
-
+    As each session is ported, a single character is printed:
       P - The session has been removed from storer and
           the new 6-digit id is the 1st 6 chars of the old 10-digit id.
           For example 9f8TeZMZA2 --> 9f8TeZ
-
       M - The session has been removed from storer and
           the new 6-digit id is NOT the 1st 6 chars of the old 10-digit id.
           For example if 9f8TeZMZA2 -> uQMecK
           then /porter/mapped-ids/9f8TeZMZA2 will contain uQMecK
-
-      E - The session failed to port because an exception arose
+      e - The session failed to port because an exception arose
           The session is still in the storer.
           For example if 9f8TeZMZA2 raises an exception
           then /porter/raised-ids/9f8TeZMZA2 will contain the trace
+      a - The session has already been ported.
 
     Please be patient - initialization takes a few seconds.
     Please follow instructions - one-time chown commands will be needed.

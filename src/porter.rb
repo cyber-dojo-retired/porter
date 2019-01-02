@@ -25,8 +25,9 @@ class Porter
   def port(id)
     id2 = id[0..1]
     id8 = id[2..-1]
-    if disk["/porter/mapped-ids/#{id2}"].exists?(id8)
-      fail "malformed:id: already ported #{id}"
+    dir = disk["/porter/mapped-ids/#{id2}"]
+    if dir.exists?(id8)
+      return dir.read(id8)
     end
     if !storer.kata_exists?(id)
       fail "malformed:id: !storer.kata_exists?(#{id})"
