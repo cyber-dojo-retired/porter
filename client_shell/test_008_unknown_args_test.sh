@@ -4,7 +4,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_008_unknown_args()
+test_008_unknown_args_is_error_status_10()
 {
   local name=008
   create_stub_storer_data_container ${name}

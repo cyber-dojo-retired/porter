@@ -6,7 +6,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 export SHOW_PORTER_INFO=false
 
-test_013a_port_id2_malformed_not_base58()
+test_013a_port_id2_malformed_not_base58_is_error_status_14()
 {
   local name=015a
   local not_base_58=£B
@@ -21,7 +21,7 @@ test_013a_port_id2_malformed_not_base58()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_013b_port_id2_malformed_not_size_2()
+test_013b_port_id2_malformed_not_size_2_is_error_status_15()
 {
   local name=013b
   local not_size_2=12345BCDE
@@ -36,7 +36,7 @@ test_013b_port_id2_malformed_not_size_2()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_013c_port_id2_does_not_exist()
+test_013c_port_id2_does_not_exist_is_error_status_16()
 {
   local name=013c
   local not_exist=0F
@@ -51,7 +51,7 @@ test_013c_port_id2_does_not_exist()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_013d_port_id2_all_Ps()
+test_013d_port_id2_all_P_chars()
 {
   local name=013d
   local id2=9f
@@ -60,7 +60,7 @@ test_013d_port_id2_all_Ps()
   cleanup_stubs ${name}
 
   assert_stdout_includes "${id2}:PPPPPPPPP"
-  assert_stdout_includes "P(9),M(0),E(0)"
+  assert_stdout_includes "P(9),M(0),e(0),a(0)"
   assert_stdout_line_count_equals 2
   assert_stderr_equals ''
   assert_status_equals 0
@@ -68,7 +68,7 @@ test_013d_port_id2_all_Ps()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_013e_port_id2_all_Ms()
+test_013e_port_id2_all_M_chars()
 {
   local name=013e
   local id2=0B
@@ -77,7 +77,7 @@ test_013e_port_id2_all_Ms()
   cleanup_stubs ${name}
 
   assert_stdout_includes "${id2}:MM"
-  assert_stdout_includes "P(0),M(2),E(0)"
+  assert_stdout_includes "P(0),M(2),e(0),a(0)"
   assert_stdout_line_count_equals 2
   assert_stderr_equals ''
   assert_status_equals 0
@@ -85,7 +85,7 @@ test_013e_port_id2_all_Ms()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_013f_port_id2_all_Es()
+test_013f_port_id2_all_e_chars()
 {
   local name=013d
   local id2=4D
@@ -93,8 +93,8 @@ test_013f_port_id2_all_Es()
   port --id2 ${id2}
   cleanup_stubs ${name}
 
-  assert_stdout_includes "${id2}:EE"
-  assert_stdout_includes "P(0),M(0),E(2)"
+  assert_stdout_includes "${id2}:ee"
+  assert_stdout_includes "P(0),M(0),e(2),a(0)"
   assert_stdout_line_count_equals 2
   assert_stderr_equals ''
   assert_status_equals 0

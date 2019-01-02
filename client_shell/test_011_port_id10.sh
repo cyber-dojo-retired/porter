@@ -6,7 +6,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 export SHOW_PORTER_INFO=false
 
-test_011a_port_id10_malformed_not_base58()
+test_011a_port_id10_malformed_not_base58_is_error_status_11()
 {
   local name=011a
   local not_base_58=12345£BCDE
@@ -21,7 +21,7 @@ test_011a_port_id10_malformed_not_base58()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011b_port_id10_malformed_not_size_10()
+test_011b_port_id10_malformed_not_size_10_is_error_status_12()
 {
   local name=011b
   local not_size_10=12345BCDE
@@ -36,7 +36,7 @@ test_011b_port_id10_malformed_not_size_10()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011c_port_id10_does_not_exist()
+test_011c_port_id10_does_not_exist_is_error_status_13()
 {
   local name=011c
   local not_exist=0F44761F81
@@ -51,7 +51,7 @@ test_011c_port_id10_does_not_exist()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011d_port_id10_P_ported_with_prefix_id()
+test_011d_port_id10_prints_P_when_ports_with_prefix_id()
 {
   local name=011d
   create_stubs_and_insert_test_data ${name} new
@@ -65,7 +65,7 @@ test_011d_port_id10_P_ported_with_prefix_id()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011e_port_id10_M_ported_with_mapped_id()
+test_011e_port_id10_prints_M_when_ports_with_mapped_id()
 {
   local name=011e
   create_stubs_and_insert_test_data ${name} dup_client
@@ -87,7 +87,7 @@ test_011e_port_id10_M_ported_with_mapped_id()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011f_port_id10_a_already_ported()
+test_011f_port_id10_prints_a_when_already_ported()
 {
   local name=011f
   create_stubs_and_insert_test_data ${name} new
@@ -96,7 +96,6 @@ test_011f_port_id10_a_already_ported()
   assert_stderr_equals ''
   assert_status_equals 0
 
-  create_stubs_and_insert_test_data ${name} new
   port --id10 9fH6TumFV2
   cleanup_stubs ${name}
   assert_stdout_equals 'a'
@@ -106,7 +105,7 @@ test_011f_port_id10_a_already_ported()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011g_port_id10_e_raised_an_exception()
+test_011g_port_id10_prints_e_when_exception_raised()
 {
   local name=011g
   create_stubs_and_insert_test_data ${name} throws

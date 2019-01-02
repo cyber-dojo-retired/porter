@@ -4,7 +4,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_001_storer_data_container_missing()
+test_001_storer_data_container_missing_is_error_status_3()
 {
   export SHOW_PORTER_INFO=true
   port --id10

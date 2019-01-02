@@ -24,12 +24,18 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - -
 
-def port_one(id10)
+def already_ported?(id10)
   id2 = id10[0..1]
   id8 = id10[2..-1]
-  if disk["/porter/mapped-ids/#{id2}"].exists?(id8)
+  disk["/porter/mapped-ids/#{id2}"].exists?(id8)
+end
+
+# - - - - - - - - - - - - - - - - - - - - -
+
+def port_one(id10)
+  if already_ported?(id10)
     return 'a'
-  end  
+  end
   begin
     id6 = porter.port(id10)
     if id10[0..5] == id6
@@ -38,16 +44,15 @@ def port_one(id10)
       return 'M'
     end
   rescue => error
-      disk['/porter/raised-ids'].write(id10, error.message)
-      return 'e'
-    end
+    disk['/porter/raised-ids'].write(id10, error.message)
+    return 'e'
   end
 end
 
 # - - - - - - - - - - - - - - - - - - - - -
 
 def port_many(id2)
-  counts = { 'P' => 0, 'M' => 0, 'E' => 0 }
+  counts = { 'P' => 0, 'M' => 0, 'e' => 0, 'a' => 0 }
   STDOUT.print("#{id2}:")
   storer.katas_completions(id2).each do |id8|
     pme = port_one(id2+id8)
@@ -55,7 +60,7 @@ def port_many(id2)
     STDOUT.print(pme)
   end
   STDOUT.print("\n")
-  STDOUT.puts("P(#{counts['P']}),M(#{counts['M']}),E(#{counts['E']})")
+  STDOUT.puts("P(#{counts['P']}),M(#{counts['M']}),e(#{counts['e']}),a(#{counts['a']})")
   counts
 end
 
@@ -65,7 +70,7 @@ def port_all
   # Can't use sample_id2 because 2-digit outer-dir
   # is still left after all the katas inside
   # it have been ported and then removed.
-  counts = { 'P' => 0, 'M' => 0, 'E' => 0 }
+  counts = { 'P' => 0, 'M' => 0, 'e' => 0, 'a' => 0 }
   alphabet = Base58.alphabet
   max = alphabet.size * alphabet.size
   count = 0
@@ -78,10 +83,11 @@ def port_all
       id2_counts = port_many(id2)
       counts['P'] += id2_counts['P']
       counts['M'] += id2_counts['M']
-      counts['E'] += id2_counts['E']
+      counts['e'] += id2_counts['e']
+      counts['a'] += id2_counts['a']
     end
   end
-  STDOUT.puts("total: P(#{counts['P']}),M(#{counts['M']}),E(#{counts['E']})")
+  STDOUT.puts("total: P(#{counts['P']}),M(#{counts['M']}),e(#{counts['e']}),a(#{counts['a']})")
   counts
 end
 
@@ -121,6 +127,10 @@ if args[:id_10]
     unless id10.size == 10
       STDERR.puts("ERROR: malformed id10 <#{id10}> (size==#{id10.size} !10)")
       exit(12)
+    end
+    if already_ported?(id10)
+      STDOUT.print('a')
+      exit(0)
     end
     unless storer.kata_exists?(id10)
       STDERR.puts("ERROR: id10 <#{id10}> does not exist")

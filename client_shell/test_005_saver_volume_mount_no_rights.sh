@@ -4,7 +4,7 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 . ${my_dir}/porter_helpers.sh
 
-test_005_saver_volume_mount_no_rights()
+test_005_saver_volume_mount_no_rights_is_error_status_8()
 {
   local name=005
   create_stub_storer_data_container ${name}
