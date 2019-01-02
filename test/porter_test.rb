@@ -34,6 +34,19 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
+  test '1E5', %w(
+  port of id that has already been ported to saver with a mapped-id raises
+  ) do
+    # 029CD5A603 029CD5E9ED  # in inserter's dup_server data-set
+    id = '029CD5A603'
+    disk['/porter/mapped-ids'].write(id, 'stub')
+    error = assert_raises(RuntimeError) { port(id) }
+    expected = "malformed:id: saver.group_exists?(#{id[0..5]}) {mapped}"
+    assert_equal expected, error.message
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - -
+
   test '444', %w(
   after port of id which is unique in 1st 6 chars in storer,
   and the id6 is available in saver, then

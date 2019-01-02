@@ -1,5 +1,5 @@
-# The main entry-point, from web via the dispatcher, for ported_id()
 # The main entry-point, from the shell, for port()
+# The main entry-point, from web via the dispatcher, for ported_id()
 
 # The intention is to...
 #  o) run on an old (storer-based) server
@@ -28,6 +28,9 @@ class Porter
     end
     if saver.group_exists?(id[0..5])
       fail "malformed:id: saver.group_exists?(#{id[0..5]})"
+    end
+    if disk['/porter/mapped-ids'].exists?(id)
+      fail "malformed:id: saver.group_exists?(#{id[0..5]}) {mapped}"
     end
 
     manifest = storer.kata_manifest(id)
