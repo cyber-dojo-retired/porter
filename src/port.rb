@@ -51,16 +51,20 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - -
 
-def port_many(id2)
+def port_many(id2, msg_prefix)
   counts = { 'P' => 0, 'M' => 0, 'e' => 0, 'a' => 0 }
-  STDOUT.print("#{id2}:")
-  storer.katas_completions(id2).sort.each do |id8|
-    pme = port_one(id2+id8)
-    counts[pme] += 1
-    STDOUT.print(pme)
+  many = storer.katas_completions(id2).sort
+  if many.size > 0
+    STDOUT.print(msg_prefix)
+    STDOUT.print("#{id2}:")
+    many.each do |id8|
+      pme = port_one(id2+id8)
+      counts[pme] += 1
+      STDOUT.print(pme)
+    end
+    STDOUT.print("\n")
+    STDOUT.puts("P(#{counts['P']}),M(#{counts['M']}),e(#{counts['e']}),a(#{counts['a']})")
   end
-  STDOUT.print("\n")
-  STDOUT.puts("P(#{counts['P']}),M(#{counts['M']}),e(#{counts['e']}),a(#{counts['a']})")
   counts
 end
 
@@ -79,8 +83,7 @@ def port_all
       count += 1
       id2 = c1 + c2
       percent = (count * 100 / max).to_i
-      STDOUT.print("~#{percent}%:")
-      id2_counts = port_many(id2)
+      id2_counts = port_many(id2, "~#{percent}%:")
       counts['P'] += id2_counts['P']
       counts['M'] += id2_counts['M']
       counts['e'] += id2_counts['e']
@@ -160,7 +163,7 @@ if args[:id_2]
       STDERR.puts("ERROR: id2 <#{id2}> does not exist")
       exit(16)
     end
-    port_many(id2)
+    port_many(id2, '')
   end
 end
 

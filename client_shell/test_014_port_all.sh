@@ -24,24 +24,19 @@ test_014_port_all()
 
   assert_stdout_includes '0%:0B:MM'
   assert_stdout_includes 'P(0),M(2),e(0),a(0)'
-
   assert_stdout_includes '2%:1F:P'
   assert_stdout_includes 'P(1),M(0),e(0),a(0)'
-
   assert_stdout_includes '6%:42:PPPPP'
   assert_stdout_includes 'P(5),M(0),e(0),a(0)'
-
   assert_stdout_includes '7%:4D:ee'
   assert_stdout_includes 'P(0),M(0),e(2),a(0)'
-
   assert_stdout_includes '8%:5A:P'
   assert_stdout_includes 'P(1),M(0),e(0),a(0)'
-
-  assert_stdout_includes '16%:9f:aPPPPPPPP'
+  assert_stdout_includes '16%:9f:PPPaPPPPP'
   assert_stdout_includes 'P(8),M(0),e(0),a(1)'
-
   assert_stdout_includes 'total: P(15),M(2),e(2),a(1)'
-  assert_stdout_line_count_equals 6729
+
+  assert_stdout_line_count_equals 13
   assert_stderr_equals ''
   assert_status_equals 0
 }
