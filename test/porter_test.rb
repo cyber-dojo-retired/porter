@@ -9,22 +9,27 @@ class PorterTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1E4', %w(
-  port of id that does not exist raises
+  port of id that does not exist on storer raises
   ) do
     id = '9k81d40123'
     error = assert_raises(RuntimeError) { port(id) }
-    assert_equal "malformed:id:#{id} !exist", error.message
+    expected = "malformed:id: !storer.kata_exists?(#{id})"
+    assert_equal expected, error.message
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
   test '1E2', %w(
-  port of id that has already been ported raises
+  port of id that has already been ported to saver with matching id6 raises
   ) do
     id = '9f8TeZMZAq'
-    port(id)
+    manifest = storer.kata_manifest(id)
+    porter.update_manifest(manifest)
+    manifest['id'] = id[0..5]
+    id6 = saver.group_create(manifest)
     error = assert_raises(RuntimeError) { port(id) }
-    assert_equal "malformed:id:#{id} !exist", error.message
+    expected = "malformed:id: saver.group_exists?(#{id[0..5]})"
+    assert_equal expected, error.message
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
