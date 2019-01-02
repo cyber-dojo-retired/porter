@@ -3,11 +3,11 @@ set -e
 
 # ensure porter service can see storer/saver services
 readonly network_name="port_cyber_dojo_storer_to_saver"
-# allow tests to specify the dir saver will save to
+# allow tests to stub the dir saver writes to
 readonly saver_host_root_dir="${SAVER_HOST_ROOT_DIR:-/}"
-# allow tests to specify the dir porter will save to
+# allow tests to stub the dir porter writes to
 readonly porter_host_root_dir="${PORTER_HOST_ROOT_DIR:-/}"
-# allow tests to specify the name of storer's data-container
+# allow tests to stub the name of storer's data-container
 readonly storer_data_container_name="${STORER_DATA_CONTAINER_NAME:-cyber-dojo-katas-DATA-CONTAINER}"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,8 +72,6 @@ EOF
   fi
 }
 
-readonly newline=$'\n'
-
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 declare storer_cid=""
@@ -86,6 +84,8 @@ declare porter_cid=""
 readonly porter_port=4517
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+readonly newline=$'\n'
 
 info()
 {

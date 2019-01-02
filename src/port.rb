@@ -54,7 +54,7 @@ end
 def port_many(id2)
   counts = { 'P' => 0, 'M' => 0, 'e' => 0, 'a' => 0 }
   STDOUT.print("#{id2}:")
-  storer.katas_completions(id2).each do |id8|
+  storer.katas_completions(id2).sort.each do |id8|
     pme = port_one(id2+id8)
     counts[pme] += 1
     STDOUT.print(pme)
