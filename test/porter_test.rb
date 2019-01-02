@@ -19,6 +19,7 @@ class PorterTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 
+=begin
   test '1E2', %w(
   port of id that has already been ported to saver with matching id6 raises
   ) do
@@ -44,6 +45,7 @@ class PorterTest < TestBase
     expected = "malformed:id: saver.group_exists?(#{id[0..5]}) {mapped}"
     assert_equal expected, error.message
   end
+=end
 
   # - - - - - - - - - - - - - - - - - - - - - - -
 

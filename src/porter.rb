@@ -26,12 +26,12 @@ class Porter
     if !storer.kata_exists?(id)
       fail "malformed:id: !storer.kata_exists?(#{id})"
     end
-    if saver.group_exists?(id[0..5])
-      fail "malformed:id: saver.group_exists?(#{id[0..5]})"
-    end
-    if disk['/porter/mapped-ids'].exists?(id)
-      fail "malformed:id: saver.group_exists?(#{id[0..5]}) {mapped}"
-    end
+    #if saver.group_exists?(id[0..5])
+    #  fail "malformed:id: saver.group_exists?(#{id[0..5]})"
+    #end
+    #if disk['/porter/mapped-ids'].exists?(id)
+    #  fail "malformed:id: saver.group_exists?(#{id[0..5]}) {mapped}"
+    #end
 
     manifest = storer.kata_manifest(id)
     update_manifest(manifest)

@@ -1,0 +1,21 @@
+
+You might be restoring from several snapshots.
+In this case I need to consider the behaviour
+of port(id10) when id10 has already been ported.
+The simplest is to return the id6 it has already been assigned...
+This is a bit tricky since it is possible (however unlikely)
+that the id10[0..5] has been taken not as a port of id10
+but as a duplicate id (in storer) port.
+So porter needs to keep a record of all the mappings....
+
+port(id10)
+  porter keeps record of mapping for both
+  matching ids and mapped ids.
+  Viz 420F2A2979 --> 420F2A  matching means
+     /porter/matched-ids/420F2A2979   no need for content in file
+  Viz 9fH6TumFV2 --> x45jKs different means
+     /porter/mapped-ids/9fH6TumFV2    content of file == x45jKs
+
+Now, port(id10)
+  1. raises if id10 exists in storer
+  2. raises if id10 exists in /porter/matched-ids or /porter/mapped-ids
