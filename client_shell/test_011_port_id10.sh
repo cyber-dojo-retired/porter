@@ -54,9 +54,8 @@ test_011c_port_id10_does_not_exist()
 test_011d_port_id10_P()
 {
   local name=011d
-  local exists=9fH6TumFV2
   create_stubs_and_insert_test_data ${name} new
-  port --id10 ${exists}
+  port --id10 9fH6TumFV2
   cleanup_stubs ${name}
 
   assert_stdout_equals 'P'
@@ -69,11 +68,8 @@ test_011d_port_id10_P()
 test_011e_port_id10_M()
 {
   local name=011e
-  local dup1=0BA7E1E01B
-  local dup2=0BA7E16149
   create_stubs_and_insert_test_data ${name} dup_client
-  port --id10 ${dup1}
-  assert_porter_file_exists "/porter/mapped-ids/${dup1}"
+  port --id10 0BA7E1E01B
   cleanup_stubs ${name}
 
   assert_stdout_equals 'M'
@@ -81,8 +77,7 @@ test_011e_port_id10_M()
   assert_status_equals 0
 
   create_stubs_and_insert_test_data ${name} dup_client
-  port --id10 ${dup2}
-  assert_porter_file_exists "/porter/mapped-ids/${dup2}"    
+  port --id10 0BA7E16149
   cleanup_stubs ${name}
 
   assert_stdout_equals 'M'
@@ -95,10 +90,8 @@ test_011e_port_id10_M()
 test_011f_port_id10_E()
 {
   local name=011f
-  local raises=4DFAC32630
   create_stubs_and_insert_test_data ${name} throws
-  port --id10 ${raises}
-  assert_porter_file_exists "/porter/raised-ids/${raises}"
+  port --id10 4DFAC32630
   cleanup_stubs ${name}
 
   assert_stdout_equals 'E'
