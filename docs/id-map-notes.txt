@@ -19,3 +19,27 @@ port(id10)
 Now, port(id10)
   1. raises if id10 exists in storer
   2. raises if id10 exists in /porter/matched-ids or /porter/mapped-ids
+
+
+Simplifying...
+/porter/ported-ids/420F2A2979 contains 6 chars of new id
+you simply look at the content of those 6 chars to see if
+the id mapped with a matching or different id.
+Will mean an file for all mapped ids. So better is
+/porter/ported-ids/42/0F2A2979
+
+So ports_with_matching_id and assert_ports_with_different_id
+will be very similar except for the check on the content of
+those 6 chars in the file.
+
+Web can now get porter to easily check incoming 10 digit id.
+Can it also check an incoming 6 digit id (from textbox entry)?
+Yes. With a glob.
+outer_id = id[0..1]
+inner_id = id[2..-1]
+ported_ids = Dir.glob("/porter/ported-ids/#{outer_id}/#{inner_id}**")
+ported_ids.size == 1  ---> found
+id6 = IO.read(ported_ids[0])
+
+This also means you wont easily be able to tell how many ids
+were mapped with matching id vs mapped with different id.
