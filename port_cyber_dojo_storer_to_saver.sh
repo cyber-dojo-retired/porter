@@ -109,10 +109,10 @@ remove_one_service()
   local cid=${2}
   if [ ! -z "${cid}" ]; then
     info "Stopping the ${name} service"
-    docker container stop --time 1 ${cid} > /dev/null
+    docker container stop --time 1 "${cid}" > /dev/null
     info "Removing the ${name} service"
     # Very important this does NOT include --volumes
-    docker container rm --force ${cid}    > /dev/null
+    docker container rm --force "${cid}"    > /dev/null
   fi
 }
 
@@ -146,7 +146,7 @@ error_no_prefix()
   local status=${1}
   local msg="${2}"
   >&2 echo "${msg}"
-  exit ${status}
+  exit "${status}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,8 +155,8 @@ exit_unless_installed()
 {
   local cmd=${1}
   local status=${2}
-  if ! hash ${cmd} 2> /dev/null ; then
-    error ${status} "${cmd} needs to be installed"
+  if ! hash "${cmd}" 2> /dev/null ; then
+    error "${status}" "${cmd} needs to be installed"
   else
     info "Checking ${cmd} is installed. OK"
   fi
@@ -179,8 +179,8 @@ exists_container()
 exit_unless_storer_data_container_exists()
 {
   local status=${1}
-  if ! docker ps --all | grep ${storer_data_container_name} > /dev/null ; then
-    error ${status} "Cannot find storer's data-container ${storer_data_container_name}"
+  if ! docker ps --all | grep "${storer_data_container_name}" > /dev/null ; then
+    error "${status}" "Cannot find storer's data-container ${storer_data_container_name}"
   else
     info "Checking storer's data-container exists. OK"
   fi
@@ -194,7 +194,7 @@ exit_if_already_running_storer()
   if exists_container storer ; then
     message+="A storer service is already running${newline}"
     message+="Please run $ [sudo] cyber-dojo down"
-    error ${status} "${message}"
+    error "${status}" "${message}"
   else
     info 'Checking the storer service is not already running. OK'
   fi
@@ -208,7 +208,7 @@ exit_if_already_running_saver()
   if exists_container saver ; then
     message+="A saver service is already running${newline}"
     message+="Please run $ [sudo] cyber-dojo down"
-    error ${status} "${message}"
+    error "${status}" "${message}"
   else
     info 'Checking the saver service is not already running. OK'
   fi
@@ -222,7 +222,7 @@ exit_if_already_running_porter()
   if exists_container porter ; then
     message+="A porter service is already running${newline}"
     message+="Please run $ [sudo] docker rm -f porter"
-    error ${status} "${message}"
+    error "${status}" "${message}"
   else
     info 'Checking the porter service is not already running. OK'
   fi
@@ -250,7 +250,7 @@ wait_until_ready()
   info -n "Checking the ${name} service is ready"
   while [ $(( max_tries -= 1 )) -ge 0 ] ; do
     info -n '.'
-    if eval ${cmd} ; then
+    if eval "${cmd}" ; then
       info 'OK'
       return 0 # true
     else
@@ -259,7 +259,7 @@ wait_until_ready()
   done
   info 'FAIL'
   local docker_log="$(docker logs ${cid})"
-  error_no_prefix ${error_code} "${docker_log}"
+  error_no_prefix "${error_code}" "${docker_log}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -272,7 +272,7 @@ run_service_storer()
     --network ${network_name} \
     --publish ${storer_port}:${storer_port} \
     --user storer \
-    --volumes-from ${storer_data_container_name} \
+    --volumes-from "${storer_data_container_name}" \
       cyberdojo/storer)
 }
 
@@ -282,12 +282,12 @@ run_service_saver()
 {
   saver_cid=$(docker run \
     --detach \
-    --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
+    --env DOCKER_MACHINE_NAME="${DOCKER_MACHINE_NAME}" \
     --name saver \
     --network ${network_name} \
     --publish ${saver_port}:${saver_port} \
     --user saver \
-    --volume ${saver_host_root_dir}/cyber-dojo:/cyber-dojo \
+    --volume "${saver_host_root_dir}/cyber-dojo:/cyber-dojo" \
       cyberdojo/saver)
 }
 
@@ -297,12 +297,12 @@ run_service_porter()
 {
   porter_cid=$(docker run \
     --detach \
-    --env DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME} \
+    --env DOCKER_MACHINE_NAME="${DOCKER_MACHINE_NAME}" \
     --name porter \
     --network ${network_name} \
     --publish ${porter_port}:${porter_port} \
     --user porter \
-    --volume ${porter_host_root_dir}/porter:/porter \
+    --volume "${porter_host_root_dir}/porter:/porter" \
       cyberdojo/porter)
 }
 
@@ -313,13 +313,13 @@ run_port_exec()
   # Note: web will use porter's rack-dispatcher API, we don't
   docker exec     \
     --user porter \
-    ${porter_cid} \
+    "${porter_cid}" \
       sh -c "ruby /app/src/port.rb ${*}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-show_help ${*}
+show_help "${*}"
 
 exit_unless_installed docker 1
 exit_unless_installed curl 2
@@ -341,4 +341,4 @@ wait_until_ready storer 7 sha
 wait_until_ready saver  8 sha
 wait_until_ready porter 9 ready
 
-run_port_exec ${*}
+run_port_exec "${*}"
