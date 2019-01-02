@@ -3,18 +3,19 @@ set -e
 
 # ensure porter service can see storer/saver services
 readonly network_name="port_cyber_dojo_storer_to_saver"
-# allow tests to specify where saver will save to
+# allow tests to specify the dir saver will save to
 readonly saver_host_root_dir="${SAVER_HOST_ROOT_DIR:-/}"
-# allow tests to specify where porter will save to
+# allow tests to specify the dir porter will save to
 readonly porter_host_root_dir="${PORTER_HOST_ROOT_DIR:-/}"
-# allow tests to specify storer's data-container
+# allow tests to specify the name of storer's data-container
 readonly storer_data_container_name="${STORER_DATA_CONTAINER_NAME:-cyber-dojo-katas-DATA-CONTAINER}"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 show_help()
 {
-  local my_name=`basename "${0}"`
+  local my_name
+  my_name=$(basename "${0}")
   if [ "${1}" = "--help" ] || [ "${1}" = "" ]; then
     cat <<EOF
 
@@ -107,7 +108,7 @@ remove_one_service()
 {
   local name=${1}
   local cid=${2}
-  if [ ! -z "${cid}" ]; then
+  if [ -n "${cid}" ]; then
     info "Stopping the ${name} service"
     docker container stop --time 1 "${cid}" > /dev/null
     info "Removing the ${name} service"
@@ -138,7 +139,7 @@ error()
   local msg="${2}"
   >&2 echo "ERROR"
   >&2 echo "${msg}"
-  exit ${status}
+  exit "${status}"
 }
 
 error_no_prefix()
@@ -244,7 +245,7 @@ wait_until_ready()
   local cmd="curl --silent --fail --data '{}' -X GET http://localhost:${port}/${method}"
   cmd+=" > /dev/null 2>&1"
 
-  if [ ! -z ${DOCKER_MACHINE_NAME} ]; then
+  if [ -n "${DOCKER_MACHINE_NAME}" ]; then
     cmd="docker-machine ssh ${DOCKER_MACHINE_NAME} ${cmd}"
   fi
   info -n "Checking the ${name} service is ready"
@@ -258,7 +259,8 @@ wait_until_ready()
     fi
   done
   info 'FAIL'
-  local docker_log="$(docker logs ${cid})"
+  local docker_log
+  docker_log=$(docker logs "${cid}")
   error_no_prefix "${error_code}" "${docker_log}"
 }
 
