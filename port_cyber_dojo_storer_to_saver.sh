@@ -16,58 +16,59 @@ show_help()
 {
   local my_name=`basename "${0}"`
   if [ "${1}" = "--help" ] || [ "${1}" = "" ]; then
-    echo
-    echo "Ports cyber-dojo practice sessions:"
-    echo "                           old-format   --->  new-format"
-    echo "  o) id-length             10                 6"
-    echo "  o) service name          storer             saver"
-    echo "  o) storage               data-container     volume-mount"
-    echo "  o) avatar-coupling?      yes                no"
-    echo "  o) individual sessions?  no                 yes"
-    echo
-    echo "As each session is ported, a single P/E/M character is printed:"
-    echo
-    echo "  P - The session has been removed from storer and"
-    echo "      the new 6-digit id is the 1st 6 chars of the old 10-digit id."
-    echo "      For example 9f8TeZMZA2 --> 9f8TeZ"
-    echo
-    echo "  M - The session has been removed from storer and"
-    echo "      the new 6-digit id is NOT the 1st 6 chars of the old 10-digit id."
-    echo "      For example if 9f8TeZMZA2 -> uQMecK"
-    echo "      then /porter/mapped-ids/9f8TeZMZA2 will contain uQMecK"
-    echo
-    echo "  E - The session failed to port because an exception arose"
-    echo "      The session is still in the storer."
-    echo "      For example if 9f8TeZMZA2 raises an exception"
-    echo "      then /porter/raised-ids/9f8TeZMZA2 will contain the trace"
-    echo
-    echo "Please be patient - initialization takes a few seconds."
-    echo "Please follow instructions - one-time chown commands will be needed."
-    echo
-    echo "Step 1: Pull the latest docker images for the required services:"
-    echo "  \$ docker pull cyberdojo/storer"
-    echo "  \$ docker pull cyberdojo/saver"
-    echo "  \$ docker pull cyberdojo/porter"
-    echo
-    echo "Step 2: Check porting a single session works."
-    echo "To show a randomly sampled 10-digit id:"
-    echo "  \$ ./${my_name} --id10"
-    echo "  9f8TeZMZA2"
-    echo "Then port it:"
-    echo "  \$ ./${my_name} --id10 9f8TeZMZA2"
-    echo "  P"
-    echo
-    echo "Step 3: Check porting a batch of sessions works."
-    echo "To show a randomly sampled 2-digit id prefix:"
-    echo "  \$ ./${my_name} --id2"
-    echo "  5A"
-    echo "Then port them:"
-    echo "  \$ ./${my_name} --id2 5A"
-    echo "  5A:PPPPPPPPPPPPPP...PPP"
-    echo
-    echo "Step 4: Port all the sessions:"
-    echo "  \$ ./${my_name} --all"
-    echo ""
+    cat <<EOF
+
+    Ports cyber-dojo practice sessions:
+                               old-format   --->  new-format
+      o) id-length             10                 6
+      o) service name          storer             saver
+      o) storage               data-container     volume-mount
+      o) avatar-coupling?      yes                no
+      o) individual sessions?  no                 yes
+
+    As each session is ported, a single P/E/M character is printed:
+
+      P - The session has been removed from storer and
+          the new 6-digit id is the 1st 6 chars of the old 10-digit id.
+          For example 9f8TeZMZA2 --> 9f8TeZ
+
+      M - The session has been removed from storer and
+          the new 6-digit id is NOT the 1st 6 chars of the old 10-digit id.
+          For example if 9f8TeZMZA2 -> uQMecK
+          then /porter/mapped-ids/9f8TeZMZA2 will contain uQMecK
+
+      E - The session failed to port because an exception arose
+          The session is still in the storer.
+          For example if 9f8TeZMZA2 raises an exception
+          then /porter/raised-ids/9f8TeZMZA2 will contain the trace
+
+    Please be patient - initialization takes a few seconds.
+    Please follow instructions - one-time chown commands will be needed.
+
+    Step 1: Pull the latest docker images for the required services:
+      \$ docker pull cyberdojo/storer
+      \$ docker pull cyberdojo/saver
+      \$ docker pull cyberdojo/porter
+
+    Step 2: Check porting a single session works.
+    To show a randomly sampled 10-digit id:
+      \$ ./${my_name} --id10
+      9f8TeZMZA2
+    Then port it:
+      \$ ./${my_name} --id10 9f8TeZMZA2
+      P
+
+    Step 3: Check porting a batch of sessions works.
+    To show a randomly sampled 2-digit id prefix:
+      \$ ./${my_name} --id2
+      5A
+    Then port them:
+      \$ ./${my_name} --id2 5A
+      5A:PPPPPPPPPPPPPP...PPP
+
+    Step 4: Port all the sessions:
+      \$ ./${my_name} --all
+EOF
     exit 0
   fi
 }
