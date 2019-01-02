@@ -17,56 +17,58 @@ show_help()
   local my_name
   my_name=$(basename "${0}")
   if [ "${1}" = "--help" ] || [ "${1}" = "" ]; then
-    cat <<EOF
+    cat <<- EOF
 
-    Ports cyber-dojo practice sessions:
-                               old-format   --->  new-format
-      o) id-length             10                 6
-      o) service name          storer             saver
-      o) storage               data-container     volume-mount
-      o) avatar-coupling?      yes                no
-      o) individual sessions?  no                 yes
+  Ports cyber-dojo practice sessions:
 
-    As each session is ported, a single character is printed:
-      P - The session has been removed from storer and
-          the new 6-digit id is the 1st 6 chars of the old 10-digit id.
-          For example 9f8TeZMZA2 --> 9f8TeZ
-      M - The session has been removed from storer and
-          the new 6-digit id is NOT the 1st 6 chars of the old 10-digit id.
-          For example if 9f8TeZMZA2 -> uQMecK
-          then /porter/mapped-ids/9f8TeZMZA2 will contain uQMecK
-      e - The session failed to port because an exception arose
-          The session is still in the storer.
-          For example if 9f8TeZMZA2 raises an exception
-          then /porter/raised-ids/9f8TeZMZA2 will contain the trace
-      a - The session has already been ported.
+                           old-format   --->  new-format
+  o) id-length             10                 6
+  o) service name          storer             saver
+  o) storage               data-container     volume-mount
+  o) avatar-coupling?      yes                no
+  o) individual sessions?  no                 yes
 
-    Please be patient - initialization takes a few seconds.
-    Please follow instructions - one-time chown commands will be needed.
+  As each session is ported, a single character is printed:
+    P - The session has been removed from storer and
+        the new 6-digit id is the 1st 6 chars of the old 10-digit id.
+        For example, 9f8TeZMZA2 --> 9f8TeZ
+    M - The session has been removed from storer and
+        the new 6-digit id is NOT the 1st 6 chars of the old 10-digit id.
+        For example, if 9f8TeZMZA2 -> uQMecK then
+          /porter/mapped-ids/9f8TeZMZA2 will contain uQMecK
+    e - The session failed to port because an exception arose
+        The session is still in storer.
+        For example, if 9f8TeZMZA2 raises an exception, then
+          /porter/raised-ids/9f8TeZMZA2 will contain the trace
+    a - The session has already been ported.
 
-    Step 1: Pull the latest docker images for the required services:
-      \$ docker pull cyberdojo/storer
-      \$ docker pull cyberdojo/saver
-      \$ docker pull cyberdojo/porter
+  Please be patient - initialization takes several seconds.
+  Please follow instructions - one-time chown commands will be needed.
 
-    Step 2: Check porting a single session works.
-    To show a randomly sampled 10-digit id:
-      \$ ./${my_name} --id10
-      9f8TeZMZA2
-    Then port it:
-      \$ ./${my_name} --id10 9f8TeZMZA2
-      P
+  Step 1: Pull the latest docker images for the required services:
+    \$ docker pull cyberdojo/storer
+    \$ docker pull cyberdojo/saver
+    \$ docker pull cyberdojo/porter
 
-    Step 3: Check porting a batch of sessions works.
-    To show a randomly sampled 2-digit id prefix:
-      \$ ./${my_name} --id2
-      5A
-    Then port them:
-      \$ ./${my_name} --id2 5A
-      5A:PPPPPPPPPPPPPP...PPP
+  Step 2: Check porting a single session works.
+  To show a randomly sampled 10-digit id:
+    \$ ./${my_name} --id10
+    9f8TeZMZA2
+  Then port it:
+    \$ ./${my_name} --id10 9f8TeZMZA2
+    P
 
-    Step 4: Port all the sessions:
-      \$ ./${my_name} --all
+  Step 3: Check porting a batch of sessions works.
+  To show a randomly sampled 2-digit id prefix:
+    \$ ./${my_name} --id2
+    5A
+  Then port them:
+    \$ ./${my_name} --id2 5A
+    5A:PPPPPPPPPPPPPP...PPP
+
+  Step 4: Port all the sessions:
+    \$ ./${my_name} --all
+
 EOF
     exit 0
   fi
