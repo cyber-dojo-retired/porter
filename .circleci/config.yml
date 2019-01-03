@@ -10,10 +10,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: build docker image run service tests, run client shell script tests
+          name: build porter docker image and push to dockerhub
           command: |
             set -e
             ./pipe_build_up_test.sh
+            readonly project=${CIRCLE_PROJECT_REPONAME}
+            docker tag  cyberdojo/${project}:latest cyberdojo/${project}:${CIRCLE_SHA1:0:7}
+            docker tag  cyberdojo/${project}:latest cyberdojo/${project}:beta
+            echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
+            docker push cyberdojo/${project}:${CIRCLE_SHA1:0:7}
+            docker push cyberdojo/${project}:beta
 
 workflows:
   version: 2
