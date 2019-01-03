@@ -19,10 +19,25 @@ class Porter
     saver.sha
   end
 
+  # Used by saver service, exposed by dispatcher
+  #def ported?(id6)
+  #  id2 = id6[0..1]
+  #  id4 = id6[2..-1]
+  #  path = "/porter/mapped-ids/#{id2}/#{id4}**"
+  #  Dir.glob(path).size > 0
+  #end
+
+  # Used by web service, exposed by dispatcher
   #def ported_id(partial_id)
   #end
 
+  # Ports an old-format practice-session with the given id from storer to saver.
+  # Used by port.rb via docker exec, NOT exposed by dispatcher
   def port(id)
+    # parameter, the 10-digit id of the practice session (in storer)
+    # Returns, the 6-digit id of the practice session ported to saver.
+    # If possible the 6-digit id will be the 1st 6 chars of the 10-digit id.
+    # The id10->id6 mapping will be recorded in /porter/mapped-ids/
     id2 = id[0..1]
     id8 = id[2..-1]
     dir = disk["/porter/mapped-ids/#{id2}"]

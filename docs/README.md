@@ -19,13 +19,27 @@ API:
     * If the method completes, the key equals the method's name.
     * If the method raises an exception, the key equals "exception".
 
+- [GET ready()](#get-ready)
 - [GET sha()](#get-sha)
-- [POST port(id)](#post-portid)
+- [GET ported?(id6)](#get-portedid6)
+- [GET ported_id(partial_id)](#get-portedidpartialid)
+
+- - - -
+
+## GET ready()
+- parameters, none
+```
+  {}
+```
+- returns true if the service is ready, otherwise false.
+```
+  { "ready": "true" }
+```
 
 - - - -
 
 ## GET sha()
-Returns the git commit sha used to create the docker image.
+Returns the git commit sha used to create the cyberdojo/porter docker image.
 - parameters, none
 ```
   {}
@@ -37,18 +51,35 @@ Returns the git commit sha used to create the docker image.
 
 - - - -
 
-## POST port(id)
-Ports an old-format practice-session with the given id from storer to saver.
-- parameter, the 10-digit id of the practice session (in storer), eg
+## GET ported?(id6)
+Asks if id6 matches the first 6 digits of any already ported storer
+session's 10-digit id.
+- parameter, a 6-digit id, eg
 ```
-    { "id": "55D3B97E1E" }
+    { "id6": "55D3B9" }
 ```
-- returns, the 6-digit id of the practice session in saver.
-- if possible the 6-digit id will be the 1st 6 chars of the 10-digit id.
-- if not possible, the id10->id6 mapping will be recorded in /porter/mapped-ids/
+- returns, true if it does, false if it doesn't.
 ```
-  { "port": "55D3B9" }
-  { "port": "79s7Bk" }
+  { "ported": true }
+  { "ported": false }
+```
+
+- - - -
+
+## GET ported_id(partial_id)
+Asks for the 6-digit saver id (if it exists) of the already ported storer
+session whose 10-digit id uniquely completes the given 6-10 digit partial_id.
+- parameter, a 6-10 digit storer session id, eg
+```
+    { "partial_id": "55D3B9" }
+    { "partial_id": "55D3B97" }
+    { "partial_id": "55D3B97E" }    
+```
+- returns the 6-digit saver id if it exists, otherwise the empty string.
+```
+    { "ported_id": "55D3B9" }
+    { "ported_id": "E5pL3S" }
+    { "ported_id": "" }
 ```
 
 - - - -
