@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if [ ! -f /.dockerenv ]; then
-  echo 'FAILED: run.sh is being executed outside of docker-container.'
-  echo 'Use pipe_build_up_test.sh'
-  exit 1
-fi
-
 readonly ARGS=(${*})
 readonly MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
 readonly TEST_LOG=${COVERAGE_ROOT}/test.log
