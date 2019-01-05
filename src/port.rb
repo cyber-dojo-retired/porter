@@ -108,7 +108,7 @@ end
 
 if args[:error]
   STDERR.puts("ERROR: unknown arg <#{ARGV[0]}>")
-  exit(10)
+  exit(12)
 end
 
 if storer.sample_id2.nil?
@@ -125,11 +125,11 @@ if args[:id_10]
   else
     unless Base58.string?(id10)
       STDERR.puts("ERROR: malformed id10 <#{id10}> (!Base58)")
-      exit(11)
+      exit(13)
     end
     unless id10.size == 10
       STDERR.puts("ERROR: malformed id10 <#{id10}> (size==#{id10.size} !10)")
-      exit(12)
+      exit(14)
     end
     if already_ported?(id10)
       STDOUT.print('a')
@@ -137,7 +137,7 @@ if args[:id_10]
     end
     unless storer.kata_exists?(id10)
       STDERR.puts("ERROR: id10 <#{id10}> does not exist")
-      exit(13)
+      exit(15)
     end
     pme = port_one(id10)
     STDOUT.print(pme)
@@ -153,15 +153,15 @@ if args[:id_2]
   else
     unless Base58.string?(id2)
       STDERR.puts("ERROR: malformed id2 <#{id2}> (!Base58)")
-      exit(14)
+      exit(16)
     end
     unless id2.size == 2
       STDERR.puts("ERROR: malformed id2 <#{id2}> (size==#{id2.size} !2)")
-      exit(15)
+      exit(17)
     end
     if storer.katas_completions(id2) == []
       STDERR.puts("ERROR: id2 <#{id2}> does not exist")
-      exit(16)
+      exit(18)
     end
     port_many(id2, '')
   end

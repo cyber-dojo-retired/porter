@@ -6,9 +6,9 @@ readonly my_dir="$( cd "$( dirname "${0}" )" && pwd )"
 
 export SHOW_PORTER_INFO=false
 
-test_011a_port_id10_malformed_not_base58_is_error_status_11()
+test_041a_port_id10_malformed_not_base58_is_error_status_13()
 {
-  local name=011a
+  local name=041a
   local not_base_58=12345£BCDE
   create_stubs_and_insert_test_data ${name} new
   port --id10 ${not_base_58}
@@ -16,14 +16,14 @@ test_011a_port_id10_malformed_not_base58_is_error_status_11()
 
   assert_stdout_equals ''
   assert_stderr_equals "ERROR: malformed id10 <${not_base_58}> (!Base58)"
-  assert_status_equals 11
+  assert_status_equals 13
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011b_port_id10_malformed_not_size_10_is_error_status_12()
+test_041b_port_id10_malformed_not_size_10_is_error_status_14()
 {
-  local name=011b
+  local name=041b
   local not_size_10=12345BCDE
   create_stubs_and_insert_test_data ${name} new
   port --id10 ${not_size_10}
@@ -31,14 +31,14 @@ test_011b_port_id10_malformed_not_size_10_is_error_status_12()
 
   assert_stdout_equals ''
   assert_stderr_equals "ERROR: malformed id10 <${not_size_10}> (size==9 !10)"
-  assert_status_equals 12
+  assert_status_equals 14
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011c_port_id10_does_not_exist_is_error_status_13()
+test_041c_port_id10_does_not_exist_is_error_status_15()
 {
-  local name=011c
+  local name=041c
   local not_exist=0F44761F81
   create_stubs_and_insert_test_data ${name} new
   port --id10 ${not_exist}
@@ -46,14 +46,14 @@ test_011c_port_id10_does_not_exist_is_error_status_13()
 
   assert_stdout_equals ''
   assert_stderr_equals "ERROR: id10 <${not_exist}> does not exist"
-  assert_status_equals 13
+  assert_status_equals 15
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011d_port_id10_prints_P_when_ports_with_prefix_id()
+test_041d_port_id10_prints_P_when_ports_with_prefix_id()
 {
-  local name=011d
+  local name=041d
   create_stubs_and_insert_test_data ${name} new
   port --id10 9fH6TumFV2
   cleanup_stubs ${name}
@@ -65,9 +65,9 @@ test_011d_port_id10_prints_P_when_ports_with_prefix_id()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011e_port_id10_prints_M_when_ports_with_mapped_id()
+test_041e_port_id10_prints_M_when_ports_with_mapped_id()
 {
-  local name=011e
+  local name=041e
   create_stubs_and_insert_test_data ${name} dup_client
   port --id10 0BA7E1E01B
   cleanup_stubs ${name}
@@ -87,9 +87,9 @@ test_011e_port_id10_prints_M_when_ports_with_mapped_id()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011f_port_id10_prints_a_when_already_ported()
+test_041f_port_id10_prints_a_when_already_ported()
 {
-  local name=011f
+  local name=041f
   create_stubs_and_insert_test_data ${name} new
   port --id10 9fH6TumFV2
   assert_stdout_equals 'P'
@@ -105,9 +105,9 @@ test_011f_port_id10_prints_a_when_already_ported()
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 
-test_011g_port_id10_prints_e_when_exception_raised()
+test_041g_port_id10_prints_e_when_exception_raised()
 {
-  local name=011g
+  local name=041g
   create_stubs_and_insert_test_data ${name} throws
   port --id10 4DFAC32630
   cleanup_stubs ${name}

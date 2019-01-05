@@ -76,6 +76,9 @@ EOF
 declare storer_cid=""
 readonly storer_port=4577
 
+declare mapper_cid=""
+readonly mapper_port=4547
+
 declare saver_cid=""
 readonly saver_port=4537
 
@@ -117,6 +120,7 @@ remove_one_service()
 remove_all_services_and_network()
 {
   remove_one_service storer ${storer_cid}
+  remove_one_service mapper ${mapper_cid}
   remove_one_service saver  ${saver_cid}
   remove_one_service porter ${porter_cid}
   remove_docker_network
@@ -191,10 +195,24 @@ exit_if_already_running_storer()
   local status=${1}
   if exists_container storer ; then
     message+="A storer service is already running${newline}"
-    message+="Please run $ [sudo] cyber-dojo down"
+    message+="Please run $ [sudo] docker rm -f storer"
     error "${status}" "${message}"
   else
     info 'Checking the storer service is not already running. OK'
+  fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+exit_if_already_running_mapper()
+{
+  local status=${1}
+  if exists_container mapper ; then
+    message+="A mapper service is already running${newline}"
+    message+="Please run $ [sudo] docker rm -f mapper"
+    error "${status}" "${message}"
+  else
+    info 'Checking the mapper service is not already running. OK'
   fi
 }
 
@@ -205,7 +223,7 @@ exit_if_already_running_saver()
   local status=${1}
   if exists_container saver ; then
     message+="A saver service is already running${newline}"
-    message+="Please run $ [sudo] cyber-dojo down"
+    message+="Please run $ [sudo] docker rm -f saver"
     error "${status}" "${message}"
   else
     info 'Checking the saver service is not already running. OK'
@@ -277,6 +295,21 @@ run_service_storer()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+run_service_mapper()
+{
+  mapper_cid=$(docker run \
+    --detach \
+    --env DOCKER_MACHINE_NAME="${DOCKER_MACHINE_NAME}" \
+    --name mapper \
+    --network ${network_name} \
+    --publish ${mapper_port}:${mapper_port} \
+    --user nobody \
+    --volume "${porter_host_root_dir}/porter:/porter:ro" \
+      cyberdojo/mapper)
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 run_service_saver()
 {
   saver_cid=$(docker run \
@@ -286,7 +319,7 @@ run_service_saver()
     --network ${network_name} \
     --publish ${saver_port}:${saver_port} \
     --user saver \
-    --volume "${saver_host_root_dir}/cyber-dojo:/cyber-dojo" \
+    --volume "${saver_host_root_dir}/cyber-dojo:/cyber-dojo:rw" \
       cyberdojo/saver)
 }
 
@@ -301,7 +334,7 @@ run_service_porter()
     --network ${network_name} \
     --publish ${porter_port}:${porter_port} \
     --user porter \
-    --volume "${porter_host_root_dir}/porter:/porter" \
+    --volume "${porter_host_root_dir}/porter:/porter:rw" \
       cyberdojo/porter)
 }
 
@@ -326,18 +359,21 @@ exit_unless_installed curl 2
 exit_unless_storer_data_container_exists 3
 
 exit_if_already_running_storer 4
-exit_if_already_running_saver  5
-exit_if_already_running_porter 6
+exit_if_already_running_mapper 5
+exit_if_already_running_saver  6
+exit_if_already_running_porter 7
 
 create_docker_network
 trap remove_all_services_and_network EXIT INT
 
 run_service_storer
+run_service_mapper
 run_service_saver
 run_service_porter
 
-wait_until_ready storer 7 sha
-wait_until_ready saver  8 sha
-wait_until_ready porter 9 ready
+wait_until_ready storer  8 sha
+wait_until_ready mapper  9 ready
+wait_until_ready saver  10 sha
+wait_until_ready porter 11 ready
 
 run_port_exec "${*}"

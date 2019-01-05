@@ -227,19 +227,23 @@ assert_stdout_includes_all_up_down()
   assert_stdout_includes_installed curl # 2
   assert_stdout_includes_storers_data_container_exists # 3
   assert_stdout_includes_not_already_running storer # 4
-  assert_stdout_includes_not_already_running saver # 5
-  assert_stdout_includes_not_already_running porter # 6
-  assert_stdout_includes_the_network_has_been_created # 7
-  assert_stdout_includes_ready storer OK # 8
-  assert_stdout_includes_ready saver OK # 9
-  assert_stdout_includes_ready porter OK # 10
-  assert_stdout_includes_stopping storer # 11
-  assert_stdout_includes_removing storer # 12
-  assert_stdout_includes_stopping saver # 13
-  assert_stdout_includes_removing saver # 14
-  assert_stdout_includes_stopping porter # 15
-  assert_stdout_includes_removing porter # 16
-  assert_stdout_includes_removing_the_network # 17
+  assert_stdout_includes_not_already_running mapper # 5
+  assert_stdout_includes_not_already_running saver # 6
+  assert_stdout_includes_not_already_running porter # 7
+  assert_stdout_includes_the_network_has_been_created # 8
+  assert_stdout_includes_ready storer OK # 9
+  assert_stdout_includes_ready mapper OK # 10
+  assert_stdout_includes_ready saver OK # 11
+  assert_stdout_includes_ready porter OK # 12
+  assert_stdout_includes_stopping storer # 13
+  assert_stdout_includes_removing storer # 14
+  assert_stdout_includes_stopping mapper # 15
+  assert_stdout_includes_removing mapper # 16
+  assert_stdout_includes_stopping saver # 17
+  assert_stdout_includes_removing saver # 18
+  assert_stdout_includes_stopping porter # 19
+  assert_stdout_includes_removing porter # 20
+  assert_stdout_includes_removing_the_network # 21
 }
 
 assert_stdout_includes_storer_empty()
@@ -281,7 +285,15 @@ assert_stderr_equals_storer_already_running()
 {
   assert_stderr_includes "ERROR"
   assert_stderr_includes "A storer service is already running"
-  assert_stderr_includes "Please run $ [sudo] cyber-dojo down"
+  assert_stderr_includes "Please run $ [sudo] docker rm -f storer"
+  assert_stderr_line_count_equals 3
+}
+
+assert_stderr_equals_mapper_already_running()
+{
+  assert_stderr_includes "ERROR"
+  assert_stderr_includes "A mapper service is already running"
+  assert_stderr_includes "Please run $ [sudo] docker rm -f mapper"
   assert_stderr_line_count_equals 3
 }
 
@@ -289,7 +301,7 @@ assert_stderr_equals_saver_already_running()
 {
   assert_stderr_includes "ERROR"
   assert_stderr_includes "A saver service is already running"
-  assert_stderr_includes "Please run $ [sudo] cyber-dojo down"
+  assert_stderr_includes "Please run $ [sudo] docker rm -f saver"
   assert_stderr_line_count_equals 3
 }
 
