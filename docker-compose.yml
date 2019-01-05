@@ -62,8 +62,26 @@ services:
     init: true
     container_name: test-porter-saver
     read_only: true
+    depends_on:
+      - mapper
     ports:
       - 4537:4537
     tmpfs:
       - /cyber-dojo:uid=19663,gid=65533
       - /tmp:uid=19663,gid=65533
+
+  # - - - - - - - - - - - - - - - -
+
+  mapper:
+    user: nobody
+    image: cyberdojo/mapper
+    init: true
+    container_name: test-porter-mapper
+    read_only: true
+    ports:
+      - 4547:4547
+    tmpfs: /tmp
+    restart: 'no'
+    tmpfs:
+      - /porter:uid=65534,gid=65533
+      - /tmp:uid=65534,gid=65533

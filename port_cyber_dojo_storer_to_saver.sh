@@ -22,28 +22,24 @@ show_help()
   Ports cyber-dojo practice sessions:
 
                            old-format   --->  new-format
+  o) storage medium        data-container     volume-mount
   o) id-length             10                 6
   o) service name          storer             saver
-  o) storage               data-container     volume-mount
   o) avatar-coupling?      yes                no
   o) individual sessions?  no                 yes
 
-  As each session is ported, a single character is printed:
-    P - The session has been removed from storer and
-        the new 6-digit id is the 1st 6 chars of the old 10-digit id.
-        For example, 9f8TeZMZA2 --> 9f8TeZ
-    M - The session has been removed from storer and
-        the new 6-digit id is NOT the 1st 6 chars of the old 10-digit id.
-        For example, if 9f8TeZMZA2 -> uQMecK then
-          /porter/mapped-ids/9f8TeZMZA2 will contain uQMecK
-    e - The session failed to port because an exception arose
-        The session is still in storer.
-        For example, if 9f8TeZMZA2 raises an exception, then
-          /porter/raised-ids/9f8TeZMZA2 will contain the trace
-    a - The session has already been ported.
-
+  Please consider backing up your server first.
   Please be patient - initialization takes several seconds.
   Please follow instructions - one-time chown commands will be needed.
+
+  As each session is ported, a single character is printed:
+    P - The session has been removed from storer.
+        An id mapping was not required.
+    M - The session has been removed from storer.
+        An id mapping was required.
+    e - The session failed to port because an exception arose.
+        The session is still in storer.
+    a - The session has already been ported.
 
   Step 1: Pull the latest docker images for the required services:
     \$ docker pull cyberdojo/storer
