@@ -12,7 +12,6 @@ alt="cyber-dojo yin/yang logo" width="50px" height="50px"/>
 [storer](https://github.com/cyber-dojo/storer)
 to
 [saver](https://github.com/cyber-dojo/saver).
-- Work in progress - not yet used
 
 API:
   * All methods receive their named arguments in a json hash.
