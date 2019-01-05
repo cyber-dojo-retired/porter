@@ -1,7 +1,3 @@
 services: docker
 language: bash
-git:
-  depth: 1
-  quiet: true
-
 script: ./sh/travis.sh
