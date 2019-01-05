@@ -45,6 +45,7 @@ show_help()
     \$ docker pull cyberdojo/storer
     \$ docker pull cyberdojo/saver
     \$ docker pull cyberdojo/porter
+    \$ docker pull cyberdojo/mapper
 
   Step 2: Check porting a single session works.
   To show a randomly sampled 10-digit id:
