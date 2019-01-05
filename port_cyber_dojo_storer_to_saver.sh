@@ -299,7 +299,6 @@ run_service_mapper()
 {
   mapper_cid=$(docker run \
     --detach \
-    --env DOCKER_MACHINE_NAME="${DOCKER_MACHINE_NAME}" \
     --name mapper \
     --network ${network_name} \
     --publish ${mapper_port}:${mapper_port} \
