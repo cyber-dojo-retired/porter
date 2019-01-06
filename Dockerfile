@@ -1,12 +1,13 @@
 FROM cyberdojo/rack-base
 LABEL maintainer=jon@jaggersoft.com
 
-RUN adduser \
-  -D       `# no password` \
-  -H       `# no home dir` \
-  -u 19664 `# user-id`     \
-  -G nogroup `# group`     \
-  porter   `# user-name`
+RUN adduser                        \
+  -D               `# no password` \
+  -G nogroup       `# group`       \
+  -H               `# no home dir` \
+  -s /sbin/nologin `# no shell`    \
+  -u 19664         `# user-id`     \
+  porter           `# user-name`
 
 WORKDIR /app
 COPY . .
