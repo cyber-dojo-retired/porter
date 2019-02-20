@@ -10,10 +10,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: build porter docker image and push to dockerhub
+          name: build docker image
           command: |
-            set -e
+            set -ev
             ./pipe_build_up_test.sh
+      - run:
+          name: publish tagged docker image on dockerhub
+          command: |
+            set -ev
             readonly project=${CIRCLE_PROJECT_REPONAME}
             docker tag  cyberdojo/${project}:latest cyberdojo/${project}:${CIRCLE_SHA1:0:7}
             docker tag  cyberdojo/${project}:latest cyberdojo/${project}:beta
